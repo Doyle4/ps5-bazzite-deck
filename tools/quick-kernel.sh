@@ -20,26 +20,34 @@ echo "$R" > "$O/KERNEL"; echo "$L" > "$O/LABEL"
 cat > "$O/install.sh" << 'EOI'
 #!/bin/bash
 # Installs a quick test kernel (bzImage + amdgpu module) with a backup. Undo command at the end.
+# amdgpu usually sits in the initrd too: instead of rebuilding the initrd, a small cpio archive
+# with the new module is appended to the untouched original (the kernel reads concatenated
+# archives, later files replace earlier ones). The original is kept as initrd.img.base.
 set -euo pipefail
 cd "$(dirname "$0")"
 K=$(uname -r); [ "$K" = "$(cat KERNEL)" ] || { echo "STOP: running kernel $K, this build is $(cat KERNEL)"; exit 1; }
 EFI=$(for d in /efi /boot/efi; do sudo test -f $d/bzImage && echo $d && break; done)
 [ -n "$EFI" ] || { sudo mkdir -p /boot/efi; mountpoint -q /boot/efi || sudo mount LABEL=boot /boot/efi; EFI=/boot/efi; }
 sudo test -f "$EFI/bzImage" || { echo "STOP: no bzImage on the boot partition"; exit 1; }
-M=$(ls /usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko* | head -1)
+MD=/usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu; M=$(ls $MD/amdgpu.ko* | head -1)
 BK=/var/lib/ps5-quick-kernel/$(date +%Y%m%d-%H%M%S); sudo mkdir -p "$BK"
 sudo cp "$EFI/bzImage" "$EFI/initrd.img" "$M" /etc/ps5-bazzite-deck-version "$BK/" 2>/dev/null || true
 sudo install -m644 bzImage "$EFI/bzImage"
-sudo install -m644 amdgpu.ko.zst "${M%.ko*}.ko.zst"; [ "$M" = "${M%.ko*}.ko.zst" ] || sudo rm -f "$M"
+sudo install -m644 amdgpu.ko.zst "$MD/amdgpu.ko.zst"; [ "$M" = "$MD/amdgpu.ko.zst" ] || sudo rm -f "$M"
 sudo depmod "$K"
-if sudo lsinitrd "$EFI/initrd.img" 2>/dev/null | grep -q "amdgpu.ko"; then
-  command -v dracut >/dev/null || { echo "STOP: amdgpu is in the initrd but dracut is missing; restoring"; sudo cp "$BK/bzImage" "$BK/initrd.img" "$EFI/"; exit 1; }
-  echo "amdgpu is in the initrd: rebuilding it"; sudo dracut -q --force --kver "$K" "$EFI/initrd.img"
-fi
+# the initrd: original kept once as initrd.img.base, new initrd = base + overlay with the module
+sudo test -f "$EFI/initrd.img.base" || sudo cp "$EFI/initrd.img" "$EFI/initrd.img.base"
+IP=$(sudo lsinitrd "$EFI/initrd.img.base" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
+IP=${IP:-usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst}
+T=$(mktemp -d); mkdir -p "$T/$(dirname "$IP")"; cp amdgpu.ko.zst "$T/$IP"
+(cd "$T" && find . -print0 | cpio --null -o -H newc --owner=0:0 --quiet) > /tmp/amdgpu-overlay.cpio
+sudo sh -c "cat '$EFI/initrd.img.base' /tmp/amdgpu-overlay.cpio > '$EFI/initrd.img'"
+rm -rf "$T" /tmp/amdgpu-overlay.cpio
+echo "initrd: original + overlay with $IP ($(sudo du -h "$EFI/initrd.img" | cut -f1))"
 echo "$(cat LABEL) (quick kernel)" | sudo tee /etc/ps5-bazzite-deck-version >/dev/null
 sync
 echo "DONE: $(cat LABEL) installed. Power off and start with the loader (no warm reboot)."
-echo "undo: sudo cp $BK/bzImage $BK/initrd.img $EFI/ && sudo cp $BK/$(basename "$M") $(dirname "$M")/ && sudo depmod $K && sudo cp $BK/ps5-bazzite-deck-version /etc/ && sync"
+echo "undo: sudo cp $BK/bzImage $EFI/ && sudo cp $EFI/initrd.img.base $EFI/initrd.img && sudo cp $BK/$(basename "$M") $MD/ && sudo depmod $K && sudo cp $BK/ps5-bazzite-deck-version /etc/ && sync"
 EOI
 chmod +x "$O/install.sh"
 tar -C "$B/output" -czf "$O.tar.gz" "$(basename "$O")"
