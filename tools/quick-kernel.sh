@@ -44,7 +44,7 @@ if sudo test -f "$EFI/initrd.img.base"; then sudo mv "$EFI/initrd.img.base" "$BA
 sudo test -f "$BASE" || sudo cp "$EFI/initrd.img" "$BASE"
 IP=$(sudo lsinitrd "$BASE" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
 IP=${IP:-usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst}
-W=$(mktemp -d /var/tmp/quick-initrd.XXXXXX); sudo chmod 700 "$W"
+W=$(mktemp -d /var/tmp/quick-initrd.XXXXXX); sudo chown root:root "$W"; sudo chmod 755 "$W"
 # an early (uncompressed) cpio for microcode may come first: split it off
 if [ -x /usr/lib/dracut/skipcpio ] && sudo /usr/lib/dracut/skipcpio "$BASE" > "$W/main.img" 2>/dev/null && [ -s "$W/main.img" ]; then
   E=$(( $(sudo stat -c%s "$BASE") - $(stat -c%s "$W/main.img") )); sudo head -c "$E" "$BASE" > "$W/early.cpio"
@@ -53,7 +53,9 @@ MAGIC=$(head -c4 "$W/main.img" | od -An -tx1 | tr -d ' ')
 case "$MAGIC" in 28b52ffd) DEC="zstd -dc"; ENC="zstd -19 -T0 -q";; 1f8b*) DEC="gzip -dc"; ENC="gzip -9";; fd377a58) DEC="xz -dc"; ENC="xz --check=crc32 -9";; *) DEC="cat"; ENC="cat";; esac
 # decompress tolerantly: an initrd that already got an overlay appended has trailing data
 # after the compressed stream, which zstd/gzip report as an error after a complete decode
-mkdir "$W/root" && (cd "$W/root" && { $DEC ../main.img 2>/dev/null || true; } | sudo cpio -idm --quiet 2>/dev/null || true)
+# the unpack root MUST be root-owned: the archive's "." entry becomes the initrd's "/", and systemd
+# refuses a root directory owned by a normal user (no boot). The first in-initrd installer got this wrong.
+sudo mkdir -m 755 "$W/root" && (cd "$W/root" && { $DEC ../main.img 2>/dev/null || true; } | sudo cpio -idm --quiet 2>/dev/null || true)
 [ -n "$(ls -A "$W/root" 2>/dev/null)" ] || { echo "STOP: could not unpack the initrd (format $MAGIC); nothing changed"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; }
 [ -e "$W/root/$IP" ] || echo "note: $IP wasn't in the initrd; adding it"
 sudo mkdir -p "$W/root/$(dirname "$IP")" && sudo cp amdgpu.ko.zst "$W/root/$IP"
@@ -66,6 +68,8 @@ if [ "${QUICK_SLIM:-0}" = 1 ] && [ -d "$W/root/usr/lib/firmware/amdgpu" ]; then
   case "$ENC" in zstd*) ENC="zstd --ultra -22 --long=27 -T0 -q";; esac
 fi
 (cd "$W/root" && sudo find . -print0 | sudo cpio --null -o -H newc --quiet | $ENC > "$W/main.new")
+ROOTENT=$($DEC "$W/main.new" 2>/dev/null | cpio -itv --quiet 2>/dev/null | head -1)
+case "$ROOTENT" in drwxr-xr-x*root*root*" ."*) ;; *) echo "STOP: repacked initrd root entry is not root-owned ($ROOTENT); nothing changed"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1;; esac
 cat "$W/early.cpio" "$W/main.new" > "$W/initrd.img"
 NEED=$(stat -c%s "$W/initrd.img"); HAVE=$(( $(df --output=avail -B1 "$EFI" | tail -1) + $(sudo stat -c%s "$EFI/initrd.img" 2>/dev/null || echo 0) ))
 echo "initrd: new $((NEED/1024/1024)) MB, room on the boot partition after removing the old one: $((HAVE/1024/1024)) MB"
