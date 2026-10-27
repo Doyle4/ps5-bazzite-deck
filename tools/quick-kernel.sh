@@ -44,7 +44,7 @@ if sudo test -f "$EFI/initrd.img.base"; then sudo mv "$EFI/initrd.img.base" "$BA
 sudo test -f "$BASE" || sudo cp "$EFI/initrd.img" "$BASE"
 IP=$(sudo lsinitrd "$BASE" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
 IP=${IP:-usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst}
-W=$(mktemp -d /var/tmp/quick-initrd.XXXXXX); sudo chown root:root "$W"; sudo chmod 755 "$W"
+W=$(mktemp -d /var/tmp/quick-initrd.XXXXXX)   # user-owned (the shell writes here); only root/ below is root-owned
 # an early (uncompressed) cpio for microcode may come first: split it off
 if [ -x /usr/lib/dracut/skipcpio ] && sudo /usr/lib/dracut/skipcpio "$BASE" > "$W/main.img" 2>/dev/null && [ -s "$W/main.img" ]; then
   E=$(( $(sudo stat -c%s "$BASE") - $(stat -c%s "$W/main.img") )); sudo head -c "$E" "$BASE" > "$W/early.cpio"
