@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.4.1] – 2026-10-<DD>
+## [v1.4.1] – 2026-10-27
 - **IW620 (Marvell) consoles: the Linux-only Bluetooth address is off by default** (`ps5-bt-address on` enables it). It sends a vendor command to the Wi-Fi/Bluetooth combo chip at every boot and is the suspect for v1.4.0's "Wi-Fi sees networks but won't connect" on those consoles (three reports; MediaTek consoles, which use the kernel's own path, were fine). Back on by default once the cause is confirmed
 - **USB never sleeps by default** (`usbcore.autosuspend=-1` in `cmdline.txt`, added by the image build and the updater): the USB drive, controllers and dongles no longer get suspended; it was the most-recommended fix for disconnects and freezes
 - **Wi-Fi power saving off** whenever a Wi-Fi interface comes up (NetworkManager dispatcher): Steam's developer setting can switch it on per connection, and with it on the IW620 throttles to ~100 Mbit/s instead of ~700 (thelonlybud)
