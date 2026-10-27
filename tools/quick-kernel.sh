@@ -57,10 +57,25 @@ mkdir "$W/root" && (cd "$W/root" && { $DEC ../main.img 2>/dev/null || true; } | 
 [ -n "$(ls -A "$W/root" 2>/dev/null)" ] || { echo "STOP: could not unpack the initrd (format $MAGIC); nothing changed"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; }
 [ -e "$W/root/$IP" ] || echo "note: $IP wasn't in the initrd; adding it"
 sudo mkdir -p "$W/root/$(dirname "$IP")" && sudo cp amdgpu.ko.zst "$W/root/$IP"
+# small boot partition: QUICK_SLIM=1 drops the amdgpu firmware of other GPUs from the initrd (the
+# PS5's own files, navi10_* and ps5_*, stay; QUICK_FW_KEEP overrides the list) and compresses harder
+if [ "${QUICK_SLIM:-0}" = 1 ] && [ -d "$W/root/usr/lib/firmware/amdgpu" ]; then
+  KEEP=${QUICK_FW_KEEP:-"navi10_ ps5_"}; N=0
+  for f in "$W/root"/usr/lib/firmware/amdgpu/*; do b=$(basename "$f"); k=0; for pre in $KEEP; do case "$b" in $pre*) k=1;; esac; done; [ $k = 1 ] || { sudo rm -f "$f"; N=$((N+1)); }; done
+  echo "slim initrd: removed $N amdgpu firmware files of other GPUs (kept: $KEEP)"
+  case "$ENC" in zstd*) ENC="zstd --ultra -22 --long=27 -T0 -q";; esac
+fi
 (cd "$W/root" && sudo find . -print0 | sudo cpio --null -o -H newc --quiet | $ENC > "$W/main.new")
 cat "$W/early.cpio" "$W/main.new" > "$W/initrd.img"
-sudo rm -f "$EFI/initrd.img"   # make room first: the boot partition can be small
-if ! sudo cp "$W/initrd.img" "$EFI/initrd.img"; then echo "STOP: no room on the boot partition; restoring"; sudo cp "$BASE" "$EFI/initrd.img"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; fi
+NEED=$(stat -c%s "$W/initrd.img"); HAVE=$(( $(df --output=avail -B1 "$EFI" | tail -1) + $(sudo stat -c%s "$EFI/initrd.img" 2>/dev/null || echo 0) ))
+echo "initrd: new $((NEED/1024/1024)) MB, room on the boot partition after removing the old one: $((HAVE/1024/1024)) MB"
+if [ "$NEED" -gt "$HAVE" ]; then
+  echo "STOP: the new initrd doesn't fit. On the boot partition:"; sudo ls -la "$EFI" | grep -v -e cmdline -e "^total" | awk '{print "   " $5/1024/1024 " MB  " $9}' | sort -rn | head -8
+  echo "   remove leftovers there (old initrd.img.bak-* / bzImage copies), or run with QUICK_SLIM=1 to drop other GPUs' firmware from the initrd"
+  sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1
+fi
+sudo rm -f "$EFI/initrd.img"
+if ! sudo cp "$W/initrd.img" "$EFI/initrd.img"; then echo "STOP: copy failed; restoring"; sudo cp "$BASE" "$EFI/initrd.img"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; fi
 sudo rm -rf "$W"
 echo "initrd: amdgpu replaced inside ($IP), $(sudo du -h "$EFI/initrd.img" | cut -f1), boot partition free: $(df -h "$EFI" | awk 'NR==2{print $4}')"
 echo "$(cat LABEL) (quick kernel)" | sudo tee /etc/ps5-bazzite-deck-version >/dev/null
