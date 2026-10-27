@@ -35,19 +35,23 @@ sudo cp "$EFI/bzImage" "$EFI/initrd.img" "$M" /etc/ps5-bazzite-deck-version "$BK
 sudo install -m644 bzImage "$EFI/bzImage"
 sudo install -m644 amdgpu.ko.zst "$MD/amdgpu.ko.zst"; [ "$M" = "$MD/amdgpu.ko.zst" ] || sudo rm -f "$M"
 sudo depmod "$K"
-# the initrd: original kept once as initrd.img.base, new initrd = base + overlay with the module
-sudo test -f "$EFI/initrd.img.base" || sudo cp "$EFI/initrd.img" "$EFI/initrd.img.base"
-IP=$(sudo lsinitrd "$EFI/initrd.img.base" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
+# the initrd: the original is kept once (off the small boot partition), new initrd = original + overlay
+BASE=/var/lib/ps5-quick-kernel/initrd.img.base
+sudo mkdir -p /var/lib/ps5-quick-kernel
+if sudo test -f "$EFI/initrd.img.base"; then sudo mv "$EFI/initrd.img.base" "$BASE"; fi   # older installs kept it on the boot partition
+sudo test -f "$BASE" || sudo cp "$EFI/initrd.img" "$BASE"
+IP=$(sudo lsinitrd "$BASE" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
 IP=${IP:-usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst}
 T=$(mktemp -d); mkdir -p "$T/$(dirname "$IP")"; cp amdgpu.ko.zst "$T/$IP"
 (cd "$T" && find . -print0 | cpio --null -o -H newc --owner=0:0 --quiet) > /tmp/amdgpu-overlay.cpio
-sudo sh -c "cat '$EFI/initrd.img.base' /tmp/amdgpu-overlay.cpio > '$EFI/initrd.img'"
+sudo rm -f "$EFI/initrd.img"   # make room first: the boot partition can be small
+sudo sh -c "cat '$BASE' /tmp/amdgpu-overlay.cpio > '$EFI/initrd.img'" || { echo "STOP: no room on the boot partition; restoring"; sudo cp "$BASE" "$EFI/initrd.img"; sudo cp "$BK/bzImage" "$EFI/"; exit 1; }
 rm -rf "$T" /tmp/amdgpu-overlay.cpio
 echo "initrd: original + overlay with $IP ($(sudo du -h "$EFI/initrd.img" | cut -f1))"
 echo "$(cat LABEL) (quick kernel)" | sudo tee /etc/ps5-bazzite-deck-version >/dev/null
 sync
 echo "DONE: $(cat LABEL) installed. Power off and start with the loader (no warm reboot)."
-echo "undo: sudo cp $BK/bzImage $EFI/ && sudo cp $EFI/initrd.img.base $EFI/initrd.img && sudo cp $BK/$(basename "$M") $MD/ && sudo depmod $K && sudo cp $BK/ps5-bazzite-deck-version /etc/ && sync"
+echo "undo: sudo cp $BK/bzImage $EFI/ && sudo cp $BASE $EFI/initrd.img && sudo cp $BK/$(basename "$M") $MD/ && sudo depmod $K && sudo cp $BK/ps5-bazzite-deck-version /etc/ && sync"
 EOI
 chmod +x "$O/install.sh"
 tar -C "$B/output" -czf "$O.tar.gz" "$(basename "$O")"

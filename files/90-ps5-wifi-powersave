@@ -1,0 +1,7 @@
+#!/bin/sh
+# NetworkManager dispatcher: Wi-Fi power saving off whenever a Wi-Fi interface comes up.
+# Steam's developer setting can switch it on per connection; with it on, the IW620 throttles
+# to ~100 Mbit/s instead of ~700 (thelonlybud, 1.4.0).
+[ "$2" = "up" ] || exit 0
+case "$1" in wl*|mlan*) iw dev "$1" set power_save off 2>/dev/null; nmcli -t -f GENERAL.CONNECTION device show "$1" 2>/dev/null | cut -d: -f2 | head -1 | xargs -r -I{} nmcli connection modify "{}" 802-11-wireless.powersave 2 2>/dev/null ;; esac
+exit 0

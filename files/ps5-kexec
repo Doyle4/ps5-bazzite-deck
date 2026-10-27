@@ -40,6 +40,11 @@ def load():
             print(f"kexec_file_load failed: {os.strerror(e)} (errno {e}); normal reboot")
             return 0
         print(f"warm reboot ready: {d}/bzImage + initrd.img, cmdline from {d}/cmdline.txt")
+        try:   # tells ps5-wifi-repair at the next boot that it was a warm one
+            os.makedirs("/var/lib/ps5-bazzite-deck", exist_ok=True)
+            open("/var/lib/ps5-bazzite-deck/warm-boot", "w").close()
+        except OSError:
+            pass
     finally:
         if mounted:
             subprocess.run(["umount", d], capture_output=True)

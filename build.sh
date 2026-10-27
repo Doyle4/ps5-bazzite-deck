@@ -108,7 +108,11 @@ sudo bash "$SRC/tools/bt-mainconf.sh" "$ROOT/etc/bluetooth/main.conf"           
 sudo install -Dm755 "$SRC/files/ps5-kexec" "$ROOT/usr/local/sbin/ps5-kexec"                                   # warm reboot into Linux (kexec_file_load, no kexec-tools needed)
 sudo install -Dm755 "$SRC/files/ps5-reboot-to-ps5" "$ROOT/usr/local/sbin/ps5-reboot-to-ps5"                     # ...and the way back to the PS5 system
 sudo install -Dm755 "$SRC/files/ps5-warm-reboot" "$ROOT/usr/local/sbin/ps5-warm-reboot"                       # warm reboot: off by default, "ps5-warm-reboot on"
+sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
+sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"
+sudo mkdir -p "$ROOT/etc/systemd/system/multi-user.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-repair.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-wifi-repair.service"
 sudo install -Dm644 "$SRC/files/99-ps5-usb-power.rules" "$ROOT/etc/udev/rules.d/99-ps5-usb-power.rules"       # Bluetooth chips + Salina xHCI: no runtime suspend
+sudo install -Dm755 "$SRC/files/90-ps5-wifi-powersave" "$ROOT/etc/NetworkManager/dispatcher.d/90-ps5-wifi-powersave"   # Wi-Fi power saving off (700 vs 100 Mbit/s)
 sudo install -Dm644 "$SRC/files/ps5-kexec-prepare.service" "$ROOT/etc/systemd/system/ps5-kexec-prepare.service" # loads the kernel when a reboot starts
 sudo install -Dm644 "$SRC/files/ps5-reboot.service" "$ROOT/etc/systemd/system/ps5-reboot.service"               # reboot = kexec when loaded, else normal
 sudo install -Dm644 "$SRC/files/reboot.target" "$ROOT/etc/systemd/system/reboot.target"                         # overrides systemd's reboot.target

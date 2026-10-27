@@ -3,10 +3,12 @@ Description=Reboot: warm reboot into Linux when a kernel is loaded, normal reboo
 DefaultDependencies=no
 Requires=shutdown.target umount.target final.target
 After=shutdown.target umount.target final.target
-SuccessAction=reboot-force
+# The reboot itself is done by systemd (PID 1), not by systemctl: at this point D-Bus is gone
+# ("Transport endpoint is not connected" in v1.4.0). kexec when ps5-kexec-prepare loaded a
+# kernel, a normal reboot otherwise.
+SuccessAction=kexec-force
 FailureAction=reboot-force
 
 [Service]
 Type=oneshot
-# "systemctl --force kexec" only returns if it couldn't kexec: then a normal reboot
-ExecStart=/bin/sh -c '[ "$(cat /sys/kernel/kexec_loaded 2>/dev/null)" = 1 ] && /usr/bin/systemctl --force kexec; exec /usr/bin/systemctl --force reboot'
+ExecStart=/bin/sh -c 'test "$(cat /sys/kernel/kexec_loaded 2>/dev/null)" = 1'
