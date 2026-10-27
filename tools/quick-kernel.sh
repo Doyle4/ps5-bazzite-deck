@@ -35,19 +35,31 @@ sudo cp "$EFI/bzImage" "$EFI/initrd.img" "$M" /etc/ps5-bazzite-deck-version "$BK
 sudo install -m644 bzImage "$EFI/bzImage"
 sudo install -m644 amdgpu.ko.zst "$MD/amdgpu.ko.zst"; [ "$M" = "$MD/amdgpu.ko.zst" ] || sudo rm -f "$M"
 sudo depmod "$K"
-# the initrd: the original is kept once (off the small boot partition), new initrd = original + overlay
+# the initrd: the original is kept once (off the small boot partition). amdgpu is replaced INSIDE
+# the initrd (unpack, swap the module, repack with the same compression), because appending an
+# overlay doesn't fit on small boot partitions.
 BASE=/var/lib/ps5-quick-kernel/initrd.img.base
 sudo mkdir -p /var/lib/ps5-quick-kernel
 if sudo test -f "$EFI/initrd.img.base"; then sudo mv "$EFI/initrd.img.base" "$BASE"; fi   # older installs kept it on the boot partition
 sudo test -f "$BASE" || sudo cp "$EFI/initrd.img" "$BASE"
 IP=$(sudo lsinitrd "$BASE" 2>/dev/null | grep -o '[^ ]*amdgpu/amdgpu\.ko[a-z.]*' | head -1 | sed 's#^\./##')
 IP=${IP:-usr/lib/modules/$K/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst}
-T=$(mktemp -d); mkdir -p "$T/$(dirname "$IP")"; cp amdgpu.ko.zst "$T/$IP"
-(cd "$T" && find . -print0 | cpio --null -o -H newc --owner=0:0 --quiet) > /tmp/amdgpu-overlay.cpio
+W=$(mktemp -d /var/tmp/quick-initrd.XXXXXX); sudo chmod 700 "$W"
+# an early (uncompressed) cpio for microcode may come first: split it off
+if [ -x /usr/lib/dracut/skipcpio ] && sudo /usr/lib/dracut/skipcpio "$BASE" > "$W/main.img" 2>/dev/null && [ -s "$W/main.img" ]; then
+  E=$(( $(sudo stat -c%s "$BASE") - $(stat -c%s "$W/main.img") )); sudo head -c "$E" "$BASE" > "$W/early.cpio"
+else sudo cp "$BASE" "$W/main.img"; : > "$W/early.cpio"; fi
+MAGIC=$(head -c4 "$W/main.img" | od -An -tx1 | tr -d ' ')
+case "$MAGIC" in 28b52ffd) DEC="zstd -dc"; ENC="zstd -19 -T0 -q";; 1f8b*) DEC="gzip -dc"; ENC="gzip -9";; fd377a58) DEC="xz -dc"; ENC="xz --check=crc32 -9";; *) DEC="cat"; ENC="cat";; esac
+mkdir "$W/root" && (cd "$W/root" && $DEC ../main.img | sudo cpio -idm --quiet 2>/dev/null)
+[ -e "$W/root/$IP" ] || echo "note: $IP wasn't in the initrd; adding it"
+sudo mkdir -p "$W/root/$(dirname "$IP")" && sudo cp amdgpu.ko.zst "$W/root/$IP"
+(cd "$W/root" && sudo find . -print0 | sudo cpio --null -o -H newc --quiet | $ENC > "$W/main.new")
+cat "$W/early.cpio" "$W/main.new" > "$W/initrd.img"
 sudo rm -f "$EFI/initrd.img"   # make room first: the boot partition can be small
-sudo sh -c "cat '$BASE' /tmp/amdgpu-overlay.cpio > '$EFI/initrd.img'" || { echo "STOP: no room on the boot partition; restoring"; sudo cp "$BASE" "$EFI/initrd.img"; sudo cp "$BK/bzImage" "$EFI/"; exit 1; }
-rm -rf "$T" /tmp/amdgpu-overlay.cpio
-echo "initrd: original + overlay with $IP ($(sudo du -h "$EFI/initrd.img" | cut -f1))"
+if ! sudo cp "$W/initrd.img" "$EFI/initrd.img"; then echo "STOP: no room on the boot partition; restoring"; sudo cp "$BASE" "$EFI/initrd.img"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; fi
+sudo rm -rf "$W"
+echo "initrd: amdgpu replaced inside ($IP), $(sudo du -h "$EFI/initrd.img" | cut -f1), boot partition free: $(df -h "$EFI" | awk 'NR==2{print $4}')"
 echo "$(cat LABEL) (quick kernel)" | sudo tee /etc/ps5-bazzite-deck-version >/dev/null
 sync
 echo "DONE: $(cat LABEL) installed. Power off and start with the loader (no warm reboot)."
