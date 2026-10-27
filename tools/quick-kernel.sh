@@ -51,7 +51,10 @@ if [ -x /usr/lib/dracut/skipcpio ] && sudo /usr/lib/dracut/skipcpio "$BASE" > "$
 else sudo cp "$BASE" "$W/main.img"; : > "$W/early.cpio"; fi
 MAGIC=$(head -c4 "$W/main.img" | od -An -tx1 | tr -d ' ')
 case "$MAGIC" in 28b52ffd) DEC="zstd -dc"; ENC="zstd -19 -T0 -q";; 1f8b*) DEC="gzip -dc"; ENC="gzip -9";; fd377a58) DEC="xz -dc"; ENC="xz --check=crc32 -9";; *) DEC="cat"; ENC="cat";; esac
-mkdir "$W/root" && (cd "$W/root" && $DEC ../main.img | sudo cpio -idm --quiet 2>/dev/null)
+# decompress tolerantly: an initrd that already got an overlay appended has trailing data
+# after the compressed stream, which zstd/gzip report as an error after a complete decode
+mkdir "$W/root" && (cd "$W/root" && { $DEC ../main.img 2>/dev/null || true; } | sudo cpio -idm --quiet 2>/dev/null || true)
+[ -n "$(ls -A "$W/root" 2>/dev/null)" ] || { echo "STOP: could not unpack the initrd (format $MAGIC); nothing changed"; sudo cp "$BK/bzImage" "$EFI/"; sudo rm -rf "$W"; exit 1; }
 [ -e "$W/root/$IP" ] || echo "note: $IP wasn't in the initrd; adding it"
 sudo mkdir -p "$W/root/$(dirname "$IP")" && sudo cp amdgpu.ko.zst "$W/root/$IP"
 (cd "$W/root" && sudo find . -print0 | sudo cpio --null -o -H newc --quiet | $ENC > "$W/main.new")
