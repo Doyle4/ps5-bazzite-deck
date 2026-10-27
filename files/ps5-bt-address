@@ -1,0 +1,11 @@
+#!/bin/sh
+# One DualSense for the PS5 and Linux on IW620 (Marvell) consoles: Linux's own Bluetooth address,
+# set with a vendor command to the Wi-Fi/Bluetooth combo chip at boot. Off by default from v1.4.1
+# (suspected of breaking Wi-Fi on v1.4.0); MediaTek consoles always have it (kernel path).
+#   ps5-bt-address on | off | status
+F=/etc/ps5-bazzite-deck/bt-address
+case "$1" in
+    on)  sudo mkdir -p /etc/ps5-bazzite-deck && sudo touch "$F" && echo "Linux-only Bluetooth address on from the next boot: pair your controllers with Linux once more afterwards" ;;
+    off) sudo rm -f "$F" && echo "Linux-only Bluetooth address off from the next boot (the controller keeps one pairing)" ;;
+    *)   [ -e "$F" ] && echo "Linux-only Bluetooth address: on" || echo "Linux-only Bluetooth address: off (ps5-bt-address on to enable)" ;;
+esac

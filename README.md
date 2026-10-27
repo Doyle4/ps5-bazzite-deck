@@ -170,7 +170,7 @@ end with a space in front of it, or delete it again to undo.
 |---|---|---|
 | `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show (Game Mode and the desktop remember it). Remove it again once you've set a working resolution |
 | `hdmi.rearm=0` | Turns off the "picture comes back when the TV wakes up" fix | The picture flickers or goes black right after appearing, e.g. after re-plugging HDMI |
-| `usbcore.autosuspend=-1` | USB devices never go to sleep | The USB drive/SSD disconnects, the system freezes, or there are I/O errors |
+| `usbcore.autosuspend=-1` | USB devices never go to sleep (the default from v1.4.1; remove it if you want USB power saving) | The USB drive/SSD disconnects, the system freezes, or there are I/O errors |
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (replace `xxxx:yyyy` with its ID from `lsusb`) | Same, with USB-C SSDs or enclosures: many have buggy UAS (resets, I/O errors, freezes) |
 | `amdgpu.ps5_cu_unlock=3` | Uses all 40 GPU compute units instead of 36. **Opt-in**, see [40 GPU compute units](#40-gpu-compute-units-optional) | You want more GPU power and your console's extra units work |
 
@@ -222,6 +222,8 @@ and send `log.txt` from the small FAT32 partition in [Discord](https://discord.g
 - **One DualSense for the PS5 and Linux?** Yes, if the DualSense has pairing profiles (PS + a face button).
   Keep the PS5 pairing on one profile, and pair Linux on a different profile, for example PS + Square. You
   don't need a USB cable when you switch systems. From v1.4 (the service log shows `changing Bluetooth address`).
+  On consoles with the IW620 chip (most original PS5s) this is **off by default since v1.4.1** (`ps5-bt-address on`
+  switches it on), while a Wi-Fi problem it may cause is being tracked down.
   See [docs/dualsense-profiles.md](docs/dualsense-profiles.md).
 - **Pairing a DualSense:** in Bluetooth settings, start the search, then hold **PS + Create** until the light
   flashes quickly. A controller that's still connected can't enter pairing mode: switch it off first (hold PS for
@@ -239,10 +241,12 @@ and send `log.txt` from the small FAT32 partition in [Discord](https://discord.g
 - **TV remote (HDMI CEC):** from v1.4, the TV remote's arrows, OK and back work in Game Mode and on the desktop,
   and at boot the PS5 turns the TV on and switches it to its input. To stop the latter, add
   ` ps5-cec.one_touch_play=0` to `cmdline.txt`. Thanks to Slip (ps5-linux-patches #53).
-- **Restart straight back into Linux (optional):** from v1.4, `ps5-warm-reboot on` makes every restart (Steam's,
-  the desktop's, `sudo reboot`) go straight back into Linux in about 20 seconds, without the PS5 system and the
-  loader; `ps5-warm-reboot off` turns it off again. Off by default: on some consoles the Wi-Fi/Bluetooth chip
-  doesn't come back after a warm restart. If that happens to you, power off and run the loader.
+- **Restart straight back into Linux (optional, experimental):** from v1.4, `ps5-warm-reboot on` makes every restart
+  (Steam's, the desktop's, `sudo reboot`) go straight back into Linux in about 20 seconds, without the PS5 system and
+  the loader; `ps5-warm-reboot off` turns it off again. Off by default, because the PS5's hardware isn't reset by it:
+  on some consoles the picture comes back garbled (switch to another console and back: Ctrl+Alt+F2, then Ctrl+Alt+F1),
+  and on consoles with the IW620 chip (most original PS5s) **Bluetooth stays off after a warm restart** until you power
+  off and run the loader; Wi-Fi is repaired automatically (from v1.4.1).
 - **Sleep:** from v1.4, a short press of the power button (or Steam's Sleep) puts the PS5 to sleep: screen off,
   orange light, the game paused. A short press wakes it (one beep) and the game, network and Bluetooth continue.
   The GPU stays on, so it saves little power. Thanks to Dasloh (ps5-linux-patches PR #4).

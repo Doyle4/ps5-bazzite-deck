@@ -88,6 +88,7 @@ trap cleanup EXIT
 sudo mount "${LOOP}p2" "$BOOT"      # FAT32 boot
 sudo mount "${LOOP}p1" "$ROOT"      # ext4 root
 grep -q "lsm=" "$BOOT/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf/' "$BOOT/cmdline.txt"
+grep -q "usbcore.autosuspend=" "$BOOT/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ usbcore.autosuspend=-1/' "$BOOT/cmdline.txt"   # USB never sleeps (drives, controllers)
 echo "    cmdline: $(cat "$BOOT/cmdline.txt")"
 echo "options moal ps_mode=0" | sudo tee "$ROOT/etc/modprobe.d/ps5-iw620.conf" >/dev/null
 sudo install -Dm644 "$SRC/files/99-ps5-iw620.conf" "$ROOT/etc/NetworkManager/conf.d/99-ps5-iw620.conf"        # IW620: stable MAC during scans
@@ -108,6 +109,7 @@ sudo bash "$SRC/tools/bt-mainconf.sh" "$ROOT/etc/bluetooth/main.conf"           
 sudo install -Dm755 "$SRC/files/ps5-kexec" "$ROOT/usr/local/sbin/ps5-kexec"                                   # warm reboot into Linux (kexec_file_load, no kexec-tools needed)
 sudo install -Dm755 "$SRC/files/ps5-reboot-to-ps5" "$ROOT/usr/local/sbin/ps5-reboot-to-ps5"                     # ...and the way back to the PS5 system
 sudo install -Dm755 "$SRC/files/ps5-warm-reboot" "$ROOT/usr/local/sbin/ps5-warm-reboot"                       # warm reboot: off by default, "ps5-warm-reboot on"
+sudo install -Dm755 "$SRC/files/ps5-bt-address" "$ROOT/usr/local/sbin/ps5-bt-address"                         # IW620: Linux-only BT address, opt-in
 sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
 sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"
 sudo mkdir -p "$ROOT/etc/systemd/system/multi-user.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-repair.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-wifi-repair.service"

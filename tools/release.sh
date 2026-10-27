@@ -51,7 +51,7 @@ git rev-parse -q --verify "refs/tags/$V" >/dev/null || { git tag -a "$V" -m "$V"
 
 echo "==> GitHub release"
 cd "$B/output"
-gh release create "$V" "ps5-bazzite-deck-$V.img.7z".* "ps5-bazzite-deck-$V.sha256" "$BUNDLE" "$BUNDLE.sha256" VERSIONS.md local-changes.diff ./*.patch \
+gh release create "$V" "ps5-bazzite-deck-$V.img.7z".* "ps5-bazzite-deck-$V.sha256" "$BUNDLE" "$BUNDLE.sha256" VERSIONS.md local-changes.diff ./*.patch ${PRERELEASE:+--prerelease} \
   --repo "$R" --title "$TITLE" --notes "Release notes follow."
 cd "$SRC" && python3 tools/release_notes.py
 echo "https://github.com/$R/releases/tag/$V"
