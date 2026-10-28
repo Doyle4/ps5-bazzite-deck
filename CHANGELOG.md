@@ -2,13 +2,16 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.5] – 2026-10-29
+## [Unreleased]
+- **VRR test 25b:** `hdmi.vrr_prep_keep=1` sends our own pre-block as well, right after the replayed stock message, in case the chip needs both (only built if the replay alone isn't enough)
+
+## [v1.5.5] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR test 25** (only with `hdmi.vrr_test=1` and the chip's own VRR mode): test 24 ruled out the InfoFrames, which leaves the pre-block as the one message where stock and our port still differ. `hdmi.vrr_prep_raw` replaces it at runtime with pasted register writes (e.g. from a stock capture), so each captured value can be tried without a new build
 
-## [v1.5.5] – 2026-10-29
+## [v1.5.5] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
-- **VRR test 25:** with test 24 every visible message of Sony's VRR switch is replicated except one, the pre-block, whose constants came from a 4K capture. `hdmi.vrr_prep_raw` (runtime) sends a captured pre-block 1:1 instead of ours, so stock's own bytes for a mode can be replayed and bisected without a rebuild. The UPDCTRL latch after the pre-block is now off by default (stock's capture has none)
+- **VRR test 25:** with test 24 every visible message of Sony's VRR switch is replicated except one, the pre-block, whose constants came from a 4K capture. `hdmi.vrr_prep_raw` (runtime) sends a captured pre-block 1:1 instead of ours, so stock's own bytes for a mode can be replayed and bisected without a rebuild. hsgodd's capture of that message (id 0x0186) shows it arms the chip's VTEM/EMP generator (`0x7110` preamble, `0x7011`/`0x7204` strobes, `0x7225`–`0x7231`), which our pre-block never did The UPDCTRL latch after the pre-block is now off by default (stock's capture has none)
 
 ## [v1.5.4] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
