@@ -192,7 +192,7 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | `hdmi.rgb_range=0` | Lets the TV decide the RGB range again | Colours look wrong at 1080p or 4K60 but fine at 1440p |
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
-| `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles, from v1.5.1) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes |
+| `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles, from v1.5.1) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes, newer tests in `vrr-test` releases |
 
 ### Common problems
 

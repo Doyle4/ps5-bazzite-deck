@@ -3,6 +3,14 @@
 We have few testers and one console each, so releases go slower than development:
 what goes out has to have been used, not only booted.
 
+## Versions
+- **1.X (e.g. 1.6) is a stable release:** new features that went through pre-releases and this
+  checklist, with a **full image** and an update bundle. Only these become "latest", so only these
+  reach people through the normal update command.
+- **1.X.Y (e.g. 1.6.1) is a pre-release:** new features and fixes for testing, as an **update bundle
+  only** (`PRERELEASE=1 BUNDLE_ONLY=1 bash tools/release.sh v1.X.Y "title"`). Fresh installs flash
+  the latest stable image and update. Testing steps are in each pre-release's notes.
+
 ## Rules
 - **At most one new feature per release**, plus fixes. A feature is anything a user can notice
   that wasn't there before (a new driver, a new default, a new service). Fixes for open issues
@@ -12,8 +20,8 @@ what goes out has to have been used, not only booted.
   (1.6)**, after the freeze; anything else new waits behind it.
 - **VRR and other experiments stay in separate test builds** (`vrr-test…`, quick kernels), never
   in a release.
-- **Every release starts as a pre-release.** It becomes the stable ("latest") release only after
-  the checklist below has been done on it and it has been in testers' hands for about a week
+- **New code reaches stable only through pre-releases:** a 1.X comes out once its 1.(X-1).Y
+  pre-releases have passed the checklist below and been in testers' hands for about a week
   without a new problem.
 - **Releases that don't pass stay pre-releases** (or are removed); fixes go into the next one.
 - **The build's test install runs with warm reboot off** (`ps5-warm-reboot off` on the test

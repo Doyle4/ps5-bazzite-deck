@@ -1,7 +1,9 @@
 #!/bin/bash
 # Build, test and publish a release in one go:
-#   bash tools/release.sh vX.Y.Z "release title"
-# Uses the kernel tree in ~/ps5-build-7.3/work/linux73 as it is (apply any delta first),
+#   bash tools/release.sh vX.Y "release title"                         stable 1.X: image + update bundle
+#   PRERELEASE=1 BUNDLE_ONLY=1 bash tools/release.sh vX.Y.Z "title"  pre-release 1.X.Y: update bundle only
+# (BUNDLE_ONLY still builds the image, the bundle's initrd comes from it, but skips the
+# 7-Zip volumes and their upload.) Uses the kernel tree in ~/ps5-build-7.3/work/linux73 as it is (apply any delta first),
 # rebuilds the image and the update bundle, installs the bundle on the PS5 ($PS5), and
 # only publishes after you confirm that the PS5 works.
 set -euo pipefail
@@ -37,11 +39,17 @@ echo
 read -r -p "Boot the PS5 with the loader and test it. Publish $V now? [y/N] " OK
 [ "$OK" = y ] || { echo "Not published. The bundle is in $B/output."; exit 0; }
 
-echo "==> 7-Zip volumes"
-cd "$B/output"
-rm -f "ps5-bazzite-deck-$V.img.7z".*
-7z a -mx=5 -mmt=on -v1900m "ps5-bazzite-deck-$V.img.7z" ps5-bazzite-deck.img >/dev/null
-sha256sum "ps5-bazzite-deck-$V.img.7z".* > "ps5-bazzite-deck-$V.sha256"
+IMGFILES=()
+if [ -z "${BUNDLE_ONLY:-}" ]; then
+  echo "==> 7-Zip volumes"
+  cd "$B/output"
+  rm -f "ps5-bazzite-deck-$V.img.7z".*
+  7z a -mx=5 -mmt=on -v1900m "ps5-bazzite-deck-$V.img.7z" ps5-bazzite-deck.img >/dev/null
+  sha256sum "ps5-bazzite-deck-$V.img.7z".* > "ps5-bazzite-deck-$V.sha256"
+  IMGFILES=("ps5-bazzite-deck-$V.img.7z".* "ps5-bazzite-deck-$V.sha256")
+else
+  echo "==> update bundle only (no image volumes)"
+fi
 
 echo "==> changelog date, commit, tag"
 cd "$SRC"
@@ -51,7 +59,7 @@ git rev-parse -q --verify "refs/tags/$V" >/dev/null || { git tag -a "$V" -m "$V"
 
 echo "==> GitHub release"
 cd "$B/output"
-gh release create "$V" "ps5-bazzite-deck-$V.img.7z".* "ps5-bazzite-deck-$V.sha256" "$BUNDLE" "$BUNDLE.sha256" VERSIONS.md local-changes.diff ./*.patch ${PRERELEASE:+--prerelease} \
+gh release create "$V" "${IMGFILES[@]}" "$BUNDLE" "$BUNDLE.sha256" VERSIONS.md local-changes.diff ./*.patch ${PRERELEASE:+--prerelease} \
   --repo "$R" --title "$TITLE" --notes "Release notes follow."
 cd "$SRC" && python3 tools/release_notes.py
 echo "https://github.com/$R/releases/tag/$V"

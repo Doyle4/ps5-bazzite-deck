@@ -1,0 +1,30 @@
+# Posts new releases to Discord: full releases to one channel, pre-releases (incl. vrr-test
+# builds) to another. Needs two repository secrets with Discord channel webhook URLs:
+#   DISCORD_WEBHOOK_RELEASES     (e.g. #releases)
+#   DISCORD_WEBHOOK_PRERELEASES  (e.g. #bazzite-prereleases-experimental)
+# "released" fires when a release is published or a pre-release is turned into a release;
+# "prereleased" fires when a pre-release is published. So each release is posted once per channel.
+name: Discord release post
+on:
+  release:
+    types: [released, prereleased]
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Discord
+        env:
+          HOOK: ${{ github.event.action == 'prereleased' && secrets.DISCORD_WEBHOOK_PRERELEASES || secrets.DISCORD_WEBHOOK_RELEASES }}
+          KIND: ${{ github.event.action == 'prereleased' && 'Pre-release' || 'Release' }}
+          # no username override: each channel's webhook keeps the name and picture the admins gave it
+          NAME: ${{ github.event.release.name }}
+          TAG: ${{ github.event.release.tag_name }}
+          URL: ${{ github.event.release.html_url }}
+          BODY: ${{ github.event.release.body }}
+        run: |
+          [ -n "$HOOK" ] || { echo "no webhook secret for this kind of release, skipping"; exit 0; }
+          # the first part of the notes ("What's new"), cut to fit Discord's embed limit
+          SUMMARY=$(printf '%s\n' "$BODY" | awk '/^## /{n++} n<=1' | grep -v '^## What' | head -c 1500)
+          jq -n --arg kind "$KIND" --arg name "${NAME:-$TAG}" --arg url "$URL" --arg desc "$SUMMARY" \
+            '{embeds: [{title: ($kind + ": " + $name), url: $url, description: $desc, color: (if $kind == "Release" then 3066993 else 15105570 end), footer: {text: (if $kind == "Release" then "Stable: full image + update" else "Pre-release: update bundle, for testers" end)}}]}' \
+            | curl -fsS -H "Content-Type: application/json" -d @- "$HOOK"

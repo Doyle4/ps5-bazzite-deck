@@ -2,8 +2,11 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
+## [v1.5.2] – 2026-10-<DD>
+- **VRR test 21 in the kernel** (inert unless `hdmi.vrr_test=1`): measures whether the GPU really sends a variable frame length. Every 2 s the kernel logs the measured frame intervals from the vblank interrupt (`PS5 VRR DRR: … frame length VARIES` or `FIXED`), and at each VRR switch the frame-length range amdgpu programs. Answers hsgodd's question (B): fixed timing from the GPU would explain both the FreeSync drift and the chip's VRR mode refusing
+- Update bundle only (fresh installs: flash the v1.5.1 image, then update)
+
 ## [v1.5.1] – 2026-10-28
-> Fixes only (feature freeze on 1.5).
 - **Updates always end in a cold start:** with warm reboot on, the restart after an update kexec'd straight into the new kernel without the PS5 resetting its hardware (the v1.5.0 test install hung that way). The updater and the quick-kernel installer now make that one restart go through the PS5 system
 - **Fan left at the console's own target:** v1.5.0 set 85 °C, but the console's own target is 80 °C (ObsessiveRug's report), so the fan ran later and the console warmer. `FAN_TARGET=` in `/etc/ps5-bazzite-deck/perf.conf` still sets one; CPU boost stays on
 - **Shorter `cmdline.txt`:** the two options we had added are kernel defaults now: the security modules (`CONFIG_LSM`, Game Mode needs them) and USB never sleeping (`CONFIG_USB_AUTOSUSPEND_DELAY=-1`). The updater removes exactly `lsm=landlock,lockdown,yama,integrity,apparmor,bpf` and `usbcore.autosuspend=-1`; anything else in the line stays
