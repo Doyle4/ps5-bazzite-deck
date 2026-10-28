@@ -17,7 +17,7 @@ e=open('/sys/class/drm/card0-$CON/edid','rb').read()
 for i in range(54,126,18):
     if e[i:i+3]==b'\0\0\0' and e[i+3]==0xfc: print(e[i+5:i+18].decode('ascii','replace').strip()); break
 " 2>/dev/null)
-WARM=$(journalctl -b -u ps5-wifi-repair --no-pager 2>/dev/null | grep -c 'warm reboot')
+WARM=$(journalctl -b -u ps5-wifi-repair --no-pager -o cat 2>/dev/null | grep -c 'after the warm reboot')
 echo "SUMMARY: $VER | HDMI $HDMI | Wi-Fi/BT $WL | display ${NAME:-?} on ${CON:-none} | system on ${ROOTDEV:-?} | $( [ "$WARM" -gt 0 ] && echo warm || echo cold) boot"
 echo
 echo "=== system"; uname -rv; uptime -p; cat /sys/class/dmi/id/product_name /sys/class/dmi/id/board_name 2>/dev/null | paste -sd' '; grep -m1 'model name' /proc/cpuinfo
@@ -28,7 +28,7 @@ echo "=== chips"; lspci -nn | grep -i -e network -e wireless -e ethernet -e usb 
 echo "=== display"; for c in /sys/class/drm/card0-*; do [ -f "$c/status" ] && echo "${c##*card0-}: $(cat "$c/status") $(cat "$c/enabled" 2>/dev/null) $(head -1 "$c/modes" 2>/dev/null)"; done
 k | grep -e 'hdmi:' -e 'PS5' | grep -v -e 'switched on' | tail -25
 echo "counts: got real edid=$(k | grep -c 'got real edid') re-arm=$(k | grep -c 're-arm #') ignored EDID=$(k | grep -c 'EDID announcement')"
-echo "=== gpu"; k | grep -i -e 'ring .* timeout' -e 'page fault' -e 'gpu reset' -e 'wedged' -e 'amdgpu.*error' | tail -8
+echo "=== gpu"; k | grep -i -e 'ring .* timeout' -e 'page fault' -e 'Process .* pid' -e 'gpu reset' -e 'wedged' -e 'amdgpu.*error' | sed 's/^\[ *[0-9.]*\] //' | uniq -c | tail -10
 echo "=== bluetooth"; btmgmt info 2>/dev/null | grep -m3 -e 'addr ' -e 'current settings'; k | grep -i -e 'bluetooth' -e btusb -e 'usb 5-3' | grep -i -e error -e fail -e timeout -e 'not accepting' | tail -6
 echo "=== wifi / network"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | grep -v -e '^lo' -e p2p
 W=$(ls /sys/class/net | grep -e ^wl -e ^mlan | head -1); [ -n "$W" ] && { iw dev "$W" get power_save 2>/dev/null; iw dev "$W" link 2>/dev/null | grep -e freq -e signal -e 'rx bitrate'; }
@@ -36,5 +36,6 @@ k | grep -i -e moal -e mwifiex -e mt79 -e wlan | grep -i -e fail -e error -e tim
 echo "=== session"; systemctl is-active sddm 2>/dev/null; pgrep -a gamescope 2>/dev/null | head -1 | cut -c1-120; pgrep -a startplasma 2>/dev/null | head -1
 echo "=== boot timing"; systemd-analyze 2>/dev/null | head -1
 echo "=== failed services"; systemctl --failed --no-legend 2>/dev/null | head -8
+echo "=== greenboot"; journalctl -b --no-pager -o cat 2>/dev/null | grep -i -e greenboot -e redboot -e 'boot_counter' | tail -8
 } 2>&1 | tee "$OUT"
 echo; echo "saved to $OUT (paste the SUMMARY line in the tester list, the whole file in bug reports)"
