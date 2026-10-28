@@ -2,8 +2,11 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [Unreleased]
-- **VRR test 25b:** `hdmi.vrr_prep_keep=1` sends our own pre-block as well, right after the replayed stock message, in case the chip needs both (only built if the replay alone isn't enough)
+## [v1.5.6] – 2026-10-<DD>
+> Kernel only, as a quick kernel package.
+- **VRR test 25b:** `hdmi.vrr_prep_keep=1` sends our own pre-block as well, right after the replayed stock message, in case the chip needs both
+- **VRR test 26:** `hdmi.icc_send` sends any HDMI ICC message to the EMC right away (hex, root only, only with `hdmi.vrr_test=1`). Test 25 showed the EMC accepts stock's VRR arming sequence (id `0x30`) but nothing runs it: stored sequences need a trigger binding (4/2), and ours binds `0x31`–`0x37` only. With this, registering `0x30` and binding it to trigger bits can be tried without a rebuild
+- Build: a duplicate `ps5-vrr-prep-raw.patch` line in `build.sh` removed (hsgodd)
 
 ## [v1.5.5] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.

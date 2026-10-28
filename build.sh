@@ -83,7 +83,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-trace.patch"           # VR
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-spd-drm.patch"           # VRR test 24: stock's DRM + SPD InfoFrames in VRR mode
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: replay a captured pre-block, no latch after it
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-keep.patch"         # VRR test 25b: our pre-block as well after the replayed one
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: pre-block pasteable at runtime (hdmi.vrr_prep_raw)
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-send.patch"           # VRR test 26: send any HDMI ICC message at runtime (vrr_test only)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
