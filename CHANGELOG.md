@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.2] – 2026-10-<DD>
+## [v1.5.2] – 2026-10-28
 - **VRR test 21 in the kernel** (inert unless `hdmi.vrr_test=1`): measures whether the GPU really sends a variable frame length. Every 2 s the kernel logs the measured frame intervals from the vblank interrupt (`PS5 VRR DRR: … frame length VARIES` or `FIXED`), and at each VRR switch the frame-length range amdgpu programs. Answers hsgodd's question (B): fixed timing from the GPU would explain both the FreeSync drift and the chip's VRR mode refusing
 - Update bundle only (fresh installs: flash the v1.5.1 image, then update)
 
