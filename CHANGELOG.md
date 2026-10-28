@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.4] – 2026-10-28
+## [v1.5.3] – 2026-10-28
 > Kernel only, as a quick kernel package (no image, no update bundle).
 - **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the full-range fix wrote the `hdmi.rgb_range` value straight into the AVI InfoFrame's quantization field, but CTA-861 codes it as 0 default, 1 limited, 2 full, so the default "1 = full" went out as **limited**. TVs that follow the flag (VCDB QS=1, most current TVs) on "Auto" treated the GPU's full-range RGB as limited: too dark, crushed shadows, at every resolution (Gilles, LG). The parameter keeps its meaning (1 full, 2 limited, 0 no flag)
 - **VRR test 22: full ICC trace** (`hdmi.icc_trace=1`, runtime, off by default): every HDMI ICC message and reply logged in full as numbered hex, the Linux side of the stock-vs-Linux comparison. Test 21 showed the GPU does variable timing and the stock system gets real VRR through the same chip, so the gap is in how the chip is programmed
@@ -20,7 +20,7 @@ All notable changes to the images. Exact upstream versions are in each release's
 
 ## [v1.5.0] – 2026-10-<DD>
 - **USB-C DisplayPort output** (ps5-linux-patches #57 by tertiumndatur, ported to 7.3): displays and the PSVR2 on the console's front USB-C port, no adapter. The HDMI EDID is now bound to the one HDMI connector, and all HDMI-bridge-specific paths (HDR, mute, link lock, 1440p fixup, the standard mode set) stay off the USB-C link. PSVR2 also needs userspace that isn't in the image yet (a patched Mesa for reprojection, PSVR2Toolkit)
-- **Colours at 1080p:** the AVI InfoFrame now says full-range RGB (what the GPU sends; *it went out coded as limited by mistake, fixed in v1.5.4*); TVs read the old "default" as limited range for TV timings like 1080p and 4K60, which crushed blacks and oversaturated colours at those resolutions only (`hdmi.rgb_range=0` for the old behaviour)
+- **Colours at 1080p:** the AVI InfoFrame now says full-range RGB (what the GPU sends; *it went out coded as limited by mistake, fixed in v1.5.3*); TVs read the old "default" as limited range for TV timings like 1080p and 4K60, which crushed blacks and oversaturated colours at those resolutions only (`hdmi.rgb_range=0` for the old behaviour)
 - **Wi-Fi power saving stays off:** Steam's developer toggle switched it back on; a timer turns it off again within two minutes, and the NetworkManager hook now uses the same code (it ignored the setting and missed the IW620's `mlan` interface name) (`WIFI_POWERSAVE=1` in `/etc/ps5-bazzite-deck/perf.conf` leaves it alone)
 - **First-start message:** while Steam sets itself up behind the blank screen with the blinking cursor, the console now says so and asks not to power off (idea: ObsessiveRug, kishy)
 - **"Generic display, 1080p only" after leaving the desktop:** a short or invalid EDID announcement from the HDMI chip (around display power changes) no longer replaces the stored EDID; the previous one is kept and the event is logged (NikySantoro)
