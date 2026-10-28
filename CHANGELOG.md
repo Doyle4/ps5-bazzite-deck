@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.4] – 2026-10-<DD>
+## [v1.5.4] – 2026-10-28
 > Kernel only, as a quick kernel package (no image, no update bundle).
 - **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the full-range fix wrote the `hdmi.rgb_range` value straight into the AVI InfoFrame's quantization field, but CTA-861 codes it as 0 default, 1 limited, 2 full, so the default "1 = full" went out as **limited**. TVs that follow the flag (VCDB QS=1, most current TVs) on "Auto" treated the GPU's full-range RGB as limited: too dark, crushed shadows, at every resolution (Gilles, LG). The parameter keeps its meaning (1 full, 2 limited, 0 no flag)
 - **VRR test 22: full ICC trace** (`hdmi.icc_trace=1`, runtime, off by default): every HDMI ICC message and reply logged in full as numbered hex, the Linux side of the stock-vs-Linux comparison. Test 21 showed the GPU does variable timing and the stock system gets real VRR through the same chip, so the gap is in how the chip is programmed
