@@ -1,10 +1,10 @@
 #!/bin/bash
 # Release notes for a vrr-test quick-kernel release: the same install, test and report steps
-# every time, plus what this test changes. Usage: tools/vrr-test-notes.sh <tag> "<what it changes>" [variant help]
-TAG=$1; WHAT=$2; VARIANT=${3:-}
+# every time, plus what this test changes. Usage: tools/vrr-test-notes.sh <tag> "<what it changes>" [variant help] [base version]
+TAG=$1; WHAT=$2; VARIANT=${3:-}; BASE=${4:-v1.5.1}
 R=VivaLaVent/ps5-bazzite-deck
 cat << NOTES
-**Experimental VRR test for v1.5.0 installs (FLAVA3 consoles). Not a release.** A quick kernel: no reflash, the installer keeps a backup and prints an undo line.
+**VRR test for $BASE installs (FLAVA3 consoles). Not a release.** A quick kernel: no reflash, the installer keeps a backup and prints an undo line.
 
 ## What this test changes
 $WHAT
