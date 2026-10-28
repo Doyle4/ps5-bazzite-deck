@@ -57,7 +57,11 @@ release's Discord thread.
   (Yoshi; power profile suspected)
 - Garbled picture in Game Mode on an older LG TV with "HDMI Ultra Deep Colour" on (kishy; HDR
   4:2:2 at 4K suspected)
-- Hangs on session switches: GPU page faults then a stuck graphics queue (ObsessiveRug; the
-  GFX1013 fixes in v1.5.0 target it, unconfirmed)
+- Hangs on session switches: GPU page faults from gamescope-xwm, then a stuck graphics queue
+  (ObsessiveRug; still there on v1.5.0, the GFX1013 fixes didn't help; suspect: the GPU's compute
+  queue on GFX1013, test with RADV_DEBUG=nocompute)
+- greenboot-healthcheck, bootloader-update and ublue-os-media-automount fail on every boot (they
+  expect Bazzite's own bootloader); harmless as far as we can tell (greenboot can't reboot without
+  grub), but noise to remove
 - No Wi-Fi on a PS5 Slim 12.20 (loseheaven; chip and log still missing)
 - The first-start message doesn't show (covered by the boot splash)
