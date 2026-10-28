@@ -45,9 +45,10 @@ sudo udevadm control --reload 2>/dev/null || true
 [ -e /usr/sbin/kexec ] || sudo install -Dm755 files/kexec-shim /usr/sbin/kexec   # systemd runs "kexec -e" for warm reboots
 # the first rc3 bundle had a warm-reboot unit that only worked after a boot: replace it
 if [ -e /etc/systemd/system/ps5-kexec-load.service ]; then sudo systemctl disable ps5-kexec-load.service 2>/dev/null; sudo rm -f /etc/systemd/system/ps5-kexec-load.service; sudo systemctl daemon-reload; fi
-for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair; do
+for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf ps5-first-start; do
   [ -f "/etc/systemd/system/$u.service" ] && sudo systemctl enable "$u.service" 2>/dev/null || true
 done
+[ -f /etc/systemd/system/ps5-wifi-powersave.timer ] && sudo systemctl enable ps5-wifi-powersave.timer 2>/dev/null || true
 sudo sed -i 's/ video=DP-1:1920x1080@60//' "$EFI/cmdline.txt"
 sudo grep -q "lsm=" "$EFI/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf/' "$EFI/cmdline.txt"
 sudo grep -q "usbcore.autosuspend=" "$EFI/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ usbcore.autosuspend=-1/' "$EFI/cmdline.txt"   # v1.4.1: USB never sleeps

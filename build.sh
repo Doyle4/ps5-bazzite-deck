@@ -70,6 +70,12 @@ git -C work/linux73 apply "$SRC/patches/ps5-gpu-overlay.patch"           # GPU l
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-cec-upstream53.patch"    # HDMI CEC (TV remote, one-touch play), upstream #53 ported to 7.3
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-sleep-mute.patch"        # mute and leave HDR when the output goes down (sleep)
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-scdc-source-version.patch" # SCDC Source Version at every setup: TVs keep their HDMI 2.x EDID (issue #11)
+git -C work/linux73 apply "$SRC/patches/ps5-usbc-dp-pr57.patch"           # USB-C DisplayPort (PSVR2) + GFX1013 fixes, ps5-linux-patches #57 ported to 7.3
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-full-range.patch"     # AVI: full RGB range (1080p colours), hdmi.rgb_range
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-fallback.patch"     # EDID for all DP connectors if none is bound (PR #57 safety net)
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-keep.patch"         # keep the EDID on a short/invalid announcement ("generic display" after the desktop)
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-verde-game-content.patch" # Verde: IT + content type game in the AVI InfoFrame
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-session-switch.patch"    # no hang on the blinking cursor when switching Game Mode <-> desktop
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
@@ -110,6 +116,15 @@ sudo install -Dm755 "$SRC/files/ps5-kexec" "$ROOT/usr/local/sbin/ps5-kexec"     
 sudo install -Dm755 "$SRC/files/ps5-reboot-to-ps5" "$ROOT/usr/local/sbin/ps5-reboot-to-ps5"                     # ...and the way back to the PS5 system
 sudo install -Dm755 "$SRC/files/ps5-warm-reboot" "$ROOT/usr/local/sbin/ps5-warm-reboot"                       # warm reboot: off by default, "ps5-warm-reboot on"
 sudo install -Dm755 "$SRC/files/ps5-bt-address" "$ROOT/usr/local/sbin/ps5-bt-address"                         # IW620: Linux-only BT address, opt-in
+sudo install -Dm755 "$SRC/files/ps5-perf" "$ROOT/usr/local/sbin/ps5-perf"                                     # CPU boost + fan target, default on
+sudo install -Dm644 "$SRC/files/ps5-perf.service" "$ROOT/etc/systemd/system/ps5-perf.service"
+sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.service" "$ROOT/etc/systemd/system/ps5-wifi-powersave.service"
+sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.timer" "$ROOT/etc/systemd/system/ps5-wifi-powersave.timer"
+sudo mkdir -p "$ROOT/etc/systemd/system/timers.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-powersave.timer "$ROOT/etc/systemd/system/timers.target.wants/ps5-wifi-powersave.timer"
+sudo install -Dm755 "$SRC/files/ps5-first-start" "$ROOT/usr/local/sbin/ps5-first-start"                     # first-start message on the console
+sudo install -Dm644 "$SRC/files/ps5-first-start.service" "$ROOT/etc/systemd/system/ps5-first-start.service"
+sudo ln -sf /etc/systemd/system/ps5-first-start.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-first-start.service"
+sudo ln -sf /etc/systemd/system/ps5-perf.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-perf.service"
 sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
 sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"
 sudo mkdir -p "$ROOT/etc/systemd/system/multi-user.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-repair.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-wifi-repair.service"

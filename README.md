@@ -241,12 +241,21 @@ and send `log.txt` from the small FAT32 partition in [Discord](https://discord.g
 - **TV remote (HDMI CEC):** from v1.4, the TV remote's arrows, OK and back work in Game Mode and on the desktop,
   and at boot the PS5 turns the TV on and switches it to its input. To stop the latter, add
   ` ps5-cec.one_touch_play=0` to `cmdline.txt`. Thanks to Slip (ps5-linux-patches #53).
+- **USB-C display output and PSVR2:** from v1.5 the front USB-C port drives a DisplayPort display or the PSVR2
+  (ps5-linux-patches #57). For the PSVR2 you also need [PSVR2Toolkit](https://github.com/BnuuySolutions/PSVR2Toolkit)
+  and, for reprojection, a patched Mesa; neither is in the image yet. Tested upstream on original (fat) PS5s.
+- **CPU boost and fan:** from v1.4.2 the CPU may boost up to 3.5 GHz under load and the fan aims for 85 °C
+  (`ps5-perf status` also shows the console's own target). `ps5-perf status` shows it, `ps5-perf off` returns to the
+  console's behaviour, `/etc/ps5-bazzite-deck/perf.conf` (`CPU_BOOST=`, `FAN_TARGET=` 40-90) changes it.
+- **First start:** after joining Wi-Fi, Steam updates itself in the background, often behind a blank screen
+  that looks frozen, for several minutes. Don't power off then; it's the most common reason for a broken first start.
 - **Restart straight back into Linux (optional, experimental):** from v1.4, `ps5-warm-reboot on` makes every restart
   (Steam's, the desktop's, `sudo reboot`) go straight back into Linux in about 20 seconds, without the PS5 system and
   the loader; `ps5-warm-reboot off` turns it off again. Off by default, because the PS5's hardware isn't reset by it:
   on some consoles the picture comes back garbled (switch to another console and back: Ctrl+Alt+F2, then Ctrl+Alt+F1),
-  and on consoles with the IW620 chip (most original PS5s) **Bluetooth stays off after a warm restart** until you power
-  off and run the loader; Wi-Fi is repaired automatically (from v1.4.1).
+  and on consoles with the IW620 chip (most original PS5s) Wi-Fi is repaired automatically after one (from v1.4.1).
+  Bluetooth on those consoles used to stay off after a warm restart; since v1.4.1 (the Linux-only Bluetooth address is
+  off there) it came back in testing. If it's ever missing, power off and run the loader.
 - **Sleep:** from v1.4, a short press of the power button (or Steam's Sleep) puts the PS5 to sleep: screen off,
   orange light, the game paused. A short press wakes it (one beep) and the game, network and Bluetooth continue.
   The GPU stays on, so it saves little power. Thanks to Dasloh (ps5-linux-patches PR #4).
