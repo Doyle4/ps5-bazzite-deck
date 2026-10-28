@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.1] – 2026-10-<DD>
+## [v1.5.1] – 2026-10-28
 > Fixes only (feature freeze on 1.5).
 - **Updates always end in a cold start:** with warm reboot on, the restart after an update kexec'd straight into the new kernel without the PS5 resetting its hardware (the v1.5.0 test install hung that way). The updater and the quick-kernel installer now make that one restart go through the PS5 system
 - **Fan left at the console's own target:** v1.5.0 set 85 °C, but the console's own target is 80 °C (ObsessiveRug's report), so the fan ran later and the console warmer. `FAN_TARGET=` in `/etc/ps5-bazzite-deck/perf.conf` still sets one; CPU boost stays on
