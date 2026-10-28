@@ -36,7 +36,7 @@ CHANGELOG.md
 
 `build.sh` changes the upstream image builder (all recorded in `local-changes.diff` in each release):
 mounts the patches directory into the kernel build so the VCN firmware is found, applies the Wi-Fi driver
-patches (kernel 7.2/7.3 compat, RTNL, HE/TX) with objtool enabled, and sets `lsm=…,bpf` in `cmdline.txt`.
+patches (kernel 7.2/7.3 compat, RTNL, HE/TX) with objtool enabled, and sets `CONFIG_LSM=…,bpf` in the kernel config (before v1.5.1 also `lsm=…` in `cmdline.txt`).
 It then builds Linux 7.3 with rmuxnet's 7.3 PS5 patches plus the patches above, `bpf` LSM + BTF +
 `CONFIG_MT7921E=m`, bakes the files from `files/` into the image, and produces the release files.
 

@@ -50,8 +50,9 @@ for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf p
 done
 [ -f /etc/systemd/system/ps5-wifi-powersave.timer ] && sudo systemctl enable ps5-wifi-powersave.timer 2>/dev/null || true
 sudo sed -i 's/ video=DP-1:1920x1080@60//' "$EFI/cmdline.txt"
-sudo grep -q "lsm=" "$EFI/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf/' "$EFI/cmdline.txt"
-sudo grep -q "usbcore.autosuspend=" "$EFI/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ usbcore.autosuspend=-1/' "$EFI/cmdline.txt"   # v1.4.1: USB never sleeps
+# v1.5.1: options that are kernel defaults now (CONFIG_LSM, CONFIG_USB_AUTOSUSPEND_DELAY=-1) leave cmdline.txt;
+# only the exact strings we added, anything a user changed stays
+sudo sed -i -e 's/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf//' -e 's/ usbcore\.autosuspend=-1//' "$EFI/cmdline.txt"
 # GPU compute units: 40 (amdgpu.ps5_cu_unlock=3) is opt-in again from v1.1.1 (silicon lottery: the extra 4
 # can be faulty). v1.1.0 switched it on for everyone, so switch it off once for installs coming from v1.1.0.
 # From then on a setting the user adds is never touched.

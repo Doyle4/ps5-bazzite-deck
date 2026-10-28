@@ -22,13 +22,7 @@ KOFI = "https://ko-fi.com/vivalavent"
 SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = "/tmp/release-notes"
 
-SETTINGS = """## Before and after the first boot
-- **PS5 settings, before running the loader:** `Enable HDMI Device Link` **off** (Settings → HDMI) and `Supply Power to USB Ports` **Always** (Settings → System → Power Saving → Features Available in Rest Mode).
-- **In Bazzite, on first boot:** turn **HDR off** and set **RGB range** to **Full**, in both Gaming Mode and desktop mode.
-- The default password is `ps5`.
-"""
-COMMON_ISSUES = ["First boot is slow; the screen can stay black for a few minutes.",
-                 "Which firmware versions are supported depends on **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases): see its releases."]
+COMMON_ISSUES = []
 
 
 def gh(*args, capture=True):
@@ -78,14 +72,11 @@ def render(tag, tmp):
         v = open(os.path.join(tmp, "VERSIONS.md"), encoding="utf-8").read().split("\n")
         versions = "## Versions\n" + "\n".join(l for l in v if l.startswith("|")) + "\n"
     issues = [l[2:] for l in section(per, "Known issues").splitlines() if l.startswith("- ")]
-    install = f"""## Install (new)
-1. Download all `.7z.00*` files into one folder.
-2. Open `ps5-bazzite-deck-{tag}.img.7z.001` with 7-Zip (Windows) / Keka (macOS) / `7z x` (Linux) → you get `ps5-bazzite-deck.img`.
-3. Flash it to a 32 GB+ USB drive or SSD with Rufus (or `dd` on Linux) and boot with the loader.
-"""
-    parts = ["## What's new\n" + section(per, "What's new") + "\n", upd + "\n", SETTINGS, install,
-             "## Known issues\n" + "\n".join(f"- {i}" for i in COMMON_ISSUES + issues) + "\n",
-             versions, files_section(tag, assets), f"---\n**Found a problem?** Run this on the PS5 (it only reads, changes nothing) and post the file it saves in Discord:\n`bash <(curl -fsSL https://raw.githubusercontent.com/{REPO}/main/tools/ps5-report.sh)`\n\nQuestions, bug reports, test results: **Discord {DISCORD}**\nLike the project? Support it on **Ko-fi {KOFI}**\n"]
+    vrr = section(per, "VRR test")
+    parts = ["## What's new\n" + section(per, "What's new") + "\n",
+             ("## VRR test\n" + vrr + "\n") if vrr else "", upd + "\n",
+             ("## Known issues\n" + "\n".join(f"- {i}" for i in COMMON_ISSUES + issues) + "\n") if issues else "",
+             versions, files_section(tag, assets), f"---\nNew install: see the [README](https://github.com/{REPO}#install).\n\n**Found a problem?** Run this on the PS5 (it only reads, changes nothing) and post the file it saves in Discord:\n`bash <(curl -fsSL https://raw.githubusercontent.com/{REPO}/main/tools/ps5-report.sh)`\n\nQuestions, bug reports, test results: **Discord {DISCORD}**\nLike the project? Support it on **Ko-fi {KOFI}**\n"]
     return "\n".join(p for p in parts if p)
 
 

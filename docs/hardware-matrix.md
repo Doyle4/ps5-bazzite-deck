@@ -37,7 +37,7 @@ which combination a console has.
 | `ps5-hdmi-edid-fallback`, `ps5-hdmi-edid-keep` | both | — |
 | `ps5-hdmi-verde-game-content` | Verde | Verde setup path |
 | `ps5-hdmi-session-switch` | both | — |
-| VRR test builds (parked, not in releases) | FLAVA3 | `hdmi.vrr_test=1` and FLAVA3 |
+| `ps5-vrr-experimental` (VRR, from v1.5.1) | FLAVA3 | inert unless `hdmi.vrr_test=1`; then every path checks FLAVA3 |
 
 ## Image settings and services
 | File / service | For | Limited by |
@@ -52,7 +52,7 @@ which combination a console has.
 | `ps5-first-start` | all | first start only |
 | Warm reboot (`ps5-kexec`, `ps5-reboot.service`, `reboot.target`, `kexec-shim`) | all, **opt-in** | `/etc/ps5-bazzite-deck/warm-reboot` |
 | `ps5-wifi-repair` (Wi-Fi after a warm reboot) | IW620 | runs after warm reboots, acts only on the IW620 failure |
-| `usbcore.autosuspend=-1` in `cmdline.txt` | all | — |
+| USB autosuspend off (`CONFIG_USB_AUTOSUSPEND_DELAY=-1`; before v1.5.1 `usbcore.autosuspend=-1` in `cmdline.txt`) | all | — |
 
 ## Lessons so far
 - **The Linux-only Bluetooth address (v1.4.0)** was meant for both chips, but its IW620 path (a

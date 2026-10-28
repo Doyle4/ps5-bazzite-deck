@@ -9,31 +9,14 @@ Your PS5 itself is not modified: unplug the drive and it's a normal PS5 again.
 
 **Download:** [Releases](../../releases) · **Help & testing:** [Discord](https://discord.gg/qGcuTgBBYU) · **Support the project:** [Ko-fi](https://ko-fi.com/vivalavent)
 
-## What works
-
-- Steam Gaming Mode, with Switch to Desktop / Return to Gaming Mode
-- 4K60 over HDMI, with audio
-- Hardware video decoding
-- Wi-Fi, Ethernet and Bluetooth (DualSense works over Bluetooth)
-- Consoles with MediaTek Wi-Fi: Wi-Fi works
-
-## What you need
+## Prerequisites
 
 - A PS5 on a firmware **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases) supports (see its releases). Tested on firmware 13.60.
 - A USB drive of **32 GB or more**, ideally an external SSD (much faster than a stick).
-- A PC to download and flash the image.
-- Optional but handy for the first setup: a USB keyboard.
-
-## PS5 settings (do this first)
-
-In the normal PS5 menu:
-
-- **Very important:** `Settings` → `System` → `Power Saving` → `Features Available in Rest Mode` →
-  set `Supply Power to USB Ports` to `Always`.
-- **Very important:** `Settings` → `HDMI` → turn **off** `Enable HDMI Device Link`.
-  (If it's on, you'll typically get a black screen.)
-
-If you reset the PS5 settings, set these again.
+- A PC to download and flash the image, and for the first setup a USB keyboard is handy.
+- **PS5 settings**, in the normal PS5 menu, before the first start (set them again after a PS5 reset or firmware update):
+  - `Settings` → `System` → `Power Saving` → `Features Available in Rest Mode` → `Supply Power to USB Ports`: **Always**.
+  - `Settings` → `HDMI` → `Enable HDMI Device Link`: **off**. If it's on, you'll typically get a black screen.
 
 ## Install
 
@@ -54,14 +37,14 @@ If you reset the PS5 settings, set these again.
 5. **Run the jailbreak and the loader** as described in the loader's instructions. The PS5 goes into rest mode;
    wait until the orange light stops blinking, then press the power button. A **white light** means Linux is booting.
 6. **First boot is slow.** The screen can stay black for a few minutes. Let it be.
-
 ## First boot
 
-- The default password is **`ps5`** (asked for anything that needs admin rights). SSH is on from v1.0.7:
-  `ssh ps5@<your PS5's IP>`. **Change the password** with `passwd`, since anyone on your network can try `ps5`.
-- **Important:** set **RGB range** to **Full**, in both Gaming Mode and desktop mode.
+- The default password is **`ps5`** (asked for anything that needs admin rights). SSH is on: `ssh ps5@<your PS5's IP>`.
+  **Change the password** with `passwd`, since anyone on your network can try `ps5`.
+- **After joining Wi-Fi, Steam updates itself** in the background, often behind a blank screen with a blinking cursor
+  that looks frozen, for several minutes. Don't power off then: that's the most common reason for a broken first start.
 - The first start is at **1080p60**. Pick your resolution in the display settings (Game Mode: Settings → Display); it's remembered.
-- Connect to Wi-Fi during the setup. If Wi-Fi doesn't work after that, **reboot once**.
+- Set **RGB range** to **Full**, in both Game Mode and the desktop.
 
 ## Updating
 
@@ -72,8 +55,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/
 ```
 Then reboot and run the loader. Details: [docs/updating.md](docs/updating.md). Reflashing always works too
 (back up anything you want to keep from the drive first).
-
-## Installing to the PS5's internal M.2 (advanced)
+## Installing to the PS5's internal M.2
 
 The USB drive stays required: the PS5 loader always starts the kernel from its small FAT32
 partition. The M.2 holds the system. Install the **same version** on the M.2 as on the USB.
@@ -109,8 +91,8 @@ All steps run on the PS5, booted from the USB, in a terminal (password `ps5`).
    ```
 
 4. **Start it:** reboot (`sudo reboot`) and run the loader as usual; it now starts the system on the M.2.
-   (Optional: `cd ~/ps5-linux-tools && sudo ./m2_exec.sh` switches right away without a reboot. If it says `kexec`
-   isn't found, just reboot instead.)
+   `cd ~/ps5-linux-tools && sudo ./m2_exec.sh` switches right away without a reboot; if it says `kexec` isn't
+   found, just reboot instead.
 
 To go back to the USB system, change `bazzite-deck-m2` back to `bazzite-deck` in `cmdline.txt`.
 
@@ -128,8 +110,7 @@ Notes:
 - Stuck in emergency mode when booting the M.2: its `/etc/fstab` may contain a boot-partition line with an empty
   `UUID=`. Replace that line with `LABEL=boot /efi vfat defaults,nofail 0 2` (mount the M.2 from the USB system
   with `sudo mount LABEL=bazzite-deck-m2 /mnt` to edit it).
-
-## 40 GPU compute units (optional)
+## 40 GPU compute units
 
 The PS5's GPU has 40 compute units (CUs); Sony ships it with 36 active. The other 4 were switched off at the
 factory, partly because on some chips one of them is faulty. That's the **silicon lottery**: on many consoles all
@@ -147,131 +128,96 @@ sudo sed -i -e 's/amdgpu\.ps5_cu_unlock=[0-9]*/amdgpu.ps5_cu_unlock=3/' -e '/ps5
 sudo sed -i 's/ *amdgpu\.ps5_cu_unlock=[0-9]*//' /efi/cmdline.txt && sudo cat /efi/cmdline.txt
 ```
 
-Your setting stays as it is across in-place updates (from v1.1.1). On an M.2 install, use `/boot/efi/cmdline.txt`
-instead of `/efi/cmdline.txt` if that's where the boot partition is mounted.
+The setting stays as it is across updates.
+## Features
+
+- **One DualSense for the PS5 and Linux:** if the DualSense has pairing profiles (PS + a face button), keep the PS5
+  pairing on one profile and pair Linux on another, for example PS + Square. On consoles with the MediaTek chip
+  this is always on; on consoles with the IW620 chip (most original PS5s) switch it on with `ps5-bt-address on`.
+  See [docs/dualsense-profiles.md](docs/dualsense-profiles.md).
+- **Pairing a DualSense:** in Bluetooth settings, start the search, then hold **PS + Create** until the light
+  flashes quickly. A controller that's still connected can't enter pairing mode: switch it off first (hold PS for
+  10 seconds). After pairing it may disconnect once after a second; press PS and it reconnects. Later, just press PS.
+- **TV remote over HDMI CEC:** the arrows, OK and back work in Game Mode and on the desktop, and at boot the PS5
+  turns the TV on and switches it to its input; ` ps5-cec.one_touch_play=0` in `cmdline.txt` stops the latter.
+- **Sleep:** a short press of the power button (or Steam's Sleep) puts the PS5 to sleep: screen off, orange light,
+  the game paused. A short press wakes it. The GPU stays on, so it saves little power.
+- **Resolutions:** 1080p60, 1080p120, 1440p60, 1440p120 and 4K60, whenever your TV/monitor can do them. Others
+  aren't possible through the PS5's HDMI chip.
+- **HDR** at 1080p60 and 4K60 (Game Mode → Settings → Display). If the picture looks wrong with HDR on, switch it off.
+- **USB-C display output and PSVR2** (v1.5): the front USB-C port drives a DisplayPort display or the PSVR2. For the
+  PSVR2 you also need [PSVR2Toolkit](https://github.com/BnuuySolutions/PSVR2Toolkit) and, for reprojection, a patched
+  Mesa; neither is in the image yet.
+- **CPU boost** (v1.5): the CPU may boost up to 3.5 GHz under load. `ps5-perf status` shows it and the fan target,
+  `ps5-perf off` switches it off, `/etc/ps5-bazzite-deck/perf.conf` (`CPU_BOOST=`, `FAN_TARGET=` 40–90) changes it.
+- **Restart straight back into Linux:** `ps5-warm-reboot on` makes every restart go straight back into Linux in about
+  20 seconds, without the PS5 system and the loader; `ps5-warm-reboot off` turns it off. Experimental and off by
+  default, because the PS5's hardware isn't reset by it: on some consoles the picture comes back garbled
+  (Ctrl+Alt+F2, then Ctrl+Alt+F1). If Wi-Fi or Bluetooth is ever missing after one, power off and run the loader.
+- **Video:** the PS5's GPU has no AV1 decoder. For YouTube in a browser, an extension like enhanced-h264ify gives
+  hardware-decoded H.264 instead.
+- **Apps:** use the Discover store / Flatpak. `dnf5 install` works for system packages; `rpm-ostree` and
+  `ujust update` don't (this image isn't an ostree install).
+- **VRR** isn't working yet; it's in the kernel as an experiment, see the boot options below.
 
 ## Troubleshooting
 
-If something doesn't work, go through these three first.
+### Report a problem
+Run this on the PS5 (terminal or SSH). It only reads, changes nothing, and saves one file with your hardware and the
+relevant logs; post that file in [Discord](https://discord.gg/qGcuTgBBYU) (#bazzite-problems):
+```
+bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/ps5-report.sh)
+```
+From v1.5.1 it's also built in: just `ps5-report`. Without network, run `ps5-report`, then
+`sudo cp ~/ps5-report-*.txt /efi/`, shut down and take the file from the USB drive's small FAT32 partition on your PC.
+
+**Testing VRR:** after each test, in the same boot, `vrr-report` (or
+`bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/vrr-report.sh)` before v1.5.1).
 
 ### 1. PS5 settings
-Check the settings from [PS5 settings](#ps5-settings-do-this-first): **HDMI Device Link off** and
-**Supply Power to USB Ports: Always**. A reset or a firmware update of the PS5 can change them back.
+Check the two settings from [Prerequisites](#prerequisites). A reset or a firmware update of the PS5 can change them back.
 
 ### 2. Linux loader
-Use the latest version of **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases) for your firmware. An older version, or one for a
-different firmware, typically ends up back in the PS5 menu or with no white light at all.
+Use the latest version of **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases) for your
+firmware. An older version, or one for a different firmware, typically ends up back in the PS5 menu or with no white light.
 
-### 3. Boot options (`cmdline.txt`)
+### 3. Boot options in cmdline.txt
 `cmdline.txt` is on the USB drive's small FAT32 partition and must stay **one single line**: add an option at the
-end with a space in front of it, or delete it again to undo.
+end with a space in front of it, or delete it again to undo. Leave the entries that are already there as they are.
 
 | Option | What it does | When to use it |
 |---|---|---|
-| `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show (Game Mode and the desktop remember it). Remove it again once you've set a working resolution |
+| `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show. Remove it once you've set a working resolution |
 | `hdmi.rearm=0` | Turns off the "picture comes back when the TV wakes up" fix | The picture flickers or goes black right after appearing, e.g. after re-plugging HDMI |
-| `usbcore.autosuspend=-1` | USB devices never go to sleep (the default from v1.4.1; remove it if you want USB power saving) | The USB drive/SSD disconnects, the system freezes, or there are I/O errors |
-| `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (replace `xxxx:yyyy` with its ID from `lsusb`) | Same, with USB-C SSDs or enclosures: many have buggy UAS (resets, I/O errors, freezes) |
-| `amdgpu.ps5_cu_unlock=3` | Uses all 40 GPU compute units instead of 36. **Opt-in**, see [40 GPU compute units](#40-gpu-compute-units-optional) | You want more GPU power and your console's extra units work |
-
-Leave the entries that are already in `cmdline.txt` as they are, especially `lsm=…` (Game Mode needs it).
-
-**HDMI log for black-screen reports** (when asked for it): add ` dyndbg="file drivers/ps5/hdmi.c +p"` to
-`cmdline.txt`; after a black boot, `sudo dmesg | grep -e notify -e setup` shows what the HDMI chip reported.
+| `hdmi.rgb_range=0` | Lets the TV decide the RGB range again | Colours look wrong at 1080p or 4K60 but fine at 1440p |
+| `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
+| `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
+| `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles, from v1.5.1) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes |
 
 ### Common problems
 
 **White light but black screen**
-- Check HDMI Device Link is off (see PS5 settings).
-- Wait a few minutes on the first boot.
+- Check HDMI Device Link is off (see [Prerequisites](#prerequisites)).
 - Try another TV/monitor or HDMI port, and try HDCP on and off in the PS5 settings.
-- Last resort: on the USB drive's small FAT32 partition, open `cmdline.txt` and add `amdgpu.force_1080p=1`
-  at the end of the line.
+- Last resort: `amdgpu.force_1080p=1` in `cmdline.txt` (see boot options).
 
 **Black screen, but the PS5 is running** (sound works, or SSH works): with a USB keyboard press
 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd>, wait 2–3 seconds, then <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F1</kbd>: that sets the
 picture up again. Switching the TV input away and back can also help. Over SSH: `sudo chvt 2; sleep 3; sudo chvt 1`.
 
-**Controller connects once, then doesn't reconnect by itself**: fixed in v1.4 (the Bluetooth adapter now accepts
-incoming connections). On older versions: `sudo btmgmt connectable on` (until the next reboot).
-
-**Games crash, freeze, or show green dots, artifacts or a purple tint**: if you switched on the 40-CU unlock,
-switch it off again (see [40 GPU compute units](#40-gpu-compute-units-optional)) and reboot.
+**Games crash, freeze, or show green dots, artifacts or a purple tint**: if you switched on all 40 compute units,
+switch them off again (see [40 GPU compute units](#40-gpu-compute-units)).
 
 **Boots back into the PS5 menu**: you pressed the power button too early, or the USB power setting isn't
 set to `Always`.
 
-**Wi-Fi gone after a reboot (v1.0.4 and older)**: open a terminal (Konsole, SSH, or Ctrl+Alt+F2 if your TV
-keeps the picture) and run, then reboot:
-```
-sudo mkdir -p /etc/systemd/system/ps5-stage-firmware.service.d && printf '[Unit]\nDefaultDependencies=no\nConflicts=shutdown.target\nBefore=shutdown.target\n' | sudo tee /etc/systemd/system/ps5-stage-firmware.service.d/10-no-default-deps.conf >/dev/null && sudo systemctl daemon-reload && sudo reboot
-```
-
-**Display or HDMI problems**: run this on the PS5 (terminal or SSH) while the problem is visible, and send the
-file it names in [Discord](https://discord.gg/qGcuTgBBYU):
-```
-curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/diag.sh | bash
-```
-
-**Sending logs** (we can't help without them): in a terminal run
-`journalctl -b --no-pager > /tmp/log.txt; sudo cp /tmp/log.txt /efi/`, shut down, plug the drive into your PC
-and send `log.txt` from the small FAT32 partition in [Discord](https://discord.gg/qGcuTgBBYU).
-
-## FAQ
-
-- **One DualSense for the PS5 and Linux?** Yes, if the DualSense has pairing profiles (PS + a face button).
-  Keep the PS5 pairing on one profile, and pair Linux on a different profile, for example PS + Square. You
-  don't need a USB cable when you switch systems. From v1.4 (the service log shows `changing Bluetooth address`).
-  On consoles with the IW620 chip (most original PS5s) this is **off by default since v1.4.1** (`ps5-bt-address on`
-  switches it on), while a Wi-Fi problem it may cause is being tracked down.
-  See [docs/dualsense-profiles.md](docs/dualsense-profiles.md).
-- **Pairing a DualSense:** in Bluetooth settings, start the search, then hold **PS + Create** until the light
-  flashes quickly. A controller that's still connected can't enter pairing mode: switch it off first (hold PS for
-  10 seconds). After pairing it may disconnect once after a second; that's normal, press PS and it reconnects.
-  To reconnect later, just press PS: the controller connects to the PS5, not the other way round.
-- **Bluetooth gone after a restart:** from v1.4 the system revives the adapter by itself after ~30 seconds. If it
-  stays gone, power the PS5 off completely and run the loader again.
-- **DualSense over Bluetooth:** the speaker and headphone jack only work over USB. Don't plug in the USB cable while
-  it's connected over Bluetooth; disconnect Bluetooth first.
-- **Video:** the PS5's GPU has no AV1 decoder. For YouTube in a browser, an extension like enhanced-h264ify gives
-  hardware-decoded H.264 instead.
-
-- **Does this touch my PS5's games or system?** No. Everything is on the USB drive.
-- **Can I dual-boot?** No. You run the jailbreak + loader each time you want Linux.
-- **TV remote (HDMI CEC):** from v1.4, the TV remote's arrows, OK and back work in Game Mode and on the desktop,
-  and at boot the PS5 turns the TV on and switches it to its input. To stop the latter, add
-  ` ps5-cec.one_touch_play=0` to `cmdline.txt`. Thanks to Slip (ps5-linux-patches #53).
-- **USB-C display output and PSVR2:** from v1.5 the front USB-C port drives a DisplayPort display or the PSVR2
-  (ps5-linux-patches #57). For the PSVR2 you also need [PSVR2Toolkit](https://github.com/BnuuySolutions/PSVR2Toolkit)
-  and, for reprojection, a patched Mesa; neither is in the image yet. Tested upstream on original (fat) PS5s.
-- **CPU boost and fan:** from v1.4.2 the CPU may boost up to 3.5 GHz under load and the fan aims for 85 °C
-  (`ps5-perf status` also shows the console's own target). `ps5-perf status` shows it, `ps5-perf off` returns to the
-  console's behaviour, `/etc/ps5-bazzite-deck/perf.conf` (`CPU_BOOST=`, `FAN_TARGET=` 40-90) changes it.
-- **First start:** after joining Wi-Fi, Steam updates itself in the background, often behind a blank screen
-  that looks frozen, for several minutes. Don't power off then; it's the most common reason for a broken first start.
-- **Restart straight back into Linux (optional, experimental):** from v1.4, `ps5-warm-reboot on` makes every restart
-  (Steam's, the desktop's, `sudo reboot`) go straight back into Linux in about 20 seconds, without the PS5 system and
-  the loader; `ps5-warm-reboot off` turns it off again. Off by default, because the PS5's hardware isn't reset by it:
-  on some consoles the picture comes back garbled (switch to another console and back: Ctrl+Alt+F2, then Ctrl+Alt+F1),
-  and on consoles with the IW620 chip (most original PS5s) Wi-Fi is repaired automatically after one (from v1.4.1).
-  Bluetooth on those consoles used to stay off after a warm restart; since v1.4.1 (the Linux-only Bluetooth address is
-  off there) it came back in testing. If it's ever missing, power off and run the loader.
-- **Sleep:** from v1.4, a short press of the power button (or Steam's Sleep) puts the PS5 to sleep: screen off,
-  orange light, the game paused. A short press wakes it (one beep) and the game, network and Bluetooth continue.
-  The GPU stays on, so it saves little power. Thanks to Dasloh (ps5-linux-patches PR #4).
-- **VRR?** Not yet. The PS5's HDMI chip has its own VRR mode (found by hsgodd in the stock system), but TVs still
-  drop the signal with it; work continues in separate test builds.
-- **Which resolutions?** 1080p60, 1080p120, 1440p60, 1440p120 and 4K60, whenever your TV/monitor can do them. Other resolutions and refresh rates aren't possible through the PS5's HDMI chip.
-- **HDR?** Works on most consoles at 1080p60 and 4K60 (Game Mode → Settings → Display). If the picture looks wrong with HDR on, your console doesn't support it: switch it off.
-- **"Your PS5 wasn't turned off properly" after using Linux?** Normal and harmless.
-- **Can I install apps?** Yes: use the Discover store / Flatpak. `dnf5 install` works for system packages;
-  `rpm-ostree` and `ujust update` don't (this image isn't an ostree install).
+**Garbled picture in Game Mode on an older LG TV** (the desktop is fine): switch off "HDMI Ultra Deep Colour" for
+that input for now.
 
 ## Support the project
 
 This is a hobby project, built and tested in my free time. If it's useful to you, you can support it on
 [Ko-fi](https://ko-fi.com/vivalavent). Thank you!
-
 ## Credits
 
 - **[ps5-linux](https://github.com/ps5-linux)** (theflow, c0w, resulknad, rmuxnet and contributors) – the PS5 Linux
@@ -287,11 +233,3 @@ This is a hobby project, built and tested in my free time. If it's useful to you
   boot fixes, and this build.
 
 Not affiliated with Sony, Valve or Universal Blue. Use at your own risk. Scripts and docs: MIT; patches: GPL-2.0.
-
-## Testing and releases
-Releases go out slowly on purpose: at most one new feature each, pre-release first, stable only after
-[docs/release-checklist.md](docs/release-checklist.md). If you want to help, the first-boot tests in
-[docs/first-boot-tests.md](docs/first-boot-tests.md) are the most useful thing right now.
-Which change applies to which HDMI and Wi-Fi/Bluetooth chip: [docs/hardware-matrix.md](docs/hardware-matrix.md).
-For a bug report, or to join the testers ([docs/testers.md](docs/testers.md)):
-`bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/ps5-report.sh)`

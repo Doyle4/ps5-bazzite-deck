@@ -39,7 +39,6 @@ sed -i '/ps5-iw620-kernel71-compat.patch"$/a git -C "$NXP_MW" apply "$PS5_MW/ps5
 sed -i 's#make -C "$NXP_MW" CONFIG_OBJTOOL= KERNELDIR=/src#make -C "$NXP_MW" PWD="$NXP_MW" KERNELDIR=/src#' "$B"
 grep -q kernel73 "$B" && grep -q "ps5-iw620-he.patch" "$B" && ! grep -q "CONFIG_OBJTOOL=" "$B" || { echo "wifi patch edit failed"; exit 1; }
 # 2c. Game Mode: bpf LSM on the kernel command line (belt and braces, config has it too)
-sed -i 's/preempt=full$/preempt=full lsm=landlock,lockdown,yama,integrity,apparmor,bpf/' boot/cmdline.txt
 # video=DP-1:1920x1080@60 is rejected by the kernel on every connector probe ("User-defined mode not supported"); drop it
 sed -i 's/ video=DP-1:1920x1080@60//' boot/cmdline.txt
 grep -q 'video=' boot/cmdline.txt && { echo 'cmdline edit failed'; exit 1; }
@@ -54,6 +53,7 @@ git -C work/ps5-linux-patches checkout -q baee34d                               
 git -C work/ps5-linux-patches apply "$SRC/patches/ps5-linux-patches-pr4-s2idle.patch"              # suspend-to-idle (sleep), ps5-linux-patches PR #4 by Dasloh (.config + linux.patch)
 sed -i 's/^CONFIG_LSM=.*/CONFIG_LSM="landlock,lockdown,yama,integrity,apparmor,bpf"/' work/ps5-linux-patches/.config
 sed -i 's/^# CONFIG_DEBUG_INFO_BTF is not set/CONFIG_DEBUG_INFO_BTF=y/' work/ps5-linux-patches/.config
+sed -i 's/^CONFIG_USB_AUTOSUSPEND_DELAY=.*/CONFIG_USB_AUTOSUSPEND_DELAY=-1/' work/ps5-linux-patches/.config   # USB never sleeps: the kernel default now, not a cmdline option
 grep -q '^CONFIG_DEBUG_INFO_BTF=y' work/ps5-linux-patches/.config || echo 'CONFIG_DEBUG_INFO_BTF=y' >> work/ps5-linux-patches/.config
 sed -i 's/^# CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set/CONFIG_MODULE_ALLOW_BTF_MISMATCH=y/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' work/ps5-linux-patches/.config || echo 'CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' >> work/ps5-linux-patches/.config   # kernel-only hotfixes keep loading the release modules
 sed -i 's/^# CONFIG_MT7921E is not set/CONFIG_MT7921E=m/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MT7921E=m' work/ps5-linux-patches/.config || echo 'CONFIG_MT7921E=m' >> work/ps5-linux-patches/.config   # MediaTek MT7921 Wi-Fi (PS5 Slim)
@@ -76,6 +76,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-fallback.patch"     # EDID
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-keep.patch"         # keep the EDID on a short/invalid announcement ("generic display" after the desktop)
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-verde-game-content.patch" # Verde: IT + content type game in the AVI InfoFrame
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-session-switch.patch"    # no hang on the blinking cursor when switching Game Mode <-> desktop
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-experimental.patch"       # experimental VRR, inert unless hdmi.vrr_test=1
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
@@ -93,8 +94,6 @@ cleanup() { sudo umount "$BOOT" "$ROOT" 2>/dev/null || true; sudo losetup -d "$L
 trap cleanup EXIT
 sudo mount "${LOOP}p2" "$BOOT"      # FAT32 boot
 sudo mount "${LOOP}p1" "$ROOT"      # ext4 root
-grep -q "lsm=" "$BOOT/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf/' "$BOOT/cmdline.txt"
-grep -q "usbcore.autosuspend=" "$BOOT/cmdline.txt" || sudo sed -i 's/[[:space:]]*$/ usbcore.autosuspend=-1/' "$BOOT/cmdline.txt"   # USB never sleeps (drives, controllers)
 echo "    cmdline: $(cat "$BOOT/cmdline.txt")"
 echo "options moal ps_mode=0" | sudo tee "$ROOT/etc/modprobe.d/ps5-iw620.conf" >/dev/null
 sudo install -Dm644 "$SRC/files/99-ps5-iw620.conf" "$ROOT/etc/NetworkManager/conf.d/99-ps5-iw620.conf"        # IW620: stable MAC during scans
@@ -116,6 +115,8 @@ sudo install -Dm755 "$SRC/files/ps5-kexec" "$ROOT/usr/local/sbin/ps5-kexec"     
 sudo install -Dm755 "$SRC/files/ps5-reboot-to-ps5" "$ROOT/usr/local/sbin/ps5-reboot-to-ps5"                     # ...and the way back to the PS5 system
 sudo install -Dm755 "$SRC/files/ps5-warm-reboot" "$ROOT/usr/local/sbin/ps5-warm-reboot"                       # warm reboot: off by default, "ps5-warm-reboot on"
 sudo install -Dm755 "$SRC/files/ps5-bt-address" "$ROOT/usr/local/sbin/ps5-bt-address"                         # IW620: Linux-only BT address, opt-in
+sudo install -Dm755 "$SRC/tools/ps5-report.sh" "$ROOT/usr/local/bin/ps5-report"                            # bug reports: ps5-report
+sudo install -Dm755 "$SRC/tools/vrr-report.sh" "$ROOT/usr/local/bin/vrr-report"                              # VRR test results: vrr-report
 sudo install -Dm755 "$SRC/files/ps5-perf" "$ROOT/usr/local/sbin/ps5-perf"                                     # CPU boost + fan target, default on
 sudo install -Dm644 "$SRC/files/ps5-perf.service" "$ROOT/etc/systemd/system/ps5-perf.service"
 sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.service" "$ROOT/etc/systemd/system/ps5-wifi-powersave.service"
