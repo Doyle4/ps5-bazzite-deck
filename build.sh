@@ -81,6 +81,8 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-drr-measure.patch"       # VRR t
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-range-encoding.patch"  # RGB range flag in the right CTA-861 code (v1.5.0-v1.5.2 sent "limited")
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-trace.patch"           # VRR test 22: full ICC trace, only with hdmi.icc_trace=1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-spd-drm.patch"           # VRR test 24: stock's DRM + SPD InfoFrames in VRR mode
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: replay a captured pre-block, no latch after it
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: pre-block pasteable at runtime (hdmi.vrr_prep_raw)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

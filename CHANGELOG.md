@@ -2,7 +2,15 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.4] – 2026-10-28
+## [v1.5.5] – 2026-10-<DD>
+> Kernel only, as a quick kernel package.
+- **VRR test 25** (only with `hdmi.vrr_test=1` and the chip's own VRR mode): test 24 ruled out the InfoFrames, which leaves the pre-block as the one message where stock and our port still differ. `hdmi.vrr_prep_raw` replaces it at runtime with pasted register writes (e.g. from a stock capture), so each captured value can be tried without a new build
+
+## [v1.5.5] – 2026-10-<DD>
+> Kernel only, as a quick kernel package.
+- **VRR test 25:** with test 24 every visible message of Sony's VRR switch is replicated except one, the pre-block, whose constants came from a 4K capture. `hdmi.vrr_prep_raw` (runtime) sends a captured pre-block 1:1 instead of ours, so stock's own bytes for a mode can be replayed and bisected without a rebuild. The UPDCTRL latch after the pre-block is now off by default (stock's capture has none)
+
+## [v1.5.4] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR test 24** (only with `hdmi.vrr_test=1` and the chip's own VRR mode): hsgodd captured stock's complete VRR-on sequence; its VRR block matches ours, but stock sends two messages ours didn't, right before the pre-block: a DRM InfoFrame in the `0x7e40` slot and an SPD InfoFrame (vendor "SCEI", product "PS5", source type game). Both now go out in VRR mode (`hdmi.vrr_spd`, `hdmi.vrr_drm`); `hdmi.vrr_vsif=0` keeps our FreeSync packet from overwriting the DRM InfoFrame in the shared slot
 
