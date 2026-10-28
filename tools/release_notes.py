@@ -85,7 +85,7 @@ def render(tag, tmp):
 """
     parts = ["## What's new\n" + section(per, "What's new") + "\n", upd + "\n", SETTINGS, install,
              "## Known issues\n" + "\n".join(f"- {i}" for i in COMMON_ISSUES + issues) + "\n",
-             versions, files_section(tag, assets), f"---\nQuestions, bug reports, test results: **Discord {DISCORD}**\nLike the project? Support it on **Ko-fi {KOFI}**\n"]
+             versions, files_section(tag, assets), f"---\n**Found a problem?** Run this on the PS5 (it only reads, changes nothing) and post the file it saves in Discord:\n`bash <(curl -fsSL https://raw.githubusercontent.com/{REPO}/main/tools/ps5-report.sh)`\n\nQuestions, bug reports, test results: **Discord {DISCORD}**\nLike the project? Support it on **Ko-fi {KOFI}**\n"]
     return "\n".join(p for p in parts if p)
 
 
