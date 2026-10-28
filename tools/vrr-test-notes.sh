@@ -29,6 +29,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/$R/main/tools/vrr-report.sh)
 \`\`\`
 It asks four short questions (display, mode, what you saw, what the TV showed) and saves one file with the kernel's VRR log. **Post that file** in #bazzite-prereleases-experimental with the test name (e.g. "$TAG, vrr_chip=1"), **one post per variant**. A photo of the TV helps for flicker or rolling, but not instead of the file.
 
+**No picture after VRR goes on?** Switch VRR off over SSH (it comes back within about a minute):
+\`ssh -t ps5@<PS5 IP> 'export XDG_RUNTIME_DIR=/run/user/\$(id -u) GAMESCOPE_WAYLAND_DISPLAY=gamescope-0; gamescopectl adaptive_sync 0'\` (\`adaptive_sync 1\` switches it on again).
+
 ## Back to normal
 Remove \` hdmi.vrr_test=1\` from \`cmdline.txt\` (the test code then stays off), or run the undo line the installer printed, then a cold start.
 NOTES
