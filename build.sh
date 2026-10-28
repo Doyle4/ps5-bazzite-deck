@@ -78,6 +78,8 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-verde-game-content.patch" # Ver
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-session-switch.patch"    # no hang on the blinking cursor when switching Game Mode <-> desktop
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-experimental.patch"       # experimental VRR, inert unless hdmi.vrr_test=1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-drr-measure.patch"       # VRR test 21: frame-timing measurement, only with hdmi.vrr_test=1
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-range-encoding.patch"  # RGB range flag in the right CTA-861 code (v1.5.0-v1.5.2 sent "limited")
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-trace.patch"           # VRR test 22: full ICC trace, only with hdmi.icc_trace=1
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

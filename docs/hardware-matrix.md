@@ -55,6 +55,10 @@ which combination a console has.
 | USB autosuspend off (`CONFIG_USB_AUTOSUSPEND_DELAY=-1`; before v1.5.1 `usbcore.autosuspend=-1` in `cmdline.txt`) | all | — |
 
 ## Lessons so far
+- **The RGB range flag (v1.5.0) went out inverted:** the parameter value (1 = full) was written
+  straight into the AVI field, where CTA-861 codes 1 as *limited*. Only TVs that follow the flag
+  showed it, which is most current ones. Lesson: check every InfoFrame field against the spec's
+  code table, not against the parameter's meaning.
 - **The Linux-only Bluetooth address (v1.4.0)** was meant for both chips, but its IW620 path (a
   vendor command to the combo chip) broke IW620 **Wi-Fi**: a fix for one function of a chip broke
   another function of the same chip. Since v1.4.1 it's opt-in on IW620.

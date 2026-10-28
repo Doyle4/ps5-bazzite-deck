@@ -27,6 +27,11 @@ what goes out has to have been used, not only booted.
 - **The build's test install runs with warm reboot off** (`ps5-warm-reboot off` on the test
   console), so the new kernel always gets a cold start.
 
+## Planned for the next version
+- Remove the first-start message (`ps5-first-start` + its service, from build.sh, the update bundle and
+  the updater, which also disables and deletes it on existing installs): it doesn't show, or only for a
+  moment, so it doesn't do its job (Gilles, after testing 1.5.2).
+
 ## Waiting for after the freeze
 - VRR (1.6), in vrr-test builds until then
 - Logitech racing wheels: force feedback drivers (rmux's meower 44f4539)
