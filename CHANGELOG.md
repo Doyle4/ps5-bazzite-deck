@@ -2,6 +2,9 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
+## [Unreleased]
+- **Logitech racing wheels:** force feedback drivers enabled (G29 and others; rmux's meower 44f4539)
+
 ## [v1.5.0] – 2026-10-28
 - **USB-C DisplayPort output** (ps5-linux-patches #57 by tertiumndatur, ported to 7.3): displays and the PSVR2 on the console's front USB-C port, no adapter. The HDMI EDID is now bound to the one HDMI connector, and all HDMI-bridge-specific paths (HDR, mute, link lock, 1440p fixup, the standard mode set) stay off the USB-C link. PSVR2 also needs userspace that isn't in the image yet (a patched Mesa for reprojection, PSVR2Toolkit)
 - **Colours at 1080p:** the AVI InfoFrame now says full-range RGB (what the GPU sends); TVs read the old "default" as limited range for TV timings like 1080p and 4K60, which crushed blacks and oversaturated colours at those resolutions only (`hdmi.rgb_range=0` for the old behaviour)

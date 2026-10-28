@@ -57,6 +57,7 @@ sed -i 's/^# CONFIG_DEBUG_INFO_BTF is not set/CONFIG_DEBUG_INFO_BTF=y/' work/ps5
 grep -q '^CONFIG_DEBUG_INFO_BTF=y' work/ps5-linux-patches/.config || echo 'CONFIG_DEBUG_INFO_BTF=y' >> work/ps5-linux-patches/.config
 sed -i 's/^# CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set/CONFIG_MODULE_ALLOW_BTF_MISMATCH=y/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' work/ps5-linux-patches/.config || echo 'CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' >> work/ps5-linux-patches/.config   # kernel-only hotfixes keep loading the release modules
 sed -i 's/^# CONFIG_MT7921E is not set/CONFIG_MT7921E=m/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MT7921E=m' work/ps5-linux-patches/.config || echo 'CONFIG_MT7921E=m' >> work/ps5-linux-patches/.config   # MediaTek MT7921 Wi-Fi (PS5 Slim)
+for o in LOGITECH_FF LOGIRUMBLEPAD2_FF LOGIG940_FF LOGIWHEELS_FF; do sed -i "s/^# CONFIG_$o is not set/CONFIG_$o=y/" work/ps5-linux-patches/.config; done   # Logitech wheels: force feedback (meower 44f4539)
 git clone -q --branch "$KERNEL_TAG" --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git work/linux73
 git -C work/linux73 apply --exclude=Makefile ../ps5-linux-patches/linux.patch
 git -C work/linux73 apply "$SRC/patches/ps5-bluetooth.patch"          # MediaTek bulk-OUT endpoint (IW620 + L2CAP fixes are in meower)
