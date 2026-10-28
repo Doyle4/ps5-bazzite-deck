@@ -67,6 +67,9 @@ sync
 [ "$MOUNTED" = 1 ] && sudo umount "$EFI"
 
 echo
+# A new kernel needs a cold start: with warm reboot on, the next restart would kexec straight into it
+# without the PS5 resetting its hardware (an untested combination; the v1.5.0 test install hung that way).
+[ -e /etc/ps5-bazzite-deck/warm-reboot ] && sudo touch /run/ps5-reboot-to-ps5 && echo "note: warm reboot is on; this one restart goes through the PS5 system (cold), as a new kernel needs"
 echo "DONE: updated to $V. Reboot (sudo reboot) and run the loader as usual."
 [ "$MOUNTED" = 1 ] && echo "(for the undo, mount the boot partition first: sudo mount LABEL=boot /efi)"
 echo "Undo: sudo cp -a $BK/efi/* $EFI/ && sudo rm -rf /usr/lib/modules/$K && sudo cp -a $BK/modules /usr/lib/modules/$K && sync"

@@ -3,7 +3,8 @@
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
 ## [Unreleased]
-- **Logitech racing wheels:** force feedback drivers enabled (G29 and others; rmux's meower 44f4539)
+> Feature freeze on 1.5: fixes only until the open issues in docs/release-checklist.md are done; VRR is the next feature (1.6).
+- **Updates always end in a cold start:** with warm reboot on, the restart after an update kexec'd straight into the new kernel without the PS5 resetting its hardware (the v1.5.0 test install hung that way). The updater and the quick-kernel installer now make that one restart go through the PS5 system
 
 ## [v1.5.0] – 2026-10-28
 - **USB-C DisplayPort output** (ps5-linux-patches #57 by tertiumndatur, ported to 7.3): displays and the PSVR2 on the console's front USB-C port, no adapter. The HDMI EDID is now bound to the one HDMI connector, and all HDMI-bridge-specific paths (HDR, mute, link lock, 1440p fixup, the standard mode set) stay off the USB-C link. PSVR2 also needs userspace that isn't in the image yet (a patched Mesa for reprojection, PSVR2Toolkit)
@@ -25,8 +26,8 @@ All notable changes to the images. Exact upstream versions are in each release's
 - **Wi-Fi repaired automatically after a warm reboot** (IW620 consoles): the chip's firmware keeps running across a warm reboot and the Wi-Fi driver failed to start ("WLAN FW already running" → "Firmware Init Failed"). `ps5-wifi-repair` runs after warm reboots only, and only when that happened: unload `moal`, reset the Wi-Fi PCI function, load `moal` (fresh firmware). Bluetooth on the same chip drops off USB in a warm reboot and can't be brought back that way (port re-enumeration times out); it needs a cold start, and `ps5-warm-reboot on` says so on IW620 consoles
 - Warm reboot: the final step is now systemd's own kexec action (`SuccessAction=kexec-force`) instead of `systemctl --force kexec`, which failed at that point ("Transport endpoint is not connected") and only worked through the fallback; documented as experimental (garbled picture after it on some consoles, IW620 Wi-Fi/Bluetooth sometimes off until a cold start)
 
-## [v1.4.0] – 2026-10-26
-> Pulled after release: on IW620 consoles Wi-Fi saw networks but wouldn't connect (fixed in v1.4.1).
+## [v1.4.0] – 2026-10-<DD>
+> Pulled after release and removed from the releases page: on IW620 consoles Wi-Fi saw networks but wouldn't connect. Everything below is in v1.4.1.
 - **One DualSense for the PS5 and Linux** (PR #9 by Dasloh): `ps5-bt-addr.service` gives the IW620 Bluetooth chip a Linux-only address at boot (`80:..` becomes `82:..`), so a DualSense keeps its PS5 pairing on one profile and the Linux pairing on another. Original PS5 (IW620) only. Existing Linux pairings must be paired once again after the update. See `docs/dualsense-profiles.md`
 - **Controllers reconnect by themselves**: `ps5-bt-connectable.service` makes the Bluetooth adapter accept incoming connections (it started as non-connectable); it runs every time the adapter appears and after every bluetoothd start
 - The Linux-only address also reaches the kernel and bluetoothd (the adapter is re-initialised with bluetoothd stopped), and is set again whenever the adapter re-appears, so pairings are always stored under the same address

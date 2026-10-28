@@ -287,3 +287,11 @@ This is a hobby project, built and tested in my free time. If it's useful to you
   boot fixes, and this build.
 
 Not affiliated with Sony, Valve or Universal Blue. Use at your own risk. Scripts and docs: MIT; patches: GPL-2.0.
+
+## Testing and releases
+Releases go out slowly on purpose: at most one new feature each, pre-release first, stable only after
+[docs/release-checklist.md](docs/release-checklist.md). If you want to help, the first-boot tests in
+[docs/first-boot-tests.md](docs/first-boot-tests.md) are the most useful thing right now.
+Which change applies to which HDMI and Wi-Fi/Bluetooth chip: [docs/hardware-matrix.md](docs/hardware-matrix.md).
+For a bug report, or to join the testers ([docs/testers.md](docs/testers.md)):
+`bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/ps5-report.sh)`

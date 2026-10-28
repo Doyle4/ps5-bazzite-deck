@@ -88,6 +88,7 @@ sudo rm -rf "$W"
 echo "initrd: amdgpu replaced inside ($IP), $(sudo du -h "$EFI/initrd.img" | cut -f1), boot partition free: $(df -h "$EFI" | awk 'NR==2{print $4}')"
 echo "$(cat LABEL) (quick kernel)" | sudo tee /etc/ps5-bazzite-deck-version >/dev/null
 sync
+[ -e /etc/ps5-bazzite-deck/warm-reboot ] && sudo touch /run/ps5-reboot-to-ps5 && echo "note: warm reboot is on; the next restart goes through the PS5 system (cold), as a new kernel needs"
 echo "DONE: $(cat LABEL) installed. Power off and start with the loader (no warm reboot)."
 echo "undo: sudo cp $BK/bzImage $EFI/ && sudo cp $BASE $EFI/initrd.img && sudo cp $BK/$(basename "$M") $MD/ && sudo depmod $K && sudo cp $BK/ps5-bazzite-deck-version /etc/ && sync"
 EOI
