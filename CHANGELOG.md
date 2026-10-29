@@ -2,7 +2,11 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.8] – 2026-10-29
+## [v1.8.9] – 2026-10-<DD>
+> Test build: kernel only, as a quick kernel package, on top of v1.8.8.
+- **Fix: modeset loop at 4K120** (hsgodd, LG OLED, switching between Game Mode and the desktop): the TV re-announces itself while it sets up the 4K120 link, and the console took that for a TV wake-up and set up 4K120 again, over and over: long black stretches, the TV locking up, and the moment Game Mode's GPU faults hit. Within 10 seconds of a 4K120 setup that re-announce is ignored now; the 4K120 link check from v1.8.5 decides, and falls back to 4K if the link doesn't come up
+
+## [v1.8.8] – 2026-10-<DD>
 > Test build: kernel only, as a quick kernel package, on top of v1.8.6 or v1.8.7.
 - **Fix attempt: TVs that drop to HDMI 1.4 modes a few seconds after boot** (Beyond TV, issues #11 and #21: only 1080p60 and 1440p60 left, no 4K, no 120 Hz, no VRR). The console now tells HDMI 2.x TVs its link settings at every mode change, as a PC does, not only at 4K and 120 Hz
 

@@ -35,3 +35,4 @@ v1.8.5	v1.8.5 – 4K120 only where it works, back to 4K by itself
 v1.8.6	v1.8.6 – VRR only for displays with HDMI VRR
 v1.8.7	v1.8.7 – TEST: 100 Hz modes
 v1.8.8	v1.8.8 – TEST: TVs dropping to HDMI 1.4 modes
+v1.8.9	v1.8.9 – TEST: no modeset loop at 4K120

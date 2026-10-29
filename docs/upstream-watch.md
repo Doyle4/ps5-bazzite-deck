@@ -5,7 +5,7 @@ Checked to find fixes, features and problems relevant to this image. "Last seen"
 ## Kernel and drivers
 | Repo | What it is for us | Last seen |
 |---|---|---|
-| [ps5-linux/ps5-linux-patches](https://github.com/ps5-linux/ps5-linux-patches) | upstream PS5 kernel patches (7.2.x): Pro GPU #58, fan curve #60, USB-C DP off by default #62 | 2026-10-29 `0e91638` |
+| [ps5-linux/ps5-linux-patches](https://github.com/ps5-linux/ps5-linux-patches) | upstream PS5 kernel patches (7.2.x): Pro GPU #58, fan curve #60, USB-C DP off by default #62 | 2026-10-29 `a3e6846` (#63: Slip's FRL/4:2:0/ALLM merged, off by default) |
 | [rmuxnet/ps5-linux-patches-1](https://github.com/rmuxnet/ps5-linux-patches-1) (`meower`) | the 7.3 port our kernel is based on; branches `fanfix`, `vcn_script` | 2026-10-28 `f94d7ab` |
 | [Slip-Up/ps5-linux-patches](https://github.com/Slip-Up/ps5-linux-patches) | Slip's HDMI work: native FRL, ALLM, modes (`hdmi-usbc-test`) | 2026-10-28 `12c11d8` |
 | [ps5-linux/ps5-linux-mwifiex](https://github.com/ps5-linux/ps5-linux-mwifiex) | IW620 Wi-Fi driver | 2026-10-20 |
