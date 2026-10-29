@@ -31,4 +31,4 @@ v1.8.0	v1.8.0 – PRO ONLY: PS5 Pro support (test)
 v1.8.1	v1.8.1 – PRO ONLY: VRR switching, ALLM removed
 v1.8.3	v1.8.3 – PRO ONLY: 4K120 hardening
 v1.8.4	v1.8.4 – PS5 Pro support, VRR never below 48 Hz
-v1.8.5	v1.8.5 – 4K120 only where it works, back to 4K by itself
+v1.8.5	v1.8.5 – 4K120 and VRR only where they work, back to 4K by itself

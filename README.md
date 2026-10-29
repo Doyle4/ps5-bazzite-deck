@@ -30,7 +30,7 @@ One image runs on every supported PS5. What differs is decided by three parts of
 | **1440p120** | ✅ | ❌ | |
 | **4K120** | ✅ | ❌ | v1.7.2+, HDMI 2.1 TV and cable; from v1.8.5 only offered when the TV can take it, and back to 4K by itself if the link fails |
 | **HDR** (1080p60, 4K60) | ✅ | ❌ | Game Mode → Settings → Display |
-| **VRR** (VRR/FreeSync TVs) | ✅ | ❌ | v1.7.1+, every resolution: Game Mode → Settings → Display → Enable VRR |
+| **VRR** (displays with HDMI VRR) | ✅ | ❌ | v1.7.1+, every resolution: Game Mode → Settings → Display → Enable VRR. As on the PS5 system, not on monitors that only have FreeSync (from v1.8.5) |
 
 Both chips: 1080p60, 1080p120, 1440p60 and 4K60, when the TV/monitor can do them. Other resolutions (ultrawide,
 other refresh rates) aren't offered: the HDMI chip only has setups for these.
@@ -143,7 +143,7 @@ Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart s
   power in rest mode isn't set to `Always`.
 - **Artifacts, green dots or crashes:** switch the [40 compute units](#40-gpu-compute-units) off again; for glitches in one game, launch
   options `RADV_DEBUG=nohiz %command%`.
-- **VRR:** no "Enable VRR" means a VERDE console or VRR/FreeSync off for that input in the TV. The screen going dark
+- **VRR:** no "Enable VRR" means a VERDE console, a display without HDMI VRR (FreeSync-only monitors), or VRR off for that input in the TV. The screen going dark
   for 2 seconds in menus: use VRR per game (quick access menu → Performance). OLED flicker on the desktop: Adaptive
   Sync on **Automatic**, not Always.
 - **HEVC video with broken colours or a red screen** (recording, streaming with Sunshine, Moonlight): the PS5's
