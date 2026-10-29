@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.4] – 2026-10-<DD>
+## [v1.8.4] – 2026-10-29
 > Stable release: everything since v1.7.2 for every model. Image and update bundle: the v1.8.0 build with the v1.8.4 kernel.
 - **VRR never below 48 Hz** (from v1.7.3): less flicker on OLEDs
 - **PS5 Pro support:** GPU (upstream #58 by Borchev, ported to 7.3), its GPU firmware added to the initrd at boot, internal Bluetooth (QuartConz), Wi-Fi; the PS5 CPU and GPU frequency drivers don't start on a Pro (they flooded the log with "mp1fw_sendmsg: busy" and frequency errors), its firmware keeps the clocks
