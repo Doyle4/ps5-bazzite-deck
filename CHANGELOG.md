@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.6] – 2026-10-<DD>
+## [v1.8.6] – 2026-10-29
 > Kernel only, as a quick kernel package, on top of v1.8.5.
 - **VRR only for displays with HDMI VRR,** as on the PS5 system: monitors that announce only FreeSync blanked on every refresh change with VRR on (Storm, AOC Q27G2G3R4B); they aren't offered VRR any more. TVs with HDMI VRR (LG, Samsung, Sony…) are unaffected
 
