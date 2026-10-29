@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.0] – 2026-10-<DD>
+## [v1.8.0] – 2026-10-29
 > Pre-release: ALLM and PS5 Pro support need testing on more TVs and on a Pro.
 - **ALLM:** on FLAVA3 consoles the TV switches to its game mode by itself, when it supports ALLM (the same HDMI Forum signal the PS5 system sends). ` hdmi.allm=0` switches it off
 - **PS5 Pro (untested):** GPU support from upstream's PR #58 by Borchev, ported to our 7.3 kernel (Viola golden settings, 64 compute units, GPU clock and temperature), and the Pro's GPU firmware put into the initrd at boot from what the loader dumps, without rebuilding the initrd on the console. Nothing changes on other consoles
