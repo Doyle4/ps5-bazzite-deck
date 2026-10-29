@@ -4,14 +4,15 @@
 # Applies the named patches to the kernel tree, builds, installs on the PS5, asks, then takes the
 # vPREV image and update bundle from ~/ps5-build-7.3/output, swaps in the new kernel and version
 # (bundle's inner SHA256SUMS regenerated and checked), and publishes vNEW as the latest release.
+#   PRERELEASE=1 ...: publish vNEW as a pre-release with only the quick kernel package (no image or bundle)
 set -euo pipefail
 V=${1:?vNEW}; PREV=${2:?vPREV}; shift 2
 B=~/ps5-build-7.3; O=$B/output; K=$B/work/linux73; SRC=~/ps5-bazzite-deck; P=$SRC/patches
 R=VivaLaVent/ps5-bazzite-deck; KB=$K/arch/x86/boot/bzImage; PS5=${PS5:-ps5@192.168.66.55}; N=ps5-bazzite-deck-$V-update
-pgrep -f "build_image.sh|tools/release.sh" >/dev/null && { echo "STOP: a build is running"; exit 1; }
+pgrep -f "build_image.sh|tools/release.sh" >/dev/null && { echo "STOP: a build is running"; exit 1; }   # not "release.sh": that matches this script itself
 gh release view $V --repo $R >/dev/null 2>&1 && { echo "STOP: $V is already released"; exit 1; }
 [ -f $SRC/docs/release-notes/$V.md ] && [ -f $SRC/docs/update-sections/$V.md ] || { echo "STOP: notes for $V missing"; exit 1; }
-[ -f $O/ps5-bazzite-deck.img ] && [ -f $O/ps5-bazzite-deck-$PREV-update.tar.xz ] || { echo "STOP: $PREV image/bundle missing in $O"; exit 1; }
+[ -n "${PRERELEASE:-}" ] || { [ -f $O/ps5-bazzite-deck.img ] && [ -f $O/ps5-bazzite-deck-$PREV-update.tar.xz ]; } || { echo "STOP: $PREV image/bundle missing in $O"; exit 1; }
 sudo -v
 echo "== kernel tree"; cd $K
 for p in "$@"; do
@@ -20,12 +21,26 @@ for p in "$@"; do
   else echo "STOP: $p doesn't fit the kernel tree"; exit 1; fi
 done
 echo "== build"; NO_INSTALL=1 bash $SRC/tools/quick-kernel.sh $V ps5@none
-echo "== install on the PS5"; cd $O
-ping -c1 -W2 ${PS5#*@} >/dev/null || { echo "STOP: PS5 not reachable"; exit 1; }
-scp ps5-quick-$V.tar.gz $PS5:~
-ssh -t $PS5 "rm -rf ps5-quick-$V && tar xzf ps5-quick-$V.tar.gz && bash ps5-quick-$V/install.sh && sudo systemctl reboot" || true
-read -r -p "== Start Linux with the loader and test. Publish $V as the stable release? [y/N] " ok
+cd $O
+read -r -p "== Install $V on the PS5 now? [Y/n] " inst
+if [ "$inst" != n ] && [ "$inst" != N ]; then
+  ping -c1 -W2 ${PS5#*@} >/dev/null || { echo "STOP: PS5 not reachable"; exit 1; }
+  scp ps5-quick-$V.tar.gz $PS5:~
+  ssh -t $PS5 "rm -rf ps5-quick-$V && tar xzf ps5-quick-$V.tar.gz && bash ps5-quick-$V/install.sh && sudo systemctl reboot" || true
+else
+  echo "   not installed on the PS5"
+fi
+read -r -p "== Start Linux with the loader and test. Publish $V as ${PRERELEASE:+a pre-release}${PRERELEASE:-the stable release}? [y/N] " ok
 [ "$ok" = y ] || { echo "Not published."; exit 0; }
+if [ -n "${PRERELEASE:-}" ]; then
+  echo "== publish (pre-release, quick kernel)"; cd $SRC; git pull -q --rebase
+  sed -i "s/^## \[$V\] – .*/## [$V] – $(date +%F)/" CHANGELOG.md
+  git add -A; git commit -q -m "$V" || true; git push -q
+  git rev-parse -q --verify refs/tags/$V >/dev/null || { git tag -a $V -m $V; git push -q --tags; }
+  gh release create $V $O/ps5-quick-$V.tar.gz --repo $R --prerelease --title "$V" --notes "Release notes follow."
+  python3 tools/release_notes.py >/dev/null
+  echo "PUBLISHED $V (pre-release)"; exit 0
+fi
 sudo -v; [ $KB -nt $K/drivers/ps5/hdmi.c ]
 echo "== image"; L=$(sudo losetup -fP --show ps5-bazzite-deck.img); sudo mkdir -p /mnt/krb /mnt/krr
 BP=$(for p in ${L}p*; do [ "$(sudo blkid -o value -s TYPE $p)" = vfat ] && echo $p && break; done)

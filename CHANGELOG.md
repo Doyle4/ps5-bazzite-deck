@@ -2,11 +2,15 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.7.2] – 2026-10-29
+## [v1.7.3] – 2026-10-<DD>
+> Kernel only, as a quick kernel package.
+- **VRR never goes below 48 Hz,** the PS5 system's own floor. Many TVs allow 40 Hz, where OLEDs flicker visibly when the refresh rate swings (suggested by hsgodd). Below 48 fps, frames are doubled at 120 Hz modes; 60 Hz modes keep a fixed 60 Hz. The FreeSync InfoFrame now sends the range actually used
+
+## [v1.7.2] – 2026-10-<DD>
 - **4K at 120 Hz** over HDMI 2.1 FRL on FLAVA3 consoles with an HDMI 2.1 TV that supports it, in Game Mode's display settings like any other mode. Ported from Lawson's kernel, which follows Sony's own setup for this mode; between GPU and HDMI chip it runs as YCbCr 4:2:2, the TV gets real 4K120. VRR works there too
 - **VRR:** switching VRR again or changing the mode while the HDMI chip is still switching over no longer mixes the two setups
 
-## [v1.7.1] – 2026-10-29
+## [v1.7.1] – 2026-10-<DD>
 > v1.7.0 was built but not released: its cleanup had dropped two setup steps VRR needs (Sony's full PHY settings and the VSync block in every setup), and with VRR switched on the console could hang completely. v1.7.1 is v1.7.0 with those steps back and without the wait that could hang it.
 - **VRR on FLAVA3 consoles,** switched with Steam's VRR setting (Settings → Display), no boot option needed. Works at 4K60, 1080p120, 1440p60 and 1440p120 with TVs that support VRR or FreeSync (tested on an LG C4). The fix is Lawson's: a timing packet the GPU sends the HDMI chip every frame, the chip's MSA bit left clear, and the chip's follow mode switched on after the packet flows (with thanks to hsgodd for the stock-system captures). Switching takes about 2 seconds of black screen. `hdmi.vrr=0` never offers VRR
 - **USB-C DisplayPort off by default** (from v1.6.1): add ` usbc_dp.enable=1` for a USB-C display or the PSVR2
