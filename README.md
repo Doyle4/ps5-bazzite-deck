@@ -94,13 +94,13 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 
 | Option | What it does | When to use it |
 |---|---|---|
-| `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show. Remove it once you've set a working resolution |
+| `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show. Remove it once you've set a working resolution; step by step in [docs/display-recovery.md](docs/display-recovery.md) |
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
-| `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
-| `ps5-cec.one_touch_play=0` | The PS5 no longer turns the TV on and switches its input at boot | You don't want the TV to follow the console |
 | `usbc_dp.enable=1` | Switches on the front USB-C port's DisplayPort output (v1.6.1+) | USB-C displays and the PSVR2. Not with your boot drive on the front USB-C port |
-| `hdmi.vrr=0` | Never offers VRR (v1.7.1+) | A TV where VRR misbehaves |
 | `hdmi.frl_4k120=0` | Never offers 4K at 120 Hz (v1.7.2+) | A TV where 4K120 misbehaves |
+
+To switch off VRR, use Steam's setting (Settings → Display); to keep the TV from following the console at boot,
+switch off HDMI-CEC in the TV's settings (SIMPLINK, Anynet+, BRAVIA Sync…).
 
 ## 40 GPU compute units
 
