@@ -86,6 +86,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-min-48.patch"              # VRR
 git -C work/linux73 apply "$SRC/patches/ps5-pro-gpu.patch"                 # PS5 Pro GPU (upstream #58, Borchev), only with the Viola firmware
 git -C work/linux73 apply "$SRC/patches/ps5-pro-bluetooth.patch"           # PS5 Pro internal Bluetooth 0e8d:3605 (QuartConz)
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-live-switch.patch"         # VRR toggles like a PC: no setup, no black screen
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-hardening.patch"       # 4K120: VRR follow after the FRL link, 120.00 Hz only, format in the log
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

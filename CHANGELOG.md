@@ -2,10 +2,14 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
+## [v1.8.3] – 2026-10-<DD>
+> Kernel only, as a quick kernel package, on top of v1.8.0/v1.8.1. Test build for 4K120.
+- **4K120 hardening** (no picture on hsgodd's LG with VRR on): with VRR, the HDMI chip switches to follow mode only once the 4K120 link has had time to come up (1.5 s instead of 0.1 s); 4K120 is offered only at 120.00 Hz (the HDMI chip's setup is made for exactly that); the log shows the picture format at 4K120
+
 ## [Unreleased] (v1.8.2)
 - **No Linux-only Bluetooth address on IW620 consoles** (`ps5-bt-address`): on that chip it left Wi-Fi and Bluetooth hung after a warm restart (Max) and controllers unable to reconnect after some cold boots. The controller keeps one pairing, as with any PC; MediaTek consoles keep the feature. The update removes the setting
 
-## [v1.8.1] – 2026-10-29
+## [v1.8.1] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR switches like on a PC:** switching VRR on or off no longer re-runs the whole HDMI setup; the HDMI chip switches in one go, without the black screen of about 2 seconds (which Steam's menus triggered often). Changing the resolution still goes through the setup
 - **Fix: 4K120 without picture on some TVs since v1.8.0** (hsgodd): ALLM is gone again. Its InfoFrame writes landed while the HDMI chip trained the 4K120 link, and Linux on a PC doesn't send ALLM at all
