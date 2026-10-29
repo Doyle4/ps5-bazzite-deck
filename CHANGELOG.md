@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.6.2] – 2026-10-<DD>
+## [v1.6.2] – 2026-10-29
 > Kernel only, as a quick kernel package.
 - **VRR works at 4K60 and 1080p120** (FLAVA3, with ` hdmi.vrr_test=1`): test 28's follow mode (Lawson) gave real VRR on an LG C4, the TV's FreeSync following the game. It's now the default with `hdmi.vrr_test=1`, so VRR is switched on and off with Steam's normal VRR setting
 - **No black screen in modes it can't carry yet:** at 1440p (custom timing; 1440p60 also has a negative sync, so no timing packet) VRR isn't offered and the refresh stays fixed. `hdmi.vrr_any_mode=1` tries those modes anyway
