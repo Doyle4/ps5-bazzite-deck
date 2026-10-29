@@ -9,8 +9,7 @@ Your PS5 itself is not modified. Linux only starts when you run the loader; rest
 its own system again, with the drive still plugged in.
 
 **Which version:** use the release marked **Latest** on the [releases page](https://github.com/VivaLaVent/ps5-bazzite-deck/releases).
-Releases marked **Pre-release** are test builds for testers, even when their number is higher. The **v1.8.x** releases
-are **PS5 Pro only**.
+Releases marked **Pre-release** are test builds for testers, even when their number is higher.
 
 **Download:** [Releases](../../releases) · **Help & testing:** [Discord](https://discord.gg/qGcuTgBBYU) · **Support the project:** [Ko-fi](https://ko-fi.com/vivalavent)
 
@@ -40,16 +39,17 @@ other refresh rates) aren't offered: the HDMI chip only has setups for these.
 
 | | IW620 | MediaTek | |
 |---|:---:|:---:|---|
-| **One DualSense for PS5 and Linux** (separate pairing profiles) | ❌ | ✅ | IW620: one pairing, so after using the controller on the PS5 system, pair it with Linux again. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
+| **One DualSense for PS5 and Linux** (separate pairing profiles) | 🧪 | ✅ | IW620: switched off by the v1.8.4 update, because it left Wi-Fi and Bluetooth hung after warm restarts; from v1.9.0 it isn't offered on IW620 at all. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
 | **Wi-Fi after a restart straight into Linux** (`ps5-warm-reboot on`) | ⚠️ | ✅ | IW620: repaired automatically; if it's still missing, power off and run the loader |
 
-**PS5 Pro:** not supported in the stable releases yet. The v1.8.0 pre-release has a first, untested version (GPU,
-its firmware, Wi-Fi and Bluetooth); keep Ethernet and a wired controller at hand.
+**PS5 Pro:** supported from v1.8.4, as a first version (GPU with 64 compute units and its own firmware, Wi-Fi,
+Bluetooth). After the first start, start Linux with the loader once more: that one uses the Pro's GPU firmware.
+Reports welcome in #bazzite-ps5-pro-tests.
 
 ## Prerequisites
 
 - A PS5 on a firmware **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases) supports (see its releases). Tested on firmware 13.60.
-- An original PS5 or a PS5 Slim. The PS5 Pro: see [Features and your hardware](#features-and-your-hardware).
+- An original PS5, a PS5 Slim or a PS5 Pro (see [Features and your hardware](#features-and-your-hardware)).
 - **etaHEN and kstuff off:** they don't work with the Linux loader (freezes, especially when going to sleep).
 - A USB drive of **32 GB or more**, ideally an external SSD (much faster than a stick).
 - A PC to download and flash the image, and for the first setup a USB keyboard is handy.

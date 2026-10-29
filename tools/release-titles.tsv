@@ -1,0 +1,33 @@
+v0.1.0	v0.1.0 – First image: Game Mode on Linux 7.2.3
+v1.0.0	v1.0.0 – First release
+v1.0.2	v1.0.2 – Linux 7.3, Game Mode fixed, video decoding
+v1.0.3	v1.0.3 – Bluetooth works
+v1.0.4	v1.0.4 – Current Bazzite base, HDMI audio fix
+v1.0.5	v1.0.5 – Fix: services missing after reboot
+v1.0.6	v1.0.6 – HDMI hotplug, picture back after the TV wakes up
+v1.0.7	v1.0.7 – Fix: black screen at boot, 1440p position
+v1.1.0	v1.1.0 – HDMI audio and hotplug from upstream
+v1.1.1	v1.1.1 – 40-CU unlock opt-in again
+v1.2.0	v1.2.0 – Fix: rainbow colours, no picture after switching displays
+v1.3.0	v1.3.0 – HDR, newer PS5 kernel patches
+v1.3.1	v1.3.1 – Fix: 1440p picture too high
+v1.4.0	v1.4.0 – One DualSense for the PS5 and Linux
+v1.4.1	v1.4.1 – IW620 Bluetooth address off by default, USB never sleeps
+v1.5.0	v1.5.0 – USB-C display output and PSVR2
+v1.5.1	v1.5.1 – Updates end in a cold start, console's own fan target
+v1.5.2	v1.5.2 – VRR test 21 (update bundle only)
+v1.5.3	v1.5.3 – Fix: colours too dark on "Auto" TVs, VRR test 22
+v1.5.4	v1.5.4 – VRR test 24
+v1.5.5	v1.5.5 – VRR test 25
+v1.5.6	v1.5.6 – VRR tests 25b and 26
+v1.6.0	v1.6.0 – Fix: colours too dark on "Auto" TVs
+v1.6.1	v1.6.1 – USB-C DisplayPort off by default, VRR test 28
+v1.6.2	v1.6.2 – VRR at 4K60 and 1080p120 (test)
+v1.6.3	v1.6.3 – VRR at every resolution (test)
+v1.7.1	v1.7.1 – VRR on FLAVA3 consoles
+v1.7.2	v1.7.2 – 4K at 120 Hz
+v1.7.3	v1.7.3 – VRR never below 48 Hz
+v1.8.0	v1.8.0 – PRO ONLY: PS5 Pro support (test)
+v1.8.1	v1.8.1 – PRO ONLY: VRR switching, ALLM removed
+v1.8.3	v1.8.3 – PRO ONLY: 4K120 hardening
+v1.8.4	v1.8.4 – PS5 Pro support, VRR never below 48 Hz
