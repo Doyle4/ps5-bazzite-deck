@@ -84,6 +84,8 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-spd-drm.patch"           # VRR t
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: replay a captured pre-block, no latch after it
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-keep.patch"         # VRR test 25b: our pre-block as well after the replayed one
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-send.patch"           # VRR test 26: send any HDMI ICC message at runtime (vrr_test only)
+git -C work/linux73 apply "$SRC/patches/ps5-usbc-dp-optin.patch"           # USB-C DP off by default (usbc_dp.enable=1): it can reset a boot drive there
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-lawson.patch"       # VRR test 28 (Lawson): timing SDP, MSA bit clear, follow mode (vrr_chip=2)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

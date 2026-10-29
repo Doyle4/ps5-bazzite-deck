@@ -1,7 +1,7 @@
 # VRR status (FLAVA3 consoles)
 
 VRR doesn't work yet. This page keeps the state of the research in one place, so tests aren't repeated.
-The research is hsgodd's (stock-system captures and reverse engineering), with test builds from this repo.
+The research is hsgodd's (stock-system captures and reverse engineering) and Lawson's (the GPU side), with test builds from this repo.
 
 ## Where it stands
 - **The GPU side works:** with VRR on, amdgpu programs a variable frame length and the measured frame
@@ -36,6 +36,13 @@ Sequence `0x30`'s 11 commands run by hand as an ordinary message, 3 s and 8 s af
 own mode: executed with status `00` both times, **no picture**. So the arming's content alone, at those moments,
 doesn't make the chip produce a VRR output. Whatever else Sony does (the trigger moment, other messages around it,
 or state in the EMC) isn't visible from Linux.
+
+## Lawson's finding (test 28, v1.6.1)
+The missing piece is on the GPU side, which is why no ICC capture could show it: Sony's GPU sends the HDMI chip a
+**timing packet every frame** (a DP extension SDP, header `39 04`, carrying the source timing). Without it the chip's
+follow mode gives a black picture. Lawson also found that the chip **drops its input lock when DPCD 0x107's
+MSA-ignore bit is set**, and that the follow mode has to be switched on **after** the packet flows. With all three,
+his setup gives real VRR (the TV's FreeSync following the game at 40–60 Hz). Test 28 ports this; it's `vrr_chip=2`.
 
 ## Next
 From Linux, nothing is left to try without new information from the stock side:

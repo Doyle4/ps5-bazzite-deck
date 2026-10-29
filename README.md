@@ -145,9 +145,9 @@ The setting stays as it is across updates.
 - **Resolutions:** 1080p60, 1080p120, 1440p60, 1440p120 and 4K60, whenever your TV/monitor can do them. Others
   aren't possible through the PS5's HDMI chip.
 - **HDR** at 1080p60 and 4K60 (Game Mode → Settings → Display). If the picture looks wrong with HDR on, switch it off.
-- **USB-C display output and PSVR2** (v1.5): the front USB-C port drives a DisplayPort display or the PSVR2. For the
-  PSVR2 you also need [PSVR2Toolkit](https://github.com/BnuuySolutions/PSVR2Toolkit) and, for reprojection, a patched
-  Mesa; neither is in the image yet.
+- **USB-C display output and PSVR2:** the front USB-C port drives a DisplayPort display or the PSVR2. From v1.6.1 it's
+  off by default, because switching it on can reset a boot drive on that port: add ` usbc_dp.enable=1` to
+  `cmdline.txt` to use it. For the PSVR2 you also need [PSVR2Toolkit](https://github.com/BnuuySolutions/PSVR2Toolkit).
 - **CPU boost** (v1.5): the CPU may boost up to 3.5 GHz under load. `ps5-perf status` shows it and the fan target,
   `ps5-perf off` switches it off, `/etc/ps5-bazzite-deck/perf.conf` (`CPU_BOOST=`, `FAN_TARGET=` 40–90) changes it.
 - **Restart straight back into Linux:** `ps5-warm-reboot on` makes every restart go straight back into Linux in about
@@ -192,6 +192,7 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | `hdmi.rgb_range=0` | Lets the TV decide the RGB range again | Colours look wrong at 1080p or 4K60 but fine at 1440p |
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
+| `usbc_dp.enable=1` | Switches on the front USB-C port's DisplayPort output (v1.6.1+) | USB-C displays and the PSVR2. Not with your boot drive on the front USB-C port |
 | `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles, from v1.5.1) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes, newer tests in `vrr-test` releases |
 
 ### Common problems
