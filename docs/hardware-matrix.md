@@ -5,7 +5,7 @@ The PS5 comes with two HDMI chips and two Wi-Fi/Bluetooth chips, in any combinat
 | | |
 |---|---|
 | **HDMI chip** | **FLAVA3** (Panasonic MN8647xx family; most consoles) or **Verde** (some later models). The kernel log says which: `HDMI IC Type [FLAVA3]` |
-| **Wi-Fi/Bluetooth** | **IW620** (NXP/Marvell; most original PS5s, Bluetooth USB ID `1286:2059`) or **MediaTek** (most Slims, USB ID `0e8d:…`) |
+| **Wi-Fi/Bluetooth** | **IW620** (NXP/Marvell; most original PS5s, Wi-Fi PCI ID `1b4b:2b56`, Bluetooth USB ID `1286:2059`) or **MediaTek MT7961** (most Slims, Wi-Fi `14c3:7961`, Bluetooth USB ID `0e8d:…`). The PS5 Pro's MediaTek MT7925 (`14c3:7925`) isn't supported yet |
 
 A fix for one chip can break the other when it isn't limited to the chip it's for. This list says,
 for every change we carry, which hardware it's for and **how the code limits it** ("all" means it

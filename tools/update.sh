@@ -56,6 +56,8 @@ sudo sed -i 's/ video=DP-1:1920x1080@60//' "$EFI/cmdline.txt"
 # v1.5.1: options that are kernel defaults now (CONFIG_LSM, CONFIG_USB_AUTOSUSPEND_DELAY=-1) leave cmdline.txt;
 # only the exact strings we added, anything a user changed stays
 sudo sed -i -e 's/ lsm=landlock,lockdown,yama,integrity,apparmor,bpf//' -e 's/ usbcore\.autosuspend=-1//' "$EFI/cmdline.txt"
+# v1.7.0: VRR is no longer a test behind a flag (Steam's VRR setting switches it): the old test flags go
+sudo sed -i -e 's/ *hdmi\.vrr_test=1//' -e 's/ *hdmi\.vrr_chip=[0-9]//' "$EFI/cmdline.txt"
 # GPU compute units: 40 (amdgpu.ps5_cu_unlock=3) is opt-in again from v1.1.1 (silicon lottery: the extra 4
 # can be faulty). v1.1.0 switched it on for everyone, so switch it off once for installs coming from v1.1.0.
 # From then on a setting the user adds is never touched.

@@ -76,18 +76,9 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-fallback.patch"     # EDID
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-edid-keep.patch"         # keep the EDID on a short/invalid announcement ("generic display" after the desktop)
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-verde-game-content.patch" # Verde: IT + content type game in the AVI InfoFrame
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-session-switch.patch"    # no hang on the blinking cursor when switching Game Mode <-> desktop
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-experimental.patch"       # experimental VRR, inert unless hdmi.vrr_test=1
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-drr-measure.patch"       # VRR test 21: frame-timing measurement, only with hdmi.vrr_test=1
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-range-encoding.patch"  # RGB range flag in the right CTA-861 code (v1.5.0-v1.5.2 sent "limited")
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-trace.patch"           # VRR test 22: full ICC trace, only with hdmi.icc_trace=1
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-spd-drm.patch"           # VRR test 24: stock's DRM + SPD InfoFrames in VRR mode
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-raw.patch"          # VRR test 25: replay a captured pre-block, no latch after it
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-prep-keep.patch"         # VRR test 25b: our pre-block as well after the replayed one
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-icc-send.patch"           # VRR test 26: send any HDMI ICC message at runtime (vrr_test only)
 git -C work/linux73 apply "$SRC/patches/ps5-usbc-dp-optin.patch"           # USB-C DP off by default (usbc_dp.enable=1): it can reset a boot drive there
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-lawson.patch"       # VRR test 28 (Lawson): timing SDP, MSA bit clear, follow mode (vrr_chip=2)
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-modes.patch"        # VRR: follow mode default, only in modes it carries, timing SDP logged
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-clean.patch"        # VRR: muted while switching over, all modes, measurement log opt-in
+git -C work/linux73 apply "$SRC/patches/ps5-vrr.patch"                     # VRR on FLAVA3 (hsgodd, Lawson), switched with Steam's VRR setting
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
