@@ -7,12 +7,12 @@ All notable changes to the images. Exact upstream versions are in each release's
 - **USB-C DisplayPort off by default:** programming the front USB-C port's DisplayPort policy can reset a device on that port, such as a boot drive there (Slip makes it opt-in in his hdmi-usbc-test branch for the same reason). USB-C displays and PSVR2: add ` usbc_dp.enable=1` to `cmdline.txt`
 - **VRR test 28, from Lawson's work** (only with `hdmi.vrr_test=1`, follow mode with `hdmi.vrr_chip=2`): the GPU sends Sony's timing SDP (`39 04`, the source timing) every frame, the HDMI chip's MSA-ignore bit stays clear (it drops its input lock otherwise), and the chip is switched to follow mode only after the SDP flows, plus a FreeSync SPD for the TV. Lawson reports real VRR with this on his setup (TV FreeSync following the game at 40–60 Hz)
 
-## [v1.6.0] – 2026-10-29
+## [v1.6.0] – 2026-10-<DD>
 - **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the RGB range flag went out as "limited" instead of "full" (first fixed in the v1.5.3 pre-release)
 - **The first-start message is gone:** it didn't show, or only for a moment. The update removes it from existing installs
 - Everything from the v1.5.2–v1.5.6 pre-releases: the VRR experiment's tests 21–26 (inert unless `hdmi.vrr_test=1`), `hdmi.icc_trace`; see docs/vrr-status.md for where VRR stands
 
-## [v1.5.6] – 2026-10-28
+## [v1.5.6] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR test 25b:** `hdmi.vrr_prep_keep=1` sends our own pre-block as well, right after the replayed stock message, in case the chip needs both
 - **VRR test 26:** `hdmi.icc_send` sends any HDMI ICC message to the EMC right away (hex, root only, only with `hdmi.vrr_test=1`). Test 25 showed the EMC accepts stock's VRR arming sequence (id `0x30`) but nothing runs it: stored sequences need a trigger binding (4/2), and ours binds `0x31`–`0x37` only. With this, registering `0x30` and binding it to trigger bits can be tried without a rebuild
