@@ -5,7 +5,11 @@ PlayStation 5. It boots straight into **Steam Gaming Mode** (the Steam Deck inte
 desktop is one click away.
 
 It runs from a USB drive, started by **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases).
-Your PS5 itself is not modified: unplug the drive and it's a normal PS5 again.
+Your PS5 itself is not modified. Linux only starts when you run the loader; restart or power off and the PS5 starts
+its own system again, with the drive still plugged in.
+
+**Which version:** use the release marked **Latest** on the [releases page](https://github.com/VivaLaVent/ps5-bazzite-deck/releases).
+Releases marked **Pre-release** are test builds for testers, even when their number is higher.
 
 **Download:** [Releases](../../releases) · **Help & testing:** [Discord](https://discord.gg/qGcuTgBBYU) · **Support the project:** [Ko-fi](https://ko-fi.com/vivalavent)
 
