@@ -1,4 +1,4 @@
-> **From v1.8.2 only on consoles with the MediaTek Wi-Fi/Bluetooth chip.** On the IW620 (most original PS5s) the address change left the chip hung after warm restarts and controllers unable to reconnect after some cold boots, so it's no longer offered there: the controller keeps one pairing, like with any PC.
+> **Only on consoles with the MediaTek Wi-Fi/Bluetooth chip** (the v1.8.4 update switches it off on IW620 consoles; from v1.9.0 it isn't offered there at all). Making it work again together with warm restarts is being looked at: [iw620-bt-address-warm-restart.md](iw620-bt-address-warm-restart.md). On the IW620 (most original PS5s) the address change left the chip hung after warm restarts and controllers unable to reconnect after some cold boots, so it's no longer offered there: the controller keeps one pairing, like with any PC.
 
 # One DualSense for the PS5 system and Linux
 
