@@ -8,7 +8,7 @@ set -euo pipefail
 V=${1:?vNEW}; PREV=${2:?vPREV}; shift 2
 B=~/ps5-build-7.3; O=$B/output; K=$B/work/linux73; SRC=~/ps5-bazzite-deck; P=$SRC/patches
 R=VivaLaVent/ps5-bazzite-deck; KB=$K/arch/x86/boot/bzImage; PS5=${PS5:-ps5@192.168.66.55}; N=ps5-bazzite-deck-$V-update
-pgrep -f "build_image.sh|release.sh" >/dev/null && { echo "STOP: a build is running"; exit 1; }
+pgrep -f "build_image.sh|tools/release.sh" >/dev/null && { echo "STOP: a build is running"; exit 1; }
 gh release view $V --repo $R >/dev/null 2>&1 && { echo "STOP: $V is already released"; exit 1; }
 [ -f $SRC/docs/release-notes/$V.md ] && [ -f $SRC/docs/update-sections/$V.md ] || { echo "STOP: notes for $V missing"; exit 1; }
 [ -f $O/ps5-bazzite-deck.img ] && [ -f $O/ps5-bazzite-deck-$PREV-update.tar.xz ] || { echo "STOP: $PREV image/bundle missing in $O"; exit 1; }
