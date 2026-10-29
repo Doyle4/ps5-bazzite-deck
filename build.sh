@@ -80,7 +80,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-range-encoding.patch"  # RG
 git -C work/linux73 apply "$SRC/patches/ps5-usbc-dp-optin.patch"           # USB-C DP off by default (usbc_dp.enable=1): it can reset a boot drive there
 git -C work/linux73 apply "$SRC/patches/ps5-vrr.patch"                     # VRR on FLAVA3 (hsgodd, Lawson), switched with Steam's VRR setting
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-stock-setup.patch"         # v1.7.1: stock PHY tail + VSync block in every setup (VRR needs them)
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-4k120.patch"         # 4K100/120 over HDMI 2.1 FRL on FLAVA3 (Lawson), hdmi.frl_4k120=1
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-4k120.patch"         # 4K120 over HDMI 2.1 FRL on FLAVA3 (Lawson), hdmi.frl_4k120=1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-guard.patch"         # VRR: a running follow block stops when a newer setup starts
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
