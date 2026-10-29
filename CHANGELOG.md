@@ -3,7 +3,7 @@
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
 ## [v1.7.1] – 2026-10-<DD>
-> v1.7.0 was built but not released: its cleanup had dropped two setup steps VRR needs (Sony's full PHY settings and the VSync block in every setup). v1.7.1 is v1.7.0 with those back.
+> v1.7.0 was built but not released: its cleanup had dropped two setup steps VRR needs (Sony's full PHY settings and the VSync block in every setup), and with VRR switched on the console could hang completely. v1.7.1 is v1.7.0 with those steps back and without the wait that could hang it.
 - **VRR on FLAVA3 consoles,** switched with Steam's VRR setting (Settings → Display), no boot option needed. Works at 4K60, 1080p120, 1440p60 and 1440p120 with TVs that support VRR or FreeSync (tested on an LG C4). The fix is Lawson's: a timing packet the GPU sends the HDMI chip every frame, the chip's MSA bit left clear, and the chip's follow mode switched on after the packet flows (with thanks to hsgodd for the stock-system captures). Switching takes about 2 seconds of black screen. `hdmi.vrr=0` never offers VRR
 - **USB-C DisplayPort off by default** (from v1.6.1): add ` usbc_dp.enable=1` for a USB-C display or the PSVR2
 - **VRR only where it works:** on consoles with the VERDE HDMI chip VRR is never offered, so Steam's setting can't switch on a mode that doesn't work there
