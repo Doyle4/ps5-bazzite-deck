@@ -2,7 +2,15 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.6] – 2026-10-29
+## [v1.8.8] – 2026-10-<DD>
+> Test build: kernel only, as a quick kernel package, on top of v1.8.6 or v1.8.7.
+- **Fix attempt: TVs that drop to HDMI 1.4 modes a few seconds after boot** (Beyond TV, issues #11 and #21: only 1080p60 and 1440p60 left, no 4K, no 120 Hz, no VRR). The console now tells HDMI 2.x TVs its link settings at every mode change, as a PC does, not only at 4K and 120 Hz
+
+## [v1.8.7] – 2026-10-<DD>
+> Test build: kernel only, as a quick kernel package, on top of v1.8.6.
+- **100 Hz modes, for testing** (FLAVA3 consoles, only when the display goes to 100 Hz or more): **1440p100** (most likely to work: the HDMI chip already handles 1440p60 and 1440p120 the same way), **1080p100** (unknown: whether the chip knows this mode is what the test finds out) and **4K100** (when the display lists it; same link as 4K120, with its fallback to 4K). Modes that give no picture are taken out again before a release
+
+## [v1.8.6] – 2026-10-<DD>
 > Kernel only, as a quick kernel package, on top of v1.8.5.
 - **VRR only for displays with HDMI VRR,** as on the PS5 system: monitors that announce only FreeSync blanked on every refresh change with VRR on (Storm, AOC Q27G2G3R4B); they aren't offered VRR any more. TVs with HDMI VRR (LG, Samsung, Sony…) are unaffected
 
