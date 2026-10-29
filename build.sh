@@ -91,7 +91,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-4k120-guard.patch"        # 4K1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-hdmi-only.patch"           # VRR only with HDMI VRR, as on the PS5 system
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-100hz-test.patch"         # 100 Hz modes (test): 1080p100, 1440p100, 4K100
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-scdc-tmds-config.patch"    # SCDC TMDS_Config at every setup (Beyond TV dropping to HDMI 1.4)
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-no-rearm.patch"        # no re-arm loop during a 4K120 link setup
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-4k120-422-test.patch"      # 4K120 as YCbCr 4:2:2 8 bpc (test)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

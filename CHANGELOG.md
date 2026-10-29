@@ -4,7 +4,7 @@ All notable changes to the images. Exact upstream versions are in each release's
 
 ## [v1.8.9] – 2026-10-<DD>
 > Test build: kernel only, as a quick kernel package, on top of v1.8.8.
-- **Fix: modeset loop at 4K120** (hsgodd, LG OLED, switching between Game Mode and the desktop): the TV re-announces itself while it sets up the 4K120 link, and the console took that for a TV wake-up and set up 4K120 again, over and over: long black stretches, the TV locking up, and the moment Game Mode's GPU faults hit. Within 10 seconds of a 4K120 setup that re-announce is ignored now; the 4K120 link check from v1.8.5 decides, and falls back to 4K if the link doesn't come up
+- **4K120 as YCbCr 4:2:2 at 8 bits** instead of RGB at 6 bits (a depth HDMI doesn't have), the format the HDMI chip's 4K120 setup is made for. A test for the GPU fault some see when switching between Game Mode and the desktop at 4K120 (hsgodd, LG B4); also avoids colour banding at 4K120. The 4K120 log line shows the format
 
 ## [v1.8.8] – 2026-10-<DD>
 > Test build: kernel only, as a quick kernel package, on top of v1.8.6 or v1.8.7.
