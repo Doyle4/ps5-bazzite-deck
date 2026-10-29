@@ -1,6 +1,6 @@
 # VRR on the PS5 (FLAVA3)
 
-**VRR works** from v1.7.0 on consoles with the FLAVA3 HDMI chip, switched with Steam's VRR setting. Confirmed at
+**VRR works** from v1.7.1 on consoles with the FLAVA3 HDMI chip, switched with Steam's VRR setting. Confirmed at
 4K60, 1080p120, 1440p60 and 1440p120 on an LG C4. Consoles with the VERDE chip don't have it yet.
 
 ## How it works

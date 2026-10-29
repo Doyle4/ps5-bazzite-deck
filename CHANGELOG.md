@@ -2,26 +2,27 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.7.0] – 2026-10-<DD>
+## [v1.7.1] – 2026-10-<DD>
+> v1.7.0 was built but not released: its cleanup had dropped two setup steps VRR needs (Sony's full PHY settings and the VSync block in every setup). v1.7.1 is v1.7.0 with those back.
 - **VRR on FLAVA3 consoles,** switched with Steam's VRR setting (Settings → Display), no boot option needed. Works at 4K60, 1080p120, 1440p60 and 1440p120 with TVs that support VRR or FreeSync (tested on an LG C4). The fix is Lawson's: a timing packet the GPU sends the HDMI chip every frame, the chip's MSA bit left clear, and the chip's follow mode switched on after the packet flows (with thanks to hsgodd for the stock-system captures). Switching takes about 2 seconds of black screen. `hdmi.vrr=0` never offers VRR
 - **USB-C DisplayPort off by default** (from v1.6.1): add ` usbc_dp.enable=1` for a USB-C display or the PSVR2
 - **VRR only where it works:** on consoles with the VERDE HDMI chip VRR is never offered, so Steam's setting can't switch on a mode that doesn't work there
 - **README:** the PS5 Pro isn't supported yet; etaHEN and kstuff have to be off; `RADV_DEBUG=nohiz` for graphics glitches in a game; the Wi-Fi chips by ID in the hardware matrix
 - **Cleanup:** the VRR test code and switches of v1.5.1–v1.6.3 are gone (kept in `patches/parked/vrr-history`); the update removes ` hdmi.vrr_test=1` from `cmdline.txt`. For debugging: `hdmi.icc_trace=1`, `hdmi.vrr_measure=1`
 
-## [v1.6.3] – 2026-10-29
+## [v1.6.3] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR at every mode:** 1440p60 and 1440p120 work too (Gilles, LG C4), with the timing packet sent whatever the sync polarity
 - **Cleaner, faster switching:** the HDMI chip switches over in under 2 seconds (was about 6), and the picture stays dark meanwhile instead of drifting and flickering
 - The frame-timing log every 2 seconds only with `hdmi.vrr_measure=1`
 
-## [v1.6.2] – 2026-10-29
+## [v1.6.2] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR works at 4K60 and 1080p120** (FLAVA3, with ` hdmi.vrr_test=1`): test 28's follow mode (Lawson) gave real VRR on an LG C4, the TV's FreeSync following the game. It's now the default with `hdmi.vrr_test=1`, so VRR is switched on and off with Steam's normal VRR setting
 - **No black screen in modes it can't carry yet:** at 1440p (custom timing; 1440p60 also has a negative sync, so no timing packet) VRR isn't offered and the refresh stays fixed. `hdmi.vrr_any_mode=1` tries those modes anyway
 - The timing packet the GPU sends, or why it isn't sent, is logged once per mode
 
-## [v1.6.1] – 2026-10-29
+## [v1.6.1] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **USB-C DisplayPort off by default:** programming the front USB-C port's DisplayPort policy can reset a device on that port, such as a boot drive there (Slip makes it opt-in in his hdmi-usbc-test branch for the same reason). USB-C displays and PSVR2: add ` usbc_dp.enable=1` to `cmdline.txt`
 - **VRR test 28, from Lawson's work** (only with `hdmi.vrr_test=1`, follow mode with `hdmi.vrr_chip=2`): the GPU sends Sony's timing SDP (`39 04`, the source timing) every frame, the HDMI chip's MSA-ignore bit stays clear (it drops its input lock otherwise), and the chip is switched to follow mode only after the SDP flows, plus a FreeSync SPD for the TV. Lawson reports real VRR with this on his setup (TV FreeSync following the game at 40–60 Hz)

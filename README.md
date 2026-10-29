@@ -160,7 +160,7 @@ The setting stays as it is across updates.
   hardware-decoded H.264 instead.
 - **Apps:** use the Discover store / Flatpak. `dnf5 install` works for system packages; `rpm-ostree` and
   `ujust update` don't (this image isn't an ostree install).
-- **VRR** on consoles with the FLAVA3 HDMI chip (v1.7): switch it on in Game Mode under Settings → Display → Enable VRR. Works with TVs that support VRR or FreeSync, at every resolution. Where the research stands: [docs/vrr-status.md](docs/vrr-status.md).
+- **VRR** on consoles with the FLAVA3 HDMI chip (v1.7.1): switch it on in Game Mode under Settings → Display → Enable VRR. Works with TVs that support VRR or FreeSync, at every resolution. Where the research stands: [docs/vrr-status.md](docs/vrr-status.md).
 
 ## Troubleshooting
 
@@ -195,7 +195,7 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
 | `usbc_dp.enable=1` | Switches on the front USB-C port's DisplayPort output (v1.6.1+) | USB-C displays and the PSVR2. Not with your boot drive on the front USB-C port |
-| `hdmi.vrr=0` | Never offers VRR (v1.7+) | A TV where VRR misbehaves |
+| `hdmi.vrr=0` | Never offers VRR (v1.7.1+) | A TV where VRR misbehaves |
 
 ### Common problems
 

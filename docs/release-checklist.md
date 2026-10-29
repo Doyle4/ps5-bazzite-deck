@@ -73,7 +73,7 @@ release's Discord thread.
   grub), but noise to remove
 - No Wi-Fi on a PS5 Slim 12.20 (loseheaven; chip and log still missing)
 
-## VRR (from v1.7)
+## VRR (from v1.7.1)
 - On a fresh install, Steam's **Enable VRR** is **off** after the first boot.
 - FLAVA3 + a VRR TV: switching VRR on gives about 2 s of black, then FreeSync/VRR on the TV, refresh following a frame-limited game, at 4K60 and one 120 Hz mode.
 - VRR off again: a stable fixed refresh, no drift.

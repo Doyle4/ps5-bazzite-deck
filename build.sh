@@ -79,6 +79,7 @@ git -C work/linux73 apply "$SRC/patches/ps5-hdmi-session-switch.patch"    # no h
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-rgb-range-encoding.patch"  # RGB range flag in the right CTA-861 code (v1.5.0-v1.5.2 sent "limited")
 git -C work/linux73 apply "$SRC/patches/ps5-usbc-dp-optin.patch"           # USB-C DP off by default (usbc_dp.enable=1): it can reset a boot drive there
 git -C work/linux73 apply "$SRC/patches/ps5-vrr.patch"                     # VRR on FLAVA3 (hsgodd, Lawson), switched with Steam's VRR setting
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-stock-setup.patch"         # v1.7.1: stock PHY tail + VSync block in every setup (VRR needs them)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
