@@ -28,7 +28,7 @@ One image runs on every supported PS5. What differs is decided by three parts of
 | | FLAVA3 | VERDE | |
 |---|:---:|:---:|---|
 | **1440p120** | ✅ | ❌ | |
-| **4K120** | ✅ | ❌ | v1.7.2+, HDMI 2.1 TV and cable |
+| **4K120** | ✅ | ❌ | v1.7.2+, HDMI 2.1 TV and cable; from v1.8.5 only offered when the TV can take it, and back to 4K by itself if the link fails |
 | **HDR** (1080p60, 4K60) | ✅ | ❌ | Game Mode → Settings → Display |
 | **VRR** (VRR/FreeSync TVs) | ✅ | ❌ | v1.7.1+, every resolution: Game Mode → Settings → Display → Enable VRR |
 
