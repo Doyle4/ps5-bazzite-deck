@@ -30,6 +30,9 @@ echo "=== chips"; lspci -nn | grep -i -e network -e wireless -e ethernet -e usb 
 echo "=== display"; for c in /sys/class/drm/card0-*; do [ -f "$c/status" ] && echo "${c##*card0-}: $(cat "$c/status") $(cat "$c/enabled" 2>/dev/null) $(head -1 "$c/modes" 2>/dev/null)"; done
 k | grep -e 'hdmi:' -e 'PS5' | grep -v -e 'switched on' | tail -25
 echo "counts: got real edid=$(k | grep -c 'got real edid') re-arm=$(k | grep -c 're-arm #') ignored EDID=$(k | grep -c 'EDID announcement')"
+echo "=== display details"; echo "EDID: $(sudo cat /sys/class/drm/card0-DP-1/edid 2>/dev/null | base64 -w0)"
+cat /sys/class/drm/card0-DP-1/modes 2>/dev/null | sort | uniq -c | tr '\n' ' '; echo
+sudo grep -E "vrr_enabled|mode:" /sys/kernel/debug/dri/0/state 2>/dev/null | head -4
 echo "=== gpu"; k | grep -i -e 'ring .* timeout' -e 'page fault' -e 'Process .* pid' -e 'gpu reset' -e 'wedged' -e 'amdgpu.*error' | sed 's/^\[ *[0-9.]*\] //' | uniq -c | tail -10
 echo "=== bluetooth"; btmgmt info 2>/dev/null | grep -m3 -e 'addr ' -e 'current settings'; k | grep -i -e 'bluetooth' -e btusb -e 'usb 5-3' | grep -i -e error -e fail -e timeout -e 'not accepting' | tail -6
 echo "=== wifi / network"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | grep -v -e '^lo' -e p2p

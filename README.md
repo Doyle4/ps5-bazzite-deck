@@ -133,7 +133,8 @@ copy it to the USB drive's FAT32 partition and take it from there on your PC:
 Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart straight into Linux, experimental).
 
 - **Console running, no picture** (wrong mode, a mode the TV doesn't take): get in with SSH or a TTY and change the
-  mode by command, see [docs/display-recovery.md](docs/display-recovery.md).
+  mode by command, see [docs/display-recovery.md](docs/display-recovery.md). To report a display problem (VRR, a
+  mode, blinking): [docs/display-logs.md](docs/display-logs.md) says what to send.
 - **White light but black screen:** HDMI Device Link off (see [Prerequisites](#prerequisites)), another HDMI
   port or TV, HDCP on/off in the PS5 settings; last resort `amdgpu.force_1080p=1` ([boot options](#boot-options-cmdlinetxt)).
 - **Black screen, but the PS5 is running:** <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd>, wait 2–3 seconds, then

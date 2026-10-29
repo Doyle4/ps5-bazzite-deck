@@ -1,5 +1,7 @@
 # No picture? Getting in, and changing the display mode by command
 
+To report the problem afterwards, see [display-logs.md](display-logs.md).
+
 When the console is running but the TV shows nothing (wrong mode, a mode the TV doesn't take), you can still reach it
 and change the mode. Default user and password: `ps5` / `ps5`.
 
