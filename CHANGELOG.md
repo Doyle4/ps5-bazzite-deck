@@ -4,41 +4,41 @@ All notable changes to the images. Exact upstream versions are in each release's
 
 ## [v1.8.4] – 2026-10-<DD> (PRO ONLY)
 > Kernel only, as a quick kernel package, on top of v1.8.0–v1.8.3.
-- **Fix: no picture at 4K120 on some TVs** (hsgodd's log): the GPU sent 4K120 to the HDMI chip as RGB at 6 bits per colour, a depth HDMI doesn't have, instead of YCbCr 4:2:2 at 8 bits, which the chip's 4K120 setup is made for. Also means no colour banding at 4K120
-- **Fix: no signal at every resolution after trying 4K120** on some LG TVs (hsgodd), until the TV was switched off: going back from 4K120 to another mode now tells the TV that the 4K120 link (FRL) is off, as a PC does
+- **Back to the v1.7.3 display behaviour** (Gilles' LG C4: 4K120, and 4K60 with VRR and HDR, stopped working in v1.8.x): the v1.8.1–v1.8.3 display changes are undone (the instant VRR switching, the single-step switch-over, the 4K120 timing and 120.00 Hz-only changes), and the planned 4K120 format and FRL-exit changes don't go in. ALLM stays out. The changes are kept in `patches/parked/1.8-reverted`
 - **PS5 Pro: no more error flood** ("mp1fw_sendmsg: busy", "Failed to change cpu frequency", "ps5-gpufreq: dvfs failed", several times a second): the PS5 CPU and GPU frequency drivers don't start on a Pro, the firmware keeps setting the clocks (as with the upstream kernel)
+- The PS5 Pro support of v1.8.0 (GPU, its firmware, Bluetooth) stays
 
-## [v1.8.3] – 2026-10-29 (PRO ONLY)
+## [v1.8.3] – 2026-10-<DD> (PRO ONLY)
 > Kernel only, as a quick kernel package, on top of v1.8.0/v1.8.1. Test build for 4K120.
 - **4K120 hardening** (no picture on hsgodd's LG with VRR on): with VRR, the HDMI chip switches to follow mode only once the 4K120 link has had time to come up (1.5 s instead of 0.1 s); 4K120 is offered only at 120.00 Hz (the HDMI chip's setup is made for exactly that); the log shows the picture format at 4K120
 
-## [Unreleased] (v1.9.0, full build: everything from v1.8.1–v1.8.4, plus)
+## [Unreleased] (v1.9.0, full build: v1.8.4 for every model, plus)
 - **Steering wheels:** force feedback for Logitech wheels and rumble pads, as in vanilla Bazzite (the kernel config of rmux's 7.3 port has it too; it's in a module, so it needs the full build)
 - **No failed services at boot:** Bazzite's `bootloader-update` and `greenboot` checks are only for its own (ostree) installs and failed at every boot here; they're masked
 - **`hdmi.rearm=0` is gone:** the update removes it from `cmdline.txt`. The re-arm has had its own back-off for a while, and a leftover `hdmi.rearm=0` kept a TV dark after every mode change (hsgodd)
 - **No Linux-only Bluetooth address on IW620 consoles** (`ps5-bt-address`): on that chip it left Wi-Fi and Bluetooth hung after a warm restart (Max) and controllers unable to reconnect after some cold boots. The controller keeps one pairing, as with any PC; MediaTek consoles keep the feature. The update removes the setting
 
-## [v1.8.1] – 2026-10-29 (PRO ONLY)
+## [v1.8.1] – 2026-10-<DD> (PRO ONLY)
 > Kernel only, as a quick kernel package.
 - **VRR switches like on a PC:** switching VRR on or off no longer re-runs the whole HDMI setup; the HDMI chip switches in one go, without the black screen of about 2 seconds (which Steam's menus triggered often). Changing the resolution still goes through the setup
 - **Fix: 4K120 without picture on some TVs since v1.8.0** (hsgodd): ALLM is gone again. Its InfoFrame writes landed while the HDMI chip trained the 4K120 link, and Linux on a PC doesn't send ALLM at all
 
-## [v1.8.0] – 2026-10-29 (PRO ONLY)
+## [v1.8.0] – 2026-10-<DD> (PRO ONLY)
 > Pre-release: ALLM and PS5 Pro support need testing on more TVs and on a Pro.
 - **ALLM:** on FLAVA3 consoles the TV switches to its game mode by itself, when it supports ALLM (the same HDMI Forum signal the PS5 system sends). ` hdmi.allm=0` switches it off
 - **PS5 Pro (untested):** GPU support from upstream's PR #58 by Borchev, ported to our 7.3 kernel (Viola golden settings, 64 compute units, GPU clock and temperature), and the Pro's GPU firmware put into the initrd at boot from what the loader dumps, without rebuilding the initrd on the console. Nothing changes on other consoles
 - **PS5 Pro Wi-Fi and Bluetooth (untested):** the Pro's MediaTek MT7925 Wi-Fi driver is in the kernel; its internal Bluetooth (0e8d:3605) from QuartConz's patch (interface 3, WMT activation, ACL on the second bulk endpoint, an idea from WizGery), plus his rule that keeps it out of USB autosuspend
 - **`ps5-bt-address`:** warns that IW620 consoles may not apply the address after a cold boot, and `status` shows the controller's current address
 
-## [v1.7.3] – 2026-10-29
+## [v1.7.3] – 2026-10-<DD>
 > Kernel only, as a quick kernel package.
 - **VRR never goes below 48 Hz,** the PS5 system's own floor. Many TVs allow 40 Hz, where OLEDs flicker visibly when the refresh rate swings (suggested by hsgodd). Below 48 fps, frames are doubled at 120 Hz modes; 60 Hz modes keep a fixed 60 Hz. The FreeSync InfoFrame now sends the range actually used
 
-## [v1.7.2] – 2026-10-29
+## [v1.7.2] – 2026-10-<DD>
 - **4K at 120 Hz** over HDMI 2.1 FRL on FLAVA3 consoles with an HDMI 2.1 TV that supports it, in Game Mode's display settings like any other mode. Ported from Lawson's kernel, which follows Sony's own setup for this mode; between GPU and HDMI chip it runs as YCbCr 4:2:2, the TV gets real 4K120. VRR works there too
 - **VRR:** switching VRR again or changing the mode while the HDMI chip is still switching over no longer mixes the two setups
 
-## [v1.7.1] – 2026-10-29
+## [v1.7.1] – 2026-10-<DD>
 > v1.7.0 was built but not released: its cleanup had dropped two setup steps VRR needs (Sony's full PHY settings and the VSync block in every setup), and with VRR switched on the console could hang completely. v1.7.1 is v1.7.0 with those steps back and without the wait that could hang it.
 - **VRR on FLAVA3 consoles,** switched with Steam's VRR setting (Settings → Display), no boot option needed. Works at 4K60, 1080p120, 1440p60 and 1440p120 with TVs that support VRR or FreeSync (tested on an LG C4). The fix is Lawson's: a timing packet the GPU sends the HDMI chip every frame, the chip's MSA bit left clear, and the chip's follow mode switched on after the packet flows (with thanks to hsgodd for the stock-system captures). Switching takes about 2 seconds of black screen. `hdmi.vrr=0` never offers VRR
 - **USB-C DisplayPort off by default** (from v1.6.1): add ` usbc_dp.enable=1` for a USB-C display or the PSVR2

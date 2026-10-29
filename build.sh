@@ -86,10 +86,6 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-guard.patch"         # VR
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-min-48.patch"              # VRR never below 48 Hz (PS5 system floor), SPD with the actual range
 git -C work/linux73 apply "$SRC/patches/ps5-pro-gpu.patch"                 # PS5 Pro GPU (upstream #58, Borchev), only with the Viola firmware
 git -C work/linux73 apply "$SRC/patches/ps5-pro-bluetooth.patch"           # PS5 Pro internal Bluetooth 0e8d:3605 (QuartConz)
-git -C work/linux73 apply "$SRC/patches/ps5-vrr-live-switch.patch"         # VRR toggles like a PC: no setup, no black screen
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-hardening.patch"       # 4K120: VRR follow after the FRL link, 120.00 Hz only, format in the log
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-exit.patch"            # leave FRL properly: SCDC FRL_Rate 0 on the way back to TMDS
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-no-6bpc.patch"             # HDMI chip = HDMI endpoint: no 6 bpc, 4K120 as YCbCr 4:2:2
 git -C work/linux73 apply "$SRC/patches/ps5-pro-no-freqdrivers.patch"      # PS5 Pro: no PS5 CPU/GPU frequency drivers (MP1 busy flood)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
