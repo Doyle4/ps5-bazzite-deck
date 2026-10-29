@@ -63,6 +63,11 @@ it falls back to 60 Hz below 40 fps, as expected. **Black at 1440p60 and 1440p12
 with a negative vsync, for which the timing packet isn't built; 1440p120 has positive syncs but goes through the
 chip's custom-timing slot. v1.6.2 offers VRR only in modes that work and logs the timing packet per mode.
 
+## 1440p (v1.6.2, Gilles)
+With the timing packet sent regardless of sync polarity (`vrr_any_mode=1`), 1440p60 and 1440p120 work as well. The
+earlier black screens came from the missing packet (1440p60's negative vsync) and an incomplete switch-over.
+v1.6.3 allows every mode and keeps the picture muted during the switch-over.
+
 ## Next
 From Linux, nothing is left to try without new information from the stock side:
 1. **A cold-boot ICC capture on the stock system** (hsgodd): every message from initialisation on, looking for

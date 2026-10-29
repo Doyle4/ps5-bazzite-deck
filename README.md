@@ -158,7 +158,7 @@ The setting stays as it is across updates.
   hardware-decoded H.264 instead.
 - **Apps:** use the Discover store / Flatpak. `dnf5 install` works for system packages; `rpm-ostree` and
   `ujust update` don't (this image isn't an ostree install).
-- **VRR** works at 4K60 and 1080p120 on FLAVA3 consoles as an experiment (boot options below), not yet at 1440p. Where the research stands: [docs/vrr-status.md](docs/vrr-status.md).
+- **VRR** works on FLAVA3 consoles as an experiment (boot options below). Where the research stands: [docs/vrr-status.md](docs/vrr-status.md).
 
 ## Troubleshooting
 
@@ -193,7 +193,7 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
 | `usbc_dp.enable=1` | Switches on the front USB-C port's DisplayPort output (v1.6.1+) | USB-C displays and the PSVR2. Not with your boot drive on the front USB-C port |
-| `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles; works at 4K60 and 1080p120 from v1.6.2) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes, newer tests in `vrr-test` releases |
+| `hdmi.vrr_test=1` | **Experimental:** VRR (FLAVA3 consoles, from v1.6.3 at every mode; switched with Steam's VRR setting) | Only for VRR testing, it doesn't work yet; the steps are in the v1.5.1 release notes, newer tests in `vrr-test` releases |
 
 ### Common problems
 
