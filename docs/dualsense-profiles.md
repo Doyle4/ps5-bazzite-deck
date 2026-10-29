@@ -1,4 +1,4 @@
-> **IW620 consoles:** opt-in (`ps5-bt-address on`). It doesn't survive a warm restart, so from v1.9.0 restarts go through the PS5 system while it's on (the v1.8.4 update switched it off once; switch it on again if you want it). Making both work together: [iw620-bt-address-warm-restart.md](iw620-bt-address-warm-restart.md). On the IW620 (most original PS5s) the address change left the chip hung after warm restarts and controllers unable to reconnect after some cold boots, so it's no longer offered there: the controller keeps one pairing, like with any PC.
+> **On by default on every console from v1.8.9.** IW620: while it's on, restarts go through the PS5 system instead of warm ones (the chip doesn't survive a warm restart with the changed address). `ps5-bt-address off` switches it off. Making both work together: [iw620-bt-address-warm-restart.md](iw620-bt-address-warm-restart.md).
 
 # One DualSense for the PS5 system and Linux
 

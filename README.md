@@ -39,7 +39,7 @@ other refresh rates) aren't offered: the HDMI chip only has setups for these.
 
 | | IW620 | MediaTek | |
 |---|:---:|:---:|---|
-| **One DualSense for PS5 and Linux** (separate pairing profiles) | 🧪 | ✅ | IW620: opt-in with `ps5-bt-address on`. From v1.9.0, restarts then go through the PS5 system instead of warm (the chip doesn't survive a warm restart with it). Without it: one pairing, pair again after using the controller on the PS5 system. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
+| **One DualSense for PS5 and Linux** (separate pairing profiles) | ✅ | ✅ | On by default from v1.8.9: pair the controller with Linux on its own profile (e.g. PS + Square). IW620: while it's on, restarts go through the PS5 system instead of warm ones. `ps5-bt-address off` switches it off. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
 | **Wi-Fi after a restart straight into Linux** (`ps5-warm-reboot on`) | ⚠️ | ✅ | IW620: repaired automatically; if it's still missing, power off and run the loader |
 
 **PS5 Pro:** supported from v1.8.4, as a first version (GPU with 64 compute units and its own firmware, Wi-Fi,
@@ -130,7 +130,7 @@ The setting stays as it is across updates.
 terminal or over SSH). It only reads, and saves one file with your hardware and the relevant logs. Without network,
 copy it to the USB drive's FAT32 partition and take it from there on your PC:
 `E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo cp ~/ps5-report-*.txt $E/`.
-Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart straight into Linux, experimental).
+Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart straight into Linux, experimental), `ps5-bt-address` (one DualSense for the PS5 and Linux, on by default).
 
 - **Console running, no picture** (wrong mode, a mode the TV doesn't take): get in with SSH or a TTY and change the
   mode by command, see [docs/display-recovery.md](docs/display-recovery.md). To report a display problem (VRR, a

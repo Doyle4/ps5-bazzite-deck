@@ -48,6 +48,8 @@ if [ -e /etc/systemd/system/ps5-kexec-load.service ]; then sudo systemctl disabl
 # v1.6: the first-start message is gone (it didn't show, or only for a moment): remove it from existing installs
 sudo systemctl disable ps5-first-start.service 2>/dev/null || true
 sudo rm -f /etc/systemd/system/ps5-first-start.service /etc/systemd/system/multi-user.target.wants/ps5-first-start.service /usr/local/sbin/ps5-first-start
+# v1.8.9: the Linux-only Bluetooth address is on by default; the old opt-in flag isn't used any more
+sudo rm -f /etc/ps5-bazzite-deck/bt-address
 # v1.9.0: Bazzite's ostree-only services fail at every boot on this image: masked
 sudo systemctl mask bootloader-update.service greenboot-healthcheck.service greenboot-success.target >/dev/null 2>&1 || true
 # v1.9.0: hdmi.rearm=0 is gone (the re-arm has its own back-off now); a leftover kept TVs dark after mode changes

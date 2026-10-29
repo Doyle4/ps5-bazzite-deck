@@ -2,9 +2,12 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.9] – 2026-10-29
-> Test build: kernel only, as a quick kernel package, on top of v1.8.8.
-- **4K120 as YCbCr 4:2:2 at 8 bits** instead of RGB at 6 bits (a depth HDMI doesn't have), the format the HDMI chip's 4K120 setup is made for. A test for the GPU fault some see when switching between Game Mode and the desktop at 4K120 (hsgodd, LG B4); also avoids colour banding at 4K120. The 4K120 log line shows the format
+## [v1.8.9] – 2026-10-<DD>
+> Full release (image and update bundle) with the v1.8.8 kernel. Replaces the first v1.8.9 (4K120 as YCbCr 4:2:2), which showed the wrong colour range.
+- **One DualSense for the PS5 and Linux, on by default on every console:** Linux has its own Bluetooth address, so the controller keeps a pairing for each (on separate profiles) instead of losing one every time you switch. IW620: while it's on, restarts go through the PS5 system instead of warm ones, because the chip didn't survive a warm restart with the changed address (Max). `ps5-bt-address off` switches it off
+- **MediaTek (Slim): the Linux-only Bluetooth address works on more consoles:** where the kernel's way of setting it didn't stick (hsgodd: the controller lost its PS5-system pairing every time), MediaTek's own command is used as a fallback
+- **Steering wheels:** force feedback for Logitech wheels and rumble pads, as in vanilla Bazzite (the kernel config of rmux's 7.3 port has it too; it's in a module, so it needs the full build)
+- **IW620: the Linux-only Bluetooth address is opt-in again** (`ps5-bt-address on`; v1.8.4's update had switched it off): while it's on, restarts go through the PS5 system instead of warm, because the chip didn't survive a warm restart with it (Max)
 
 ## [v1.8.8] – 2026-10-<DD>
 > Test build: kernel only, as a quick kernel package, on top of v1.8.6 or v1.8.7.
@@ -34,10 +37,6 @@ All notable changes to the images. Exact upstream versions are in each release's
 ## [v1.8.3] – 2026-10-<DD> (PRO ONLY)
 > Kernel only, as a quick kernel package, on top of v1.8.0/v1.8.1. Test build for 4K120.
 - **4K120 hardening** (no picture on hsgodd's LG with VRR on): with VRR, the HDMI chip switches to follow mode only once the 4K120 link has had time to come up (1.5 s instead of 0.1 s); 4K120 is offered only at 120.00 Hz (the HDMI chip's setup is made for exactly that); the log shows the picture format at 4K120
-
-## [Unreleased] (v1.9.0, full build)
-- **Steering wheels:** force feedback for Logitech wheels and rumble pads, as in vanilla Bazzite (the kernel config of rmux's 7.3 port has it too; it's in a module, so it needs the full build)
-- **IW620: the Linux-only Bluetooth address is opt-in again** (`ps5-bt-address on`; v1.8.4's update had switched it off): while it's on, restarts go through the PS5 system instead of warm, because the chip didn't survive a warm restart with it (Max)
 
 ## [v1.8.1] – 2026-10-<DD> (PRO ONLY)
 > Kernel only, as a quick kernel package.
