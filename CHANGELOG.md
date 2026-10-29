@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.9] – 2026-10-<DD>
+## [v1.8.9] – 2026-10-29
 > Test build: kernel only, as a quick kernel package, on top of v1.8.8.
 - **4K120 as YCbCr 4:2:2 at 8 bits** instead of RGB at 6 bits (a depth HDMI doesn't have), the format the HDMI chip's 4K120 setup is made for. A test for the GPU fault some see when switching between Game Mode and the desktop at 4K120 (hsgodd, LG B4); also avoids colour banding at 4K120. The 4K120 log line shows the format
 
