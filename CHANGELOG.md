@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.7.3] – 2026-10-<DD>
+## [v1.7.3] – 2026-10-29
 > Kernel only, as a quick kernel package.
 - **VRR never goes below 48 Hz,** the PS5 system's own floor. Many TVs allow 40 Hz, where OLEDs flicker visibly when the refresh rate swings (suggested by hsgodd). Below 48 fps, frames are doubled at 120 Hz modes; 60 Hz modes keep a fixed 60 Hz. The FreeSync InfoFrame now sends the range actually used
 
