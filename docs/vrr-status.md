@@ -1,6 +1,6 @@
 # VRR status (FLAVA3 consoles)
 
-VRR doesn't work yet. This page keeps the state of the research in one place, so tests aren't repeated.
+**VRR works in follow mode (v1.6.1, `hdmi.vrr_chip=2`) on standard TV modes; 1440p doesn't yet.** This page keeps the state of the research in one place, so tests aren't repeated.
 The research is hsgodd's (stock-system captures and reverse engineering) and Lawson's (the GPU side), with test builds from this repo.
 
 ## Where it stands
@@ -37,12 +37,31 @@ own mode: executed with status `00` both times, **no picture**. So the arming's 
 doesn't make the chip produce a VRR output. Whatever else Sony does (the trigger moment, other messages around it,
 or state in the EMC) isn't visible from Linux.
 
+## First results with test 28 (v1.6.1, Gilles, LG C4)
+| Mode | Result |
+|---|---|
+| 4K60 | **works:** the TV shows FreeSync, the refresh follows the game down to 41 Hz; below 40 fps it falls back to 60 Hz (expected: a 40–60 range can't double frames) |
+| 1080p120 | **works** |
+| 1440p60, 1440p120 | **black** |
+
+So follow mode works on standard TV modes (with a VIC: 4K60, 1080p120), at 60 and 120 Hz, and fails on 1440p,
+which the HDMI chip gets through its custom-timing path. Lawson's own confirmed state is 4K60. Other observations:
+- after every new setup the chip is switched over in 5 steps, 1 s apart, so the picture needs a few seconds to
+  settle; `hdmi.vrr_follow_ms` shortens that for testing
+- changing the resolution while follow mode is on can end in no signal: switch VRR off first
+
 ## Lawson's finding (test 28, v1.6.1)
 The missing piece is on the GPU side, which is why no ICC capture could show it: Sony's GPU sends the HDMI chip a
 **timing packet every frame** (a DP extension SDP, header `39 04`, carrying the source timing). Without it the chip's
 follow mode gives a black picture. Lawson also found that the chip **drops its input lock when DPCD 0x107's
 MSA-ignore bit is set**, and that the follow mode has to be switched on **after** the packet flows. With all three,
 his setup gives real VRR (the TV's FreeSync following the game at 40–60 Hz). Test 28 ports this; it's `vrr_chip=2`.
+
+## Test 28 result (v1.6.1, Gilles, LG C4)
+**Real VRR at 4K60 and 1080p120:** the TV shows FreeSync and the refresh follows the game. At 4K60 (range 40–60)
+it falls back to 60 Hz below 40 fps, as expected. **Black at 1440p60 and 1440p120:** 1440p60 is a CVT-RB timing
+with a negative vsync, for which the timing packet isn't built; 1440p120 has positive syncs but goes through the
+chip's custom-timing slot. v1.6.2 offers VRR only in modes that work and logs the timing packet per mode.
 
 ## Next
 From Linux, nothing is left to try without new information from the stock side:
