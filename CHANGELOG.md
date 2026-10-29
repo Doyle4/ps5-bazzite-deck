@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.8] – 2026-10-<DD>
+## [v1.8.8] – 2026-10-29
 > Test build: kernel only, as a quick kernel package, on top of v1.8.6 or v1.8.7.
 - **Fix attempt: TVs that drop to HDMI 1.4 modes a few seconds after boot** (Beyond TV, issues #11 and #21: only 1080p60 and 1440p60 left, no 4K, no 120 Hz, no VRR). The console now tells HDMI 2.x TVs its link settings at every mode change, as a PC does, not only at 4K and 120 Hz
 
