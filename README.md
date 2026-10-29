@@ -9,7 +9,8 @@ Your PS5 itself is not modified. Linux only starts when you run the loader; rest
 its own system again, with the drive still plugged in.
 
 **Which version:** use the release marked **Latest** on the [releases page](https://github.com/VivaLaVent/ps5-bazzite-deck/releases).
-Releases marked **Pre-release** are test builds for testers, even when their number is higher.
+Releases marked **Pre-release** are test builds for testers, even when their number is higher. The **v1.8.x** releases
+are **PS5 Pro only**.
 
 **Download:** [Releases](../../releases) · **Help & testing:** [Discord](https://discord.gg/qGcuTgBBYU) · **Support the project:** [Ko-fi](https://ko-fi.com/vivalavent)
 
@@ -94,7 +95,6 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | Option | What it does | When to use it |
 |---|---|---|
 | `amdgpu.force_1080p=1` | Only allows 1080p60 | Black or garbled picture you can't get past, e.g. after picking a resolution your display can't show. Remove it once you've set a working resolution |
-| `hdmi.rearm=0` | Turns off the "picture comes back when the TV wakes up" fix | The picture flickers or goes black right after appearing, e.g. after re-plugging HDMI |
 | `usb-storage.quirks=xxxx:yyyy:u` | Turns off UAS for one USB drive (`xxxx:yyyy` from `lsusb`) | USB-C SSDs or enclosures that disconnect, freeze or show I/O errors (many have buggy UAS) |
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
 | `ps5-cec.one_touch_play=0` | The PS5 no longer turns the TV on and switches its input at boot | You don't want the TV to follow the console |

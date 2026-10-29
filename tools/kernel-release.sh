@@ -4,6 +4,7 @@
 # Applies the named patches to the kernel tree, builds, installs on the PS5, asks, then takes the
 # vPREV image and update bundle from ~/ps5-build-7.3/output, swaps in the new kernel and version
 # (bundle's inner SHA256SUMS regenerated and checked), and publishes vNEW as the latest release.
+#   TITLE="vNEW – ..." sets the release title (default: the version)
 #   PRERELEASE=1 ...: publish vNEW as a pre-release with only the quick kernel package (no image or bundle)
 set -euo pipefail
 V=${1:?vNEW}; PREV=${2:?vPREV}; shift 2
@@ -34,10 +35,10 @@ read -r -p "== Start Linux with the loader and test. Publish $V as ${PRERELEASE:
 [ "$ok" = y ] || { echo "Not published."; exit 0; }
 if [ -n "${PRERELEASE:-}" ]; then
   echo "== publish (pre-release, quick kernel)"; cd $SRC; git pull -q --rebase
-  sed -i "s/^## \[$V\] – .*/## [$V] – $(date +%F)/" CHANGELOG.md
+  sed -i "s/^## \[$V\] – [^ ]*/## [$V] – $(date +%F)/" CHANGELOG.md
   git add -A; git commit -q -m "$V" || true; git push -q
   git rev-parse -q --verify refs/tags/$V >/dev/null || { git tag -a $V -m $V; git push -q --tags; }
-  gh release create $V $O/ps5-quick-$V.tar.gz --repo $R --prerelease --title "$V" --notes "Release notes follow."
+  gh release create $V $O/ps5-quick-$V.tar.gz --repo $R --prerelease --title "${TITLE:-$V}" --notes "Release notes follow."
   python3 tools/release_notes.py >/dev/null
   echo "PUBLISHED $V (pre-release)"; exit 0
 fi
@@ -59,10 +60,10 @@ sed -i "s/$PREV/$V/g" VERSIONS.md; for p in "$@"; do cp $P/$p.patch .; done
 echo "== 7-Zip volumes (10-15 min)"; rm -f ps5-bazzite-deck-$V.img.7z.*
 7z a -mx=5 -mmt=on -v1900m ps5-bazzite-deck-$V.img.7z ps5-bazzite-deck.img >/dev/null; sha256sum ps5-bazzite-deck-$V.img.7z.* > ps5-bazzite-deck-$V.sha256
 echo "== publish"; cd $SRC; git pull -q --rebase
-sed -i "s/^## \[$V\] – .*/## [$V] – $(date +%F)/" CHANGELOG.md
-d=$(gh release view $PREV --repo $R --json publishedAt -q .publishedAt | cut -c1-10); sed -i "s/^## \[$PREV\] – .*/## [$PREV] – $d/" CHANGELOG.md
+sed -i "s/^## \[$V\] – [^ ]*/## [$V] – $(date +%F)/" CHANGELOG.md
+d=$(gh release view $PREV --repo $R --json publishedAt -q .publishedAt | cut -c1-10); sed -i "s/^## \[$PREV\] – [^ ]*/## [$PREV] – $d/" CHANGELOG.md
 git add -A; git commit -q -m "$V" || true; git push -q
 git rev-parse -q --verify refs/tags/$V >/dev/null || { git tag -a $V -m $V; git push -q --tags; }
-cd $O; gh release create $V ps5-bazzite-deck-$V.img.7z.* ps5-bazzite-deck-$V.sha256 $N.tar.xz $N.tar.xz.sha256 VERSIONS.md local-changes.diff ./*.patch --repo $R --title "$V" --notes "Release notes follow."
+cd $O; gh release create $V ps5-bazzite-deck-$V.img.7z.* ps5-bazzite-deck-$V.sha256 $N.tar.xz $N.tar.xz.sha256 VERSIONS.md local-changes.diff ./*.patch --repo $R --title "${TITLE:-$V}" --notes "Release notes follow."
 cd $SRC; python3 tools/release_notes.py >/dev/null
 echo "PUBLISHED $V, latest: $(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/$R/releases/latest | sed 's#.*/##')"

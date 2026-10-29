@@ -57,6 +57,7 @@ sed -i 's/^CONFIG_USB_AUTOSUSPEND_DELAY=.*/CONFIG_USB_AUTOSUSPEND_DELAY=-1/' wor
 grep -q '^CONFIG_DEBUG_INFO_BTF=y' work/ps5-linux-patches/.config || echo 'CONFIG_DEBUG_INFO_BTF=y' >> work/ps5-linux-patches/.config
 sed -i 's/^# CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set/CONFIG_MODULE_ALLOW_BTF_MISMATCH=y/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' work/ps5-linux-patches/.config || echo 'CONFIG_MODULE_ALLOW_BTF_MISMATCH=y' >> work/ps5-linux-patches/.config   # kernel-only hotfixes keep loading the release modules
 sed -i 's/^# CONFIG_MT7921E is not set/CONFIG_MT7921E=m/' work/ps5-linux-patches/.config; grep -q '^CONFIG_MT7921E=m' work/ps5-linux-patches/.config || echo 'CONFIG_MT7921E=m' >> work/ps5-linux-patches/.config   # MediaTek MT7921 Wi-Fi (PS5 Slim)
+for o in LOGITECH_FF LOGIRUMBLEPAD2_FF LOGIG940_FF LOGIWHEELS_FF; do sed -i "s/^# CONFIG_$o is not set/CONFIG_$o=y/" work/ps5-linux-patches/.config; done   # wheel force feedback, as rmux's meower (36b9828)
 git clone -q --branch "$KERNEL_TAG" --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git work/linux73
 git -C work/linux73 apply --exclude=Makefile ../ps5-linux-patches/linux.patch
 git -C work/linux73 apply "$SRC/patches/ps5-bluetooth.patch"          # MediaTek bulk-OUT endpoint (IW620 + L2CAP fixes are in meower)
@@ -87,6 +88,9 @@ git -C work/linux73 apply "$SRC/patches/ps5-pro-gpu.patch"                 # PS5
 git -C work/linux73 apply "$SRC/patches/ps5-pro-bluetooth.patch"           # PS5 Pro internal Bluetooth 0e8d:3605 (QuartConz)
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-live-switch.patch"         # VRR toggles like a PC: no setup, no black screen
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-hardening.patch"       # 4K120: VRR follow after the FRL link, 120.00 Hz only, format in the log
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-exit.patch"            # leave FRL properly: SCDC FRL_Rate 0 on the way back to TMDS
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-no-6bpc.patch"             # HDMI chip = HDMI endpoint: no 6 bpc, 4K120 as YCbCr 4:2:2
+git -C work/linux73 apply "$SRC/patches/ps5-pro-no-freqdrivers.patch"      # PS5 Pro: no PS5 CPU/GPU frequency drivers (MP1 busy flood)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
@@ -137,6 +141,8 @@ sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.timer" "$ROOT/etc/systemd/sys
 sudo mkdir -p "$ROOT/etc/systemd/system/timers.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-powersave.timer "$ROOT/etc/systemd/system/timers.target.wants/ps5-wifi-powersave.timer"
 sudo ln -sf /etc/systemd/system/ps5-perf.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-perf.service"
 sudo ln -sf /etc/systemd/system/ps5-stage-viola-fw.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-stage-viola-fw.service"
+# Bazzite's ostree-only services fail at every boot on this non-ostree image: masked (vanilla Bazzite doesn't run them on such installs)
+for u in bootloader-update.service greenboot-healthcheck.service greenboot-success.target; do sudo ln -sf /dev/null "$ROOT/etc/systemd/system/$u"; done
 sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
 sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"
 sudo mkdir -p "$ROOT/etc/systemd/system/multi-user.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-repair.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-wifi-repair.service"
