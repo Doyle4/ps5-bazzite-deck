@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.6.3] – 2026-10-<DD>
+## [v1.6.3] – 2026-10-29
 > Kernel only, as a quick kernel package.
 - **VRR at every mode:** 1440p60 and 1440p120 work too (Gilles, LG C4), with the timing packet sent whatever the sync polarity
 - **Cleaner, faster switching:** the HDMI chip switches over in under 2 seconds (was about 6), and the picture stays dark meanwhile instead of drifting and flickering
