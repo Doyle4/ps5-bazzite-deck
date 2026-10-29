@@ -196,6 +196,7 @@ end with a space in front of it, or delete it again to undo. Leave the entries t
 | `dyndbg="file drivers/ps5/hdmi.c +p"` | Logs every HDMI chip event | When asked for an HDMI log for a black screen |
 | `usbc_dp.enable=1` | Switches on the front USB-C port's DisplayPort output (v1.6.1+) | USB-C displays and the PSVR2. Not with your boot drive on the front USB-C port |
 | `hdmi.vrr=0` | Never offers VRR (v1.7.1+) | A TV where VRR misbehaves |
+| `hdmi.frl_4k120=0` | Never offers 4K at 120 Hz (v1.7.2+) | A TV where 4K120 misbehaves |
 
 ### Common problems
 

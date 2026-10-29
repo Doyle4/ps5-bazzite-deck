@@ -3,8 +3,7 @@
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
 ## [v1.7.2] – 2026-10-<DD>
-> Kernel only, as a quick kernel package.
-- **Test: 4K at 120 Hz** over HDMI 2.1 FRL on FLAVA3 consoles, with ` hdmi.frl_4k120=1` in `cmdline.txt` (off by default). Ported from Lawson's kernel, which follows Sony's own setup for these modes; 4K120 runs as YCbCr 4:2:2 between GPU and HDMI chip, the TV gets real 4K120
+- **4K at 120 Hz** over HDMI 2.1 FRL on FLAVA3 consoles with an HDMI 2.1 TV that supports it, in Game Mode's display settings like any other mode. Ported from Lawson's kernel, which follows Sony's own setup for this mode; between GPU and HDMI chip it runs as YCbCr 4:2:2, the TV gets real 4K120. VRR works there too
 - **VRR:** switching VRR again or changing the mode while the HDMI chip is still switching over no longer mixes the two setups
 
 ## [v1.7.1] – 2026-10-<DD>
