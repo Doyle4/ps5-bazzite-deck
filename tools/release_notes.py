@@ -95,8 +95,11 @@ def main():
         if dry:
             print(f"rendered {tag} -> {path}")
         else:
-            gh("release", "edit", tag, "--repo", REPO, "--notes-file", path)
-            print(f"updated {tag}")
+            try:
+                gh("release", "edit", tag, "--repo", REPO, "--notes-file", path)
+                print(f"updated {tag}")
+            except Exception as e:      # release deleted on GitHub: its notes stay in docs/
+                print(f"skip {tag}: no release ({e})")
 
 
 if __name__ == "__main__":

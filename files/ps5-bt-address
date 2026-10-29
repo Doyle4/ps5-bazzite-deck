@@ -4,15 +4,11 @@
 # (suspected of breaking Wi-Fi on v1.4.0); MediaTek consoles always have it (kernel path).
 #   ps5-bt-address on | off | status
 F=/etc/ps5-bazzite-deck/bt-address
-if lsusb 2>/dev/null | grep -q 1286:2059; then
-    echo "This console has the IW620 Wi-Fi/Bluetooth chip: the Linux-only Bluetooth address isn't available on it"
-    echo "(it left the chip hung after warm restarts). Pair the controller with Linux; it keeps one pairing."
-    [ -e "$F" ] && sudo rm -f "$F"
-    exit 0
-fi
 case "$1" in
     on)  sudo mkdir -p /etc/ps5-bazzite-deck && sudo touch "$F" && echo "Linux-only Bluetooth address on from the next boot: pair your controllers with Linux once more afterwards"
-         echo "Note: on IW620 consoles the address change isn't always applied after a cold boot; if a paired"
+         echo "Note: on IW620 consoles, restarts go through the PS5 system while this is on (no warm restarts:"
+         echo "the chip doesn't survive them with this address). And the change isn't always applied after a cold"
+         echo "boot; if a paired"
          echo "controller then won't reconnect (\"Authentication Failure\" in btmon), run 'ps5-bt-address off',"
          echo "remove the pairing and pair once more." ;;
     off) sudo rm -f "$F" && echo "Linux-only Bluetooth address off from the next boot (the controller keeps one pairing)" ;;

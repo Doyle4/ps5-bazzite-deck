@@ -52,8 +52,6 @@ sudo rm -f /etc/systemd/system/ps5-first-start.service /etc/systemd/system/multi
 sudo systemctl mask bootloader-update.service greenboot-healthcheck.service greenboot-success.target >/dev/null 2>&1 || true
 # v1.9.0: hdmi.rearm=0 is gone (the re-arm has its own back-off now); a leftover kept TVs dark after mode changes
 sudo sed -i 's/ *hdmi\.rearm=0//' "$EFI/cmdline.txt"
-# v1.8.2: no Linux-only Bluetooth address on IW620 consoles any more
-lsusb 2>/dev/null | grep -q 1286:2059 && sudo rm -f /etc/ps5-bazzite-deck/bt-address
 for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf ps5-stage-viola-fw; do
   [ -f "/etc/systemd/system/$u.service" ] && sudo systemctl enable "$u.service" 2>/dev/null || true
 done

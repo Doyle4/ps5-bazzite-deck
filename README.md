@@ -39,7 +39,7 @@ other refresh rates) aren't offered: the HDMI chip only has setups for these.
 
 | | IW620 | MediaTek | |
 |---|:---:|:---:|---|
-| **One DualSense for PS5 and Linux** (separate pairing profiles) | ❌ | ✅ | IW620: one pairing, so after using the controller on the PS5 system, pair it with Linux again. The Linux-only address it needs left Wi-Fi and Bluetooth hung after warm restarts; the v1.8.4 update switches it off, and from v1.9.0 it isn't offered at all. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
+| **One DualSense for PS5 and Linux** (separate pairing profiles) | 🧪 | ✅ | IW620: opt-in with `ps5-bt-address on`. From v1.9.0, restarts then go through the PS5 system instead of warm (the chip doesn't survive a warm restart with it). Without it: one pairing, pair again after using the controller on the PS5 system. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
 | **Wi-Fi after a restart straight into Linux** (`ps5-warm-reboot on`) | ⚠️ | ✅ | IW620: repaired automatically; if it's still missing, power off and run the loader |
 
 **PS5 Pro:** supported from v1.8.4, as a first version (GPU with 64 compute units and its own firmware, Wi-Fi,
@@ -103,6 +103,8 @@ To switch off VRR, use Steam's setting (Settings → Display); to keep the TV fr
 switch off HDMI-CEC in the TV's settings (SIMPLINK, Anynet+, BRAVIA Sync…).
 
 ## 40 GPU compute units
+
+*Original PS5 and Slim only.* The PS5 Pro's 60 compute units are all active already; don't use this on a Pro.
 
 The PS5's GPU has 40 compute units (CUs); Sony ships it with 36 active. The other 4 were switched off at the
 factory, partly because on some chips one of them is faulty. That's the **silicon lottery**: on many consoles all
