@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.4] – 2026-10-<DD> (PRO ONLY)
+## [v1.8.4] – 2026-10-29 (PRO ONLY)
 > Kernel only, as a quick kernel package, on top of v1.8.0–v1.8.3.
 - **Back to the v1.7.3 display behaviour** (Gilles' LG C4: 4K120, and 4K60 with VRR and HDR, stopped working in v1.8.x): the v1.8.1–v1.8.3 display changes are undone (the instant VRR switching, the single-step switch-over, the 4K120 timing and 120.00 Hz-only changes), and the planned 4K120 format and FRL-exit changes don't go in. ALLM stays out. The changes are kept in `patches/parked/1.8-reverted`
 - **PS5 Pro: no more error flood** ("mp1fw_sendmsg: busy", "Failed to change cpu frequency", "ps5-gpufreq: dvfs failed", several times a second): the PS5 CPU and GPU frequency drivers don't start on a Pro, the firmware keeps setting the clocks (as with the upstream kernel)
