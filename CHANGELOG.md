@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.5] – 2026-10-<DD>
+## [v1.8.5] – 2026-10-29
 > Kernel only, as a quick kernel package, on top of v1.8.4.
 - **No more black screen from 4K120** (hsgodd, kishy, pukason): 4K120 is only offered when the display announces the HDMI 2.1 link speed it needs (FRL at 4 lanes × 8 Gbps or more) and YCbCr 4:2:2, and the HDMI chip doesn't report a slower link. If the 4K120 link still doesn't come up, the console notices it (the chip's FRL status), stops offering 4K120 for that display, and switches to 4K at the highest refresh that works by itself. After Slip's work in his `hdmi-usbc-test` branch
 - The log says why 4K120 is or isn't offered (`sudo dmesg | grep 4K120`)
