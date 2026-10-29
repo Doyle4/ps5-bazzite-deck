@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.8.3] – 2026-10-<DD>
+## [v1.8.3] – 2026-10-29
 > Kernel only, as a quick kernel package, on top of v1.8.0/v1.8.1. Test build for 4K120.
 - **4K120 hardening** (no picture on hsgodd's LG with VRR on): with VRR, the HDMI chip switches to follow mode only once the 4K120 link has had time to come up (1.5 s instead of 0.1 s); 4K120 is offered only at 120.00 Hz (the HDMI chip's setup is made for exactly that); the log shows the picture format at 4K120
 
