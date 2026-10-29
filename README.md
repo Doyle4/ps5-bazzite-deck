@@ -39,7 +39,7 @@ other refresh rates) aren't offered: the HDMI chip only has setups for these.
 
 | | IW620 | MediaTek | |
 |---|:---:|:---:|---|
-| **One DualSense for PS5 and Linux** (separate pairing profiles) | 🧪 | ✅ | IW620: switched off by the v1.8.4 update, because it left Wi-Fi and Bluetooth hung after warm restarts; from v1.9.0 it isn't offered on IW620 at all. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
+| **One DualSense for PS5 and Linux** (separate pairing profiles) | ❌ | ✅ | IW620: one pairing, so after using the controller on the PS5 system, pair it with Linux again. The Linux-only address it needs left Wi-Fi and Bluetooth hung after warm restarts; the v1.8.4 update switches it off, and from v1.9.0 it isn't offered at all. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
 | **Wi-Fi after a restart straight into Linux** (`ps5-warm-reboot on`) | ⚠️ | ✅ | IW620: repaired automatically; if it's still missing, power off and run the loader |
 
 **PS5 Pro:** supported from v1.8.4, as a first version (GPU with 64 compute units and its own firmware, Wi-Fi,
@@ -232,7 +232,6 @@ This is a hobby project, built and tested in my free time. If it's useful to you
 - **[Universal Blue / Bazzite](https://github.com/ublue-os/bazzite)** – Bazzite itself.
 - **Lawson** – the VRR fix and 4K120 over HDMI 2.1 FRL; **hsgodd** – captures and research on the stock system's
   HDMI setup; **Slip** – HDR, SCDC, CEC and hotplug patches; **Tertium** – USB-C display output; **Dasloh** – sleep.
-- **Gilles ([@VivaLaVent](https://github.com/VivaLaVent))** – made Game Mode work on the PS5, the Wi-Fi, Bluetooth and
-  boot fixes, and this build.
+- **Gilles ([@VivaLaVent](https://github.com/VivaLaVent))** – developer of this image.
 
 Not affiliated with Sony, Valve or Universal Blue. Use at your own risk. Scripts and docs: MIT; patches: GPL-2.0.
