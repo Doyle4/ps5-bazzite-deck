@@ -2,6 +2,7 @@
 # Build, test and publish a release in one go:
 #   bash tools/release.sh vX.Y "release title"                         stable 1.X: image + update bundle
 #   PRERELEASE=1 BUNDLE_ONLY=1 bash tools/release.sh vX.Y.Z "title"  pre-release 1.X.Y: update bundle only
+#   NO_DEPLOY=1 ...: skip the test install on the PS5 and the publish question
 # (BUNDLE_ONLY still builds the image, the bundle's initrd comes from it, but skips the
 # 7-Zip volumes and their upload.) Uses the kernel tree in ~/ps5-build-7.3/work/linux73 as it is (apply any delta first),
 # rebuilds the image and the update bundle, installs the bundle on the PS5 ($PS5), and
@@ -33,11 +34,15 @@ SKIP_7Z=1 bash /tmp/finish.sh
 for f in output/*.patch; do [ -f "$SRC/patches/$(basename "$f")" ] || rm -f "$f"; done
 BUNDLE=ps5-bazzite-deck-$V-update.tar.xz
 
-echo "==> install on the PS5 ($PS5)"
-scp "output/$BUNDLE" "$PS5:~" && ssh -t "$PS5" "rm -rf ps5-bazzite-deck-$V-update && tar xJf $BUNDLE && bash ps5-bazzite-deck-$V-update/update.sh && sudo systemctl reboot" || echo "(install on the PS5 failed or the PS5 is offline: install it yourself before answering)"
-echo
-read -r -p "Boot the PS5 with the loader and test it. Publish $V now? [y/N] " OK
-[ "$OK" = y ] || { echo "Not published. The bundle is in $B/output."; exit 0; }
+if [ -n "${NO_DEPLOY:-}" ]; then
+  echo "==> NO_DEPLOY: no install on the PS5, publishing straight away"
+else
+  echo "==> install on the PS5 ($PS5)"
+  scp "output/$BUNDLE" "$PS5:~" && ssh -t "$PS5" "rm -rf ps5-bazzite-deck-$V-update && tar xJf $BUNDLE && bash ps5-bazzite-deck-$V-update/update.sh && sudo systemctl reboot" || echo "(install on the PS5 failed or the PS5 is offline: install it yourself before answering)"
+  echo
+  read -r -p "Boot the PS5 with the loader and test it. Publish $V now? [y/N] " OK
+  [ "$OK" = y ] || { echo "Not published. The bundle is in $B/output."; exit 0; }
+fi
 
 IMGFILES=()
 if [ -z "${BUNDLE_ONLY:-}" ]; then

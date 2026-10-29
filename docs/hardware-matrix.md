@@ -49,7 +49,6 @@ which combination a console has.
 | `99-ps5-iw620.conf` (stable MAC during scans), `ps5-stage-firmware` drop-in | IW620 | — (harmless elsewhere) |
 | `90-ps5-wifi-powersave`, `ps5-wifi-powersave.timer` (via `ps5-perf wifi`) | all Wi-Fi; matters most on IW620 | `WIFI_POWERSAVE` in `perf.conf` |
 | `ps5-perf` (CPU boost, fan target) | all | `perf.conf` |
-| `ps5-first-start` | all | first start only |
 | Warm reboot (`ps5-kexec`, `ps5-reboot.service`, `reboot.target`, `kexec-shim`) | all, **opt-in** | `/etc/ps5-bazzite-deck/warm-reboot` |
 | `ps5-wifi-repair` (Wi-Fi after a warm reboot) | IW620 | runs after warm reboots, acts only on the IW620 failure |
 | USB autosuspend off (`CONFIG_USB_AUTOSUSPEND_DELAY=-1`; before v1.5.1 `usbcore.autosuspend=-1` in `cmdline.txt`) | all | — |

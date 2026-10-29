@@ -129,9 +129,6 @@ sudo install -Dm644 "$SRC/files/ps5-perf.service" "$ROOT/etc/systemd/system/ps5-
 sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.service" "$ROOT/etc/systemd/system/ps5-wifi-powersave.service"
 sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.timer" "$ROOT/etc/systemd/system/ps5-wifi-powersave.timer"
 sudo mkdir -p "$ROOT/etc/systemd/system/timers.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-powersave.timer "$ROOT/etc/systemd/system/timers.target.wants/ps5-wifi-powersave.timer"
-sudo install -Dm755 "$SRC/files/ps5-first-start" "$ROOT/usr/local/sbin/ps5-first-start"                     # first-start message on the console
-sudo install -Dm644 "$SRC/files/ps5-first-start.service" "$ROOT/etc/systemd/system/ps5-first-start.service"
-sudo ln -sf /etc/systemd/system/ps5-first-start.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-first-start.service"
 sudo ln -sf /etc/systemd/system/ps5-perf.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-perf.service"
 sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
 sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"

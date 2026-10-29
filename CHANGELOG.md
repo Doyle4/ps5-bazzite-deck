@@ -2,41 +2,46 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.5.6] – 2026-10-29
+## [v1.6.0] – 2026-10-<DD>
+- **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the RGB range flag went out as "limited" instead of "full" (first fixed in the v1.5.3 pre-release)
+- **The first-start message is gone:** it didn't show, or only for a moment. The update removes it from existing installs
+- Everything from the v1.5.2–v1.5.6 pre-releases: the VRR experiment's tests 21–26 (inert unless `hdmi.vrr_test=1`), `hdmi.icc_trace`; see docs/vrr-status.md for where VRR stands
+
+## [v1.5.6] – 2026-10-28
 > Kernel only, as a quick kernel package.
 - **VRR test 25b:** `hdmi.vrr_prep_keep=1` sends our own pre-block as well, right after the replayed stock message, in case the chip needs both
 - **VRR test 26:** `hdmi.icc_send` sends any HDMI ICC message to the EMC right away (hex, root only, only with `hdmi.vrr_test=1`). Test 25 showed the EMC accepts stock's VRR arming sequence (id `0x30`) but nothing runs it: stored sequences need a trigger binding (4/2), and ours binds `0x31`–`0x37` only. With this, registering `0x30` and binding it to trigger bits can be tried without a rebuild
 - Build: a duplicate `ps5-vrr-prep-raw.patch` line in `build.sh` removed (hsgodd)
 
-## [v1.5.5] – 2026-10-<DD>
+## [v1.5.5] – 2026-10-28
 > Kernel only, as a quick kernel package.
 - **VRR test 25** (only with `hdmi.vrr_test=1` and the chip's own VRR mode): test 24 ruled out the InfoFrames, which leaves the pre-block as the one message where stock and our port still differ. `hdmi.vrr_prep_raw` replaces it at runtime with pasted register writes (e.g. from a stock capture), so each captured value can be tried without a new build
 
-## [v1.5.5] – 2026-10-<DD>
+## [v1.5.5] – 2026-10-28
 > Kernel only, as a quick kernel package.
 - **VRR test 25:** with test 24 every visible message of Sony's VRR switch is replicated except one, the pre-block, whose constants came from a 4K capture. `hdmi.vrr_prep_raw` (runtime) sends a captured pre-block 1:1 instead of ours, so stock's own bytes for a mode can be replayed and bisected without a rebuild. hsgodd's capture of that message (id 0x0186) shows it arms the chip's VTEM/EMP generator (`0x7110` preamble, `0x7011`/`0x7204` strobes, `0x7225`–`0x7231`), which our pre-block never did The UPDCTRL latch after the pre-block is now off by default (stock's capture has none)
 
-## [v1.5.4] – 2026-10-<DD>
+## [v1.5.4] – 2026-10-28
 > Kernel only, as a quick kernel package.
 - **VRR test 24** (only with `hdmi.vrr_test=1` and the chip's own VRR mode): hsgodd captured stock's complete VRR-on sequence; its VRR block matches ours, but stock sends two messages ours didn't, right before the pre-block: a DRM InfoFrame in the `0x7e40` slot and an SPD InfoFrame (vendor "SCEI", product "PS5", source type game). Both now go out in VRR mode (`hdmi.vrr_spd`, `hdmi.vrr_drm`); `hdmi.vrr_vsif=0` keeps our FreeSync packet from overwriting the DRM InfoFrame in the shared slot
 
-## [v1.5.3] – 2026-10-<DD>
+## [v1.5.3] – 2026-10-28
 > Kernel only, as a quick kernel package (no image, no update bundle).
 - **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the full-range fix wrote the `hdmi.rgb_range` value straight into the AVI InfoFrame's quantization field, but CTA-861 codes it as 0 default, 1 limited, 2 full, so the default "1 = full" went out as **limited**. TVs that follow the flag (VCDB QS=1, most current TVs) on "Auto" treated the GPU's full-range RGB as limited: too dark, crushed shadows, at every resolution (Gilles, LG). The parameter keeps its meaning (1 full, 2 limited, 0 no flag)
 - **VRR test 22: full ICC trace** (`hdmi.icc_trace=1`, runtime, off by default): every HDMI ICC message and reply logged in full as numbered hex, the Linux side of the stock-vs-Linux comparison. Test 21 showed the GPU does variable timing and the stock system gets real VRR through the same chip, so the gap is in how the chip is programmed
 
-## [v1.5.2] – 2026-10-<DD>
+## [v1.5.2] – 2026-10-28
 - **VRR test 21 in the kernel** (inert unless `hdmi.vrr_test=1`): measures whether the GPU really sends a variable frame length. Every 2 s the kernel logs the measured frame intervals from the vblank interrupt (`PS5 VRR DRR: … frame length VARIES` or `FIXED`), and at each VRR switch the frame-length range amdgpu programs. Answers hsgodd's question (B): fixed timing from the GPU would explain both the FreeSync drift and the chip's VRR mode refusing
 - Update bundle only (fresh installs: flash the v1.5.1 image, then update)
 
-## [v1.5.1] – 2026-10-<DD>
+## [v1.5.1] – 2026-10-28
 - **Updates always end in a cold start:** with warm reboot on, the restart after an update kexec'd straight into the new kernel without the PS5 resetting its hardware (the v1.5.0 test install hung that way). The updater and the quick-kernel installer now make that one restart go through the PS5 system
 - **Fan left at the console's own target:** v1.5.0 set 85 °C, but the console's own target is 80 °C (ObsessiveRug's report), so the fan ran later and the console warmer. `FAN_TARGET=` in `/etc/ps5-bazzite-deck/perf.conf` still sets one; CPU boost stays on
 - **Shorter `cmdline.txt`:** the two options we had added are kernel defaults now: the security modules (`CONFIG_LSM`, Game Mode needs them) and USB never sleeping (`CONFIG_USB_AUTOSUSPEND_DELAY=-1`). The updater removes exactly `lsm=landlock,lockdown,yama,integrity,apparmor,bpf` and `usbcore.autosuspend=-1`; anything else in the line stays
 - **`ps5-report` and `vrr-report` built in:** the bug-report and VRR-result scripts are commands now (they need no network)
 - **Experimental VRR in the kernel, off by default:** the VRR test series (tests 6–20) is in the release kernel but inert unless `hdmi.vrr_test=1` is in `cmdline.txt`; without it the HDMI setup is exactly v1.5.0's. One build instead of separate quick kernels; switches under `/sys/module/hdmi/parameters/vrr_*`
 
-## [v1.5.0] – 2026-10-<DD>
+## [v1.5.0] – 2026-10-28
 - **USB-C DisplayPort output** (ps5-linux-patches #57 by tertiumndatur, ported to 7.3): displays and the PSVR2 on the console's front USB-C port, no adapter. The HDMI EDID is now bound to the one HDMI connector, and all HDMI-bridge-specific paths (HDR, mute, link lock, 1440p fixup, the standard mode set) stay off the USB-C link. PSVR2 also needs userspace that isn't in the image yet (a patched Mesa for reprojection, PSVR2Toolkit)
 - **Colours at 1080p:** the AVI InfoFrame now says full-range RGB (what the GPU sends; *it went out coded as limited by mistake, fixed in v1.5.3*); TVs read the old "default" as limited range for TV timings like 1080p and 4K60, which crushed blacks and oversaturated colours at those resolutions only (`hdmi.rgb_range=0` for the old behaviour)
 - **Wi-Fi power saving stays off:** Steam's developer toggle switched it back on; a timer turns it off again within two minutes, and the NetworkManager hook now uses the same code (it ignored the setting and missed the IW620's `mlan` interface name) (`WIFI_POWERSAVE=1` in `/etc/ps5-bazzite-deck/perf.conf` leaves it alone)
@@ -49,7 +54,7 @@ All notable changes to the images. Exact upstream versions are in each release's
 - GFX1013 fixes from the same PR (GFXOFF around compute idle, MMIO PASID TLB flushes instead of the KIQ): aimed at the GPU page faults + `ring gfx_0.0.0 timeout` when a session starts or closes; they did not fix it (still there on v1.5.0, gamescope-xwm, ObsessiveRug's report), being investigated, Salina xHCI 1 ms poll (needed for Sense controllers), threaded NAPI on the Ethernet, Bluetooth HIDP frames sent non-blocking, ICC teardown hardening
 - **CPU boost and a fan target by default** (`ps5-perf`; requested by moonman7299, values after NotHavocc's ps5-hwcon-plugin): the CPU's boost clocks are allowed (up to 3.5 GHz under load, the governor still idles down; nothing is locked at max), and the fan aims for 85 °C (the console's own target is saved the first time and shown by `ps5-perf status`). `ps5-perf off` restores both, `/etc/ps5-bazzite-deck/perf.conf` changes the values
 
-## [v1.4.1] – 2026-10-<DD>
+## [v1.4.1] – 2026-10-27
 - **IW620 (Marvell) consoles: the Linux-only Bluetooth address is off by default** (`ps5-bt-address on` enables it). It sends a vendor command to the Wi-Fi/Bluetooth combo chip at every boot and is the suspect for v1.4.0's "Wi-Fi sees networks but won't connect" on those consoles (three reports; MediaTek consoles, which use the kernel's own path, were fine). Back on by default once the cause is confirmed
 - **USB never sleeps by default** (`usbcore.autosuspend=-1` in `cmdline.txt`, added by the image build and the updater): the USB drive, controllers and dongles no longer get suspended; it was the most-recommended fix for disconnects and freezes
 - **Wi-Fi power saving off** whenever a Wi-Fi interface comes up (NetworkManager dispatcher): Steam's developer setting can switch it on per connection, and with it on the IW620 throttles to ~100 Mbit/s instead of ~700 (thelonlybud)
@@ -77,13 +82,13 @@ All notable changes to the images. Exact upstream versions are in each release's
 - **One DualSense for the PS5 and Linux also on MediaTek consoles**: the kernel sets the MediaTek chip's address itself (`btmgmt public-addr`, powered off), no vendor command needed; the service picks the method by chip
 - **GPU load and temperature in the Steam performance overlay** (and MangoHud): `gpu_busy_percent` from the GFX busy time meower already measures for its GPU frequency driver, and a GPU temperature sensor that reports the chip's one temperature (CPU and GPU are one die; the same reading as the CPU's Tctl). The power-management firmware that normally provides both belongs to Sony's firmware
 
-## [v1.3.1] – 2026-10-<DD>
+## [v1.3.1] – 2026-10-25
 - **Fix: 1440p picture a few lines too high** with displays whose 1440p timing uses positive vsync (e.g. LG TVs at 1440p120): the HDMI chip expects the standard polarity of both syncs (+hsync, -vsync) and moves the picture by the pulse width otherwise. 1440p timings now get the standard vertical polarity too (horizontal since v1.2.0)
 - Same drivers (modules) as v1.3.0; the change is built into the kernel
 - Updating: `tools/update-latest.sh`, one command that always installs the latest release (`bash <(curl -fsSL …/tools/update-latest.sh)`); generic `docs/updating.md`
 - README: Ko-fi link, simpler boot-options table, clearer M.2 steps, rmux's loader named
 
-## [v1.3.0] – 2026-10-<DD>
+## [v1.3.0] – 2026-10-25
 - Based on rmux's current `meower` (baee34d): includes the IW620 Bluetooth fixes (our quirks-table and L2CAP fixes, now upstream, plus Maitreya25's interface-recipient control requests: controller initialization and power-on). Our Bluetooth patch is down to the MediaTek part
 - **HDR** (ps5-linux-patches #49, ported to 7.3): HDR10 at 1080p60 and 4K60, sent as 12-bit YCbCr 4:2:2, on consoles whose HDMI chip supports it. Unlike upstream it doesn't depend on the requested colour depth. RGB output stays at 8 bits on every console
 - **Standard display modes**: 1080p60, 1080p120, 1440p60, 4K60 and 1440p120 (where the HDMI chip supports it) in their standard timings, offered whenever the display's limits allow them, even if its EDID doesn't list them. **New displays start at 1080p60**; a higher mode picked in Game Mode or the desktop is remembered, no `cmdline.txt` change needed
@@ -91,18 +96,18 @@ All notable changes to the images. Exact upstream versions are in each release's
 - ps5-linux-patches #50 (clear SCDC scrambling when leaving 4K60, replaces our own fix) and #54 (back off HDMI hotplug retries while link training fails), ported to 7.3
 - `hdmi.log_notify=1` (off by default): logs every HDMI chip notification and picture setup, for black-screen reports
 
-## [v1.2.0] – 2026-10-<DD>
+## [v1.2.0] – 2026-10-23
 - **Fix: rainbow / "disco" colours** (posterized contours in gradients, with TVs that offer deep colour): the output is capped at 8 bits per colour in the DRM core on the PS5. The graphics driver defaulted "max bpc" to 16 and compositors may ask for 10; the HDMI bridges show deeper colour as contours. Also stops the TV re-announcing itself every few seconds on such setups
 - **Fix: "timing issue" / no picture after switching displays**: the wake-up re-arm (#46) now only runs when the same display re-announces itself (EDID checksum); a different display is set up by the hotplug path and the desktop with its own mode
 - **Fix: link training errors at boot**: the chip's "picture up" notification now cancels a pending re-arm, so it no longer fires during the first picture setup
 - **Fix: 1440p picture shifted 32 px to the left** with displays whose 1440p timing uses negative hsync (e.g. Elgato 4K X): the bridge places the picture relative to the rising edge of hsync, so 1440p timings now get the standard sync shape and positive polarity
 - Same drivers (modules) as v1.1.1; the kernel changes are all built in
 
-## [v1.1.1] – 2026-10-<DD>
+## [v1.1.1] – 2026-10-23
 - **40-CU unlock opt-in again** (`amdgpu.ps5_cu_unlock=3` no longer in the image's `cmdline.txt`): on some consoles the 4 extra compute units cause artifacts (green dots), a purple tint or crashes (silicon lottery). The in-place update switches it off once for installs coming from v1.1.0; after that, a setting you add yourself is kept across updates. README: section "40 GPU compute units (optional)" with on/off commands
 - Same kernel and drivers as v1.1.0
 
-## [v1.1.0] – 2026-10-<DD>
+## [v1.1.0] – 2026-10-23
 - Based on rmux's latest PS5 patches (`meower` @ 34bcc15): HDMI audio (#42) and HDMI hotplug (#43) now come from upstream; our own ports of both are dropped
 - Kernel patches consolidated by purpose into four files: `ps5-bluetooth`, `ps5-hdmi-rearm-pr46` (kept separate until it is merged upstream), `ps5-hdmi-output-fixes`, `ps5-hdmi-modes` (plus the Wi-Fi driver's `ps5-iw620-kernel73-compat`)
 - **1440p120 always available** when the TV/monitor offers it; the `hdmi.allow_1440p120` option is removed
@@ -114,20 +119,20 @@ All notable changes to the images. Exact upstream versions are in each release's
 - In-place update: finds the USB drive's boot partition by itself (`/efi`, `/boot/efi` on M.2 installs, or mounts it by its label)
 - README: troubleshooting steps (PS5 settings, loader, `cmdline.txt` options), USB port speeds per model, simpler M.2 installation, loader links to rmuxwashere/ps5-linux-loader
 
-## [v1.0.7] – 2026-10-<DD>
+## [v1.0.7] – 2026-10-22
 - **Fix: black screen at boot on some TVs.** The two event sequences that v1.0.6 enabled (from ps5-linux-patches #43) are off again: on some TVs they made the chip re-announce the TV during the first picture setup, link training failed and the screen stayed black.
 - **Fix: 1440p picture shifted.** The chip places a 1440p picture as if the signal had the back porches of the standard 1440p60 reduced-blanking timing (80 px / 33 lines); other 1440p timings (the desktop's generated 1440p60, a TV's 1440p120) were shifted right or down. The sync pulses are now moved so the back porches match; resolution, totals and refresh rate are unchanged
 - SSH is enabled by default (user `ps5`, password `ps5`; change it with `passwd`)
 - Kernel: `CONFIG_MODULE_ALLOW_BTF_MISMATCH=y`, so kernel-only hotfixes keep loading the release's modules
 
-## [v1.0.6] – 2026-10-<DD>
+## [v1.0.6] – 2026-10-22
 - **HDMI: picture comes back when the display wakes up** (display already on at boot, woken from standby, power-cycled): the HDMI bridge is set up again after the display re-announces itself. ps5-linux-patches #46 (rdmrocha), merged by hand onto #43. Off switch: add `hdmi.rearm=0` to `cmdline.txt`
 - **HDMI hotplug**: switching to a different display or re-plugging the cable is detected, and the picture and HDMI audio are set up again. ps5-linux-patches #43, ported to the 7.3 display code
 - **Fix: no signal after switching down from 4K** (e.g. to 1080p or 1080p120): 4K60 turns HDMI 2.0 scrambling on in the TV, and it was never turned off again for lower modes. Now it is. 1080p120 works
 - **1440p120, experimental and opt-in**: add `hdmi.allow_1440p120=1` to `cmdline.txt`. Uses the 4K60 high-bandwidth setup
 - **In-place updates**: an update bundle (`tools/update.sh`) brings earlier installs to the new version without reflashing; kernel, modules and settings, with a backup
 
-## [v1.0.5] – 2026-10-<DD>
+## [v1.0.5] – 2026-10-22
 - **Fix: services randomly missing after the first reboot** (no Wi-Fi/Ethernet because NetworkManager never started, Switch to Desktop dropping back to Game Mode). Cause: the image builder's `ps5-stage-firmware.service` creates a systemd ordering cycle (`Before=systemd-modules-load` with default dependencies, i.e. also after `basic.target`); systemd breaks it by deleting a different job each boot. Fixed with a drop-in setting `DefaultDependencies=no`. Affected v1.0.3 and v1.0.4 on all models
 - MediaTek Wi-Fi (PS5 Slim) confirmed working by a tester; MediaTek Bluetooth still unconfirmed
 

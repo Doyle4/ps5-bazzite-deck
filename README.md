@@ -158,7 +158,7 @@ The setting stays as it is across updates.
   hardware-decoded H.264 instead.
 - **Apps:** use the Discover store / Flatpak. `dnf5 install` works for system packages; `rpm-ostree` and
   `ujust update` don't (this image isn't an ostree install).
-- **VRR** isn't working yet; it's in the kernel as an experiment, see the boot options below.
+- **VRR** isn't working yet; it's in the kernel as an experiment (boot options below). Where the research stands: [docs/vrr-status.md](docs/vrr-status.md).
 
 ## Troubleshooting
 
