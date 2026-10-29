@@ -143,6 +143,9 @@ Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart s
 - **VRR:** no "Enable VRR" means a VERDE console or VRR/FreeSync off for that input in the TV. The screen going dark
   for 2 seconds in menus: use VRR per game (quick access menu → Performance). OLED flicker on the desktop: Adaptive
   Sync on **Automatic**, not Always.
+- **HEVC video with broken colours or a red screen** (recording, streaming with Sunshine, Moonlight): the PS5's
+  video engine gets HEVC P-frames wrong. Use **H.264**, or for encoding HEVC with I-frames only (ffmpeg: `-g 1 -bf 0`;
+  much higher bitrate). As a Moonlight client: H.264, or "Force software decoding" for HEVC.
 - **Won't boot from an SSD in a USB enclosure:** some enclosures don't work with the loader; try another one.
 
 ## Installing to the PS5's internal M.2
