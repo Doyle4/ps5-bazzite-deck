@@ -83,6 +83,9 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-stock-setup.patch"         # v1.
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-4k120.patch"         # 4K120 over HDMI 2.1 FRL on FLAVA3 (Lawson), hdmi.frl_4k120=1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-guard.patch"         # VRR: a running follow block stops when a newer setup starts
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-min-48.patch"              # VRR never below 48 Hz (PS5 system floor), SPD with the actual range
+git -C work/linux73 apply "$SRC/patches/ps5-hdmi-allm.patch"               # ALLM: the TV switches to its game mode (stock HF-VSIF)
+git -C work/linux73 apply "$SRC/patches/ps5-pro-gpu.patch"                 # PS5 Pro GPU (upstream #58, Borchev), only with the Viola firmware
+git -C work/linux73 apply "$SRC/patches/ps5-pro-bluetooth.patch"           # PS5 Pro internal Bluetooth 0e8d:3605 (QuartConz)
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config
@@ -104,6 +107,7 @@ echo "    cmdline: $(cat "$BOOT/cmdline.txt")"
 echo "options moal ps_mode=0" | sudo tee "$ROOT/etc/modprobe.d/ps5-iw620.conf" >/dev/null
 sudo install -Dm644 "$SRC/files/99-ps5-iw620.conf" "$ROOT/etc/NetworkManager/conf.d/99-ps5-iw620.conf"        # IW620: stable MAC during scans
 sudo install -Dm644 "$SRC/files/ps5-stage-firmware-no-default-deps.conf" "$ROOT/etc/systemd/system/ps5-stage-firmware.service.d/10-no-default-deps.conf"   # fixes boot ordering cycle (random missing services)
+sudo install -Dm644 "$SRC/files/50-ps5-pro-bt-power.rules" "$ROOT/etc/udev/rules.d/50-ps5-pro-bt-power.rules"     # PS5 Pro BT: no USB autosuspend (else the Salina xHCI dies)
 sudo install -Dm644 "$SRC/files/99-ps5-bt-phantom.rules" "$ROOT/etc/udev/rules.d/99-ps5-bt-phantom.rules"      # MediaTek BT: phantom interfaces, no autosuspend
 sudo install -Dm644 "$SRC/files/btusb-ps5.conf" "$ROOT/etc/modprobe.d/btusb-ps5.conf"
 sudo install -Dm755 "$SRC/files/ps5-bt-addr" "$ROOT/usr/local/sbin/ps5-bt-addr"                                 # IW620: Linux-only BT address, DualSense keeps PS5 + Linux profiles (PR #9, Dasloh)
@@ -125,10 +129,13 @@ sudo install -Dm755 "$SRC/tools/ps5-report.sh" "$ROOT/usr/local/bin/ps5-report" 
 sudo install -Dm755 "$SRC/tools/vrr-report.sh" "$ROOT/usr/local/bin/vrr-report"                              # VRR test results: vrr-report
 sudo install -Dm755 "$SRC/files/ps5-perf" "$ROOT/usr/local/sbin/ps5-perf"                                     # CPU boost + fan target, default on
 sudo install -Dm644 "$SRC/files/ps5-perf.service" "$ROOT/etc/systemd/system/ps5-perf.service"
+sudo install -Dm755 "$SRC/files/ps5-stage-viola-fw" "$ROOT/usr/local/sbin/ps5-stage-viola-fw"                   # PS5 Pro: Viola GPU firmware into the initrd
+sudo install -Dm644 "$SRC/files/ps5-stage-viola-fw.service" "$ROOT/etc/systemd/system/ps5-stage-viola-fw.service"
 sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.service" "$ROOT/etc/systemd/system/ps5-wifi-powersave.service"
 sudo install -Dm644 "$SRC/files/ps5-wifi-powersave.timer" "$ROOT/etc/systemd/system/ps5-wifi-powersave.timer"
 sudo mkdir -p "$ROOT/etc/systemd/system/timers.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-powersave.timer "$ROOT/etc/systemd/system/timers.target.wants/ps5-wifi-powersave.timer"
 sudo ln -sf /etc/systemd/system/ps5-perf.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-perf.service"
+sudo ln -sf /etc/systemd/system/ps5-stage-viola-fw.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-stage-viola-fw.service"
 sudo install -Dm755 "$SRC/files/ps5-wifi-repair" "$ROOT/usr/local/sbin/ps5-wifi-repair"                        # IW620: Wi-Fi back after a warm reboot
 sudo install -Dm644 "$SRC/files/ps5-wifi-repair.service" "$ROOT/etc/systemd/system/ps5-wifi-repair.service"
 sudo mkdir -p "$ROOT/etc/systemd/system/multi-user.target.wants" && sudo ln -sf /etc/systemd/system/ps5-wifi-repair.service "$ROOT/etc/systemd/system/multi-user.target.wants/ps5-wifi-repair.service"

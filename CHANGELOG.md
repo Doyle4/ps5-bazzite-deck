@@ -2,11 +2,18 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
+## [v1.8.0] – 2026-10-<DD>
+> Pre-release: ALLM and PS5 Pro support need testing on more TVs and on a Pro.
+- **ALLM:** on FLAVA3 consoles the TV switches to its game mode by itself, when it supports ALLM (the same HDMI Forum signal the PS5 system sends). ` hdmi.allm=0` switches it off
+- **PS5 Pro (untested):** GPU support from upstream's PR #58 by Borchev, ported to our 7.3 kernel (Viola golden settings, 64 compute units, GPU clock and temperature), and the Pro's GPU firmware put into the initrd at boot from what the loader dumps, without rebuilding the initrd on the console. Nothing changes on other consoles
+- **PS5 Pro Wi-Fi and Bluetooth (untested):** the Pro's MediaTek MT7925 Wi-Fi driver is in the kernel; its internal Bluetooth (0e8d:3605) from QuartConz's patch (interface 3, WMT activation, ACL on the second bulk endpoint, an idea from WizGery), plus his rule that keeps it out of USB autosuspend
+- **`ps5-bt-address`:** warns that IW620 consoles may not apply the address after a cold boot, and `status` shows the controller's current address
+
 ## [v1.7.3] – 2026-10-29
 > Kernel only, as a quick kernel package.
 - **VRR never goes below 48 Hz,** the PS5 system's own floor. Many TVs allow 40 Hz, where OLEDs flicker visibly when the refresh rate swings (suggested by hsgodd). Below 48 fps, frames are doubled at 120 Hz modes; 60 Hz modes keep a fixed 60 Hz. The FreeSync InfoFrame now sends the range actually used
 
-## [v1.7.2] – 2026-10-<DD>
+## [v1.7.2] – 2026-10-29
 - **4K at 120 Hz** over HDMI 2.1 FRL on FLAVA3 consoles with an HDMI 2.1 TV that supports it, in Game Mode's display settings like any other mode. Ported from Lawson's kernel, which follows Sony's own setup for this mode; between GPU and HDMI chip it runs as YCbCr 4:2:2, the TV gets real 4K120. VRR works there too
 - **VRR:** switching VRR again or changing the mode while the HDMI chip is still switching over no longer mixes the two setups
 

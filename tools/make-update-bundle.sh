@@ -31,11 +31,12 @@ sudo cp -a "/mnt/ps5root/usr/lib/modules/$K" "$OUT/modules/"
 sudo test -f /mnt/ps5root/etc/modprobe.d/ps5-iw620.conf && sudo cp /mnt/ps5root/etc/modprobe.d/ps5-iw620.conf "$OUT/files/ps5-iw620-modprobe.conf"
 sudo chown -R "$(id -u):$(id -g)" "$OUT"
 fi
-cp "$SRC/files/99-ps5-iw620.conf" "$SRC/files/99-ps5-bt-phantom.rules" "$SRC/files/btusb-ps5.conf" "$SRC/files/ps5-stage-firmware-no-default-deps.conf" "$SRC/files/ps5-bt-addr" "$SRC/files/ps5-bt-addr.service" "$SRC/files/ps5-bt-connectable.service" "$SRC/files/bluetooth-ps5-connectable.conf" "$SRC/files/99-ps5-bt-services.rules" "$SRC/files/ps5-bt-revive" "$SRC/files/ps5-bt-revive.service" "$SRC/files/ps5-hidp.conf" "$SRC/files/99-ps5-usb-power.rules" "$SRC/files/ps5-warm-reboot" "$SRC/files/ps5-bt-address" "$SRC/tools/ps5-report.sh" "$SRC/tools/vrr-report.sh" "$SRC/files/ps5-perf" "$SRC/files/ps5-perf.service" "$SRC/files/ps5-wifi-powersave.service" "$SRC/files/ps5-wifi-powersave.timer" "$SRC/files/ps5-wifi-repair" "$SRC/files/ps5-wifi-repair.service" "$SRC/files/90-ps5-wifi-powersave" "$SRC/files/ps5-kexec" "$SRC/files/kexec-shim" "$SRC/files/ps5-kexec-prepare.service" "$SRC/files/ps5-reboot.service" "$SRC/files/reboot.target" "$SRC/files/ps5-reboot-to-ps5" "$OUT/files/"
+cp "$SRC/files/99-ps5-iw620.conf" "$SRC/files/99-ps5-bt-phantom.rules" "$SRC/files/50-ps5-pro-bt-power.rules" "$SRC/files/btusb-ps5.conf" "$SRC/files/ps5-stage-firmware-no-default-deps.conf" "$SRC/files/ps5-bt-addr" "$SRC/files/ps5-bt-addr.service" "$SRC/files/ps5-bt-connectable.service" "$SRC/files/bluetooth-ps5-connectable.conf" "$SRC/files/99-ps5-bt-services.rules" "$SRC/files/ps5-bt-revive" "$SRC/files/ps5-bt-revive.service" "$SRC/files/ps5-hidp.conf" "$SRC/files/99-ps5-usb-power.rules" "$SRC/files/ps5-warm-reboot" "$SRC/files/ps5-bt-address" "$SRC/tools/ps5-report.sh" "$SRC/tools/vrr-report.sh" "$SRC/files/ps5-perf" "$SRC/files/ps5-perf.service" "$SRC/files/ps5-stage-viola-fw" "$SRC/files/ps5-stage-viola-fw.service" "$SRC/files/ps5-wifi-powersave.service" "$SRC/files/ps5-wifi-powersave.timer" "$SRC/files/ps5-wifi-repair" "$SRC/files/ps5-wifi-repair.service" "$SRC/files/90-ps5-wifi-powersave" "$SRC/files/ps5-kexec" "$SRC/files/kexec-shim" "$SRC/files/ps5-kexec-prepare.service" "$SRC/files/ps5-reboot.service" "$SRC/files/reboot.target" "$SRC/files/ps5-reboot-to-ps5" "$OUT/files/"
 # FILES: source, destination, optional mode (default 644)
 cat > "$OUT/FILES" << 'L'
 99-ps5-iw620.conf /etc/NetworkManager/conf.d/99-ps5-iw620.conf
 99-ps5-bt-phantom.rules /etc/udev/rules.d/99-ps5-bt-phantom.rules
+50-ps5-pro-bt-power.rules /etc/udev/rules.d/50-ps5-pro-bt-power.rules
 btusb-ps5.conf /etc/modprobe.d/btusb-ps5.conf
 ps5-stage-firmware-no-default-deps.conf /etc/systemd/system/ps5-stage-firmware.service.d/10-no-default-deps.conf
 ps5-iw620-modprobe.conf /etc/modprobe.d/ps5-iw620.conf
@@ -54,6 +55,8 @@ ps5-report.sh /usr/local/bin/ps5-report 755
 vrr-report.sh /usr/local/bin/vrr-report 755
 ps5-perf /usr/local/sbin/ps5-perf 755
 ps5-perf.service /etc/systemd/system/ps5-perf.service
+ps5-stage-viola-fw /usr/local/sbin/ps5-stage-viola-fw 755
+ps5-stage-viola-fw.service /etc/systemd/system/ps5-stage-viola-fw.service
 ps5-wifi-powersave.service /etc/systemd/system/ps5-wifi-powersave.service
 ps5-wifi-powersave.timer /etc/systemd/system/ps5-wifi-powersave.timer
 ps5-wifi-repair /usr/local/sbin/ps5-wifi-repair 755

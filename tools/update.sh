@@ -48,7 +48,7 @@ if [ -e /etc/systemd/system/ps5-kexec-load.service ]; then sudo systemctl disabl
 # v1.6: the first-start message is gone (it didn't show, or only for a moment): remove it from existing installs
 sudo systemctl disable ps5-first-start.service 2>/dev/null || true
 sudo rm -f /etc/systemd/system/ps5-first-start.service /etc/systemd/system/multi-user.target.wants/ps5-first-start.service /usr/local/sbin/ps5-first-start
-for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf; do
+for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf ps5-stage-viola-fw; do
   [ -f "/etc/systemd/system/$u.service" ] && sudo systemctl enable "$u.service" 2>/dev/null || true
 done
 [ -f /etc/systemd/system/ps5-wifi-powersave.timer ] && sudo systemctl enable ps5-wifi-powersave.timer 2>/dev/null || true

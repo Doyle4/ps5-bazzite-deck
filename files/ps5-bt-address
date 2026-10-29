@@ -5,7 +5,16 @@
 #   ps5-bt-address on | off | status
 F=/etc/ps5-bazzite-deck/bt-address
 case "$1" in
-    on)  sudo mkdir -p /etc/ps5-bazzite-deck && sudo touch "$F" && echo "Linux-only Bluetooth address on from the next boot: pair your controllers with Linux once more afterwards" ;;
+    on)  sudo mkdir -p /etc/ps5-bazzite-deck && sudo touch "$F" && echo "Linux-only Bluetooth address on from the next boot: pair your controllers with Linux once more afterwards"
+         echo "Note: on IW620 consoles the address change isn't always applied after a cold boot; if a paired"
+         echo "controller then won't reconnect (\"Authentication Failure\" in btmon), run 'ps5-bt-address off',"
+         echo "remove the pairing and pair once more." ;;
     off) sudo rm -f "$F" && echo "Linux-only Bluetooth address off from the next boot (the controller keeps one pairing)" ;;
-    *)   [ -e "$F" ] && echo "Linux-only Bluetooth address: on" || echo "Linux-only Bluetooth address: off (ps5-bt-address on to enable)" ;;
+    *)   if [ -e "$F" ]; then
+             echo "Linux-only Bluetooth address: on"
+             cur=$(cat /sys/class/bluetooth/hci0/address 2>/dev/null)
+             [ -n "$cur" ] && echo "controller address now: $cur (if this is the PS5 system's address after a cold boot, the switch didn't apply)"
+         else
+             echo "Linux-only Bluetooth address: off (ps5-bt-address on to enable)"
+         fi ;;
 esac
