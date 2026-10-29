@@ -1,3 +1,5 @@
+> **From v1.8.2 only on consoles with the MediaTek Wi-Fi/Bluetooth chip.** On the IW620 (most original PS5s) the address change left the chip hung after warm restarts and controllers unable to reconnect after some cold boots, so it's no longer offered there: the controller keeps one pairing, like with any PC.
+
 # One DualSense for the PS5 system and Linux
 
 ## Description

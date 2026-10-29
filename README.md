@@ -9,12 +9,17 @@ Your PS5 itself is not modified: unplug the drive and it's a normal PS5 again.
 
 **Download:** [Releases](../../releases) · **Help & testing:** [Discord](https://discord.gg/qGcuTgBBYU) · **Support the project:** [Ko-fi](https://ko-fi.com/vivalavent)
 
-## Features
+## Features and your hardware
 
-Some features depend on the console's chips. `ps5-report` shows which ones yours has. The PS5 Pro isn't supported
-yet.
+One image runs on every supported PS5. What differs is decided by three parts of the console:
 
-**HDMI chip:** FLAVA3 (most consoles) or VERDE (some later models)
+| Part | Kinds | How to tell |
+|---|---|---|
+| **HDMI chip** | FLAVA3 (most consoles), VERDE (some later models) | `ps5-report` (first line), or `sudo dmesg \| grep "HDMI IC Type"` |
+| **Wi-Fi/Bluetooth chip** | IW620 (most original PS5s, `1b4b:2b56`), MediaTek MT7961 (most Slims, `14c3:7961`), MediaTek MT7925 (PS5 Pro, `14c3:7925`) | `ps5-report`, or `lspci -nn \| grep -i -e 1b4b -e 14c3` |
+| **Model** | PS5 or Slim, PS5 Pro (GPU `1002:13da`) | `ps5-report`, or `lspci -nn \| grep 1002:13da` |
+
+**What differs by HDMI chip**
 
 | | FLAVA3 | VERDE | |
 |---|:---:|:---:|---|
@@ -26,17 +31,20 @@ yet.
 Both chips: 1080p60, 1080p120, 1440p60 and 4K60, when the TV/monitor can do them. Other resolutions (ultrawide,
 other refresh rates) aren't offered: the HDMI chip only has setups for these.
 
-**Wi-Fi/Bluetooth chip:** IW620 (most original PS5s) or MediaTek (most Slims)
+**What differs by Wi-Fi/Bluetooth chip**
 
 | | IW620 | MediaTek | |
 |---|:---:|:---:|---|
-| **One DualSense for PS5 and Linux** (separate pairing profiles) | 🧪 | ✅ | IW620: opt-in with `ps5-bt-address on`; on some consoles the controller won't reconnect after a cold boot, then switch it off again and pair once more. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
+| **One DualSense for PS5 and Linux** (separate pairing profiles) | ❌ | ✅ | IW620: one pairing, so after using the controller on the PS5 system, pair it with Linux again. MediaTek: always on. See [docs/dualsense-profiles.md](docs/dualsense-profiles.md) |
 | **Wi-Fi after a restart straight into Linux** (`ps5-warm-reboot on`) | ⚠️ | ✅ | IW620: repaired automatically; if it's still missing, power off and run the loader |
+
+**PS5 Pro:** not supported in the stable releases yet. The v1.8.0 pre-release has a first, untested version (GPU,
+its firmware, Wi-Fi and Bluetooth); keep Ethernet and a wired controller at hand.
 
 ## Prerequisites
 
 - A PS5 on a firmware **rmux's** [PS5 Linux loader](https://github.com/rmuxwashere/ps5-linux-loader/releases) supports (see its releases). Tested on firmware 13.60.
-- An original PS5 or a PS5 Slim. **The PS5 Pro isn't supported yet** (its GPU firmware, Wi-Fi and Bluetooth need support this image doesn't have).
+- An original PS5 or a PS5 Slim. The PS5 Pro: see [Features and your hardware](#features-and-your-hardware).
 - **etaHEN and kstuff off:** they don't work with the Linux loader (freezes, especially when going to sleep).
 - A USB drive of **32 GB or more**, ideally an external SSD (much faster than a stick).
 - A PC to download and flash the image, and for the first setup a USB keyboard is handy.
@@ -116,8 +124,7 @@ The setting stays as it is across updates.
 terminal or over SSH). It only reads, and saves one file with your hardware and the relevant logs. Without network,
 copy it to the USB drive's FAT32 partition and take it from there on your PC:
 `E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo cp ~/ps5-report-*.txt $E/`.
-Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart straight into Linux, experimental),
-`ps5-bt-address` (DualSense profiles on IW620).
+Other commands: `ps5-perf` (CPU boost, fan target), `ps5-warm-reboot` (restart straight into Linux, experimental).
 
 - **White light but black screen:** HDMI Device Link off (see [Prerequisites](#prerequisites)), another HDMI
   port or TV, HDCP on/off in the PS5 settings; last resort `amdgpu.force_1080p=1` ([boot options](#boot-options-cmdlinetxt)).

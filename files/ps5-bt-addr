@@ -39,13 +39,11 @@ if [ "$id" != "1286:2059" ]; then
     echo "Bluetooth chip $id is not one the Linux-only address works with, nothing to do"
     exit 0
 fi
-# v1.4.1: on the IW620 the address change (a vendor command to the Wi-Fi/Bluetooth combo chip at
-# boot) is the suspect for Wi-Fi that sees networks but won't connect on v1.4.0. Opt-in until that
-# is settled: "ps5-bt-address on".
-if [ ! -e /etc/ps5-bazzite-deck/bt-address ]; then
-    echo "IW620: the Linux-only Bluetooth address is off (ps5-bt-address on to enable); the controller keeps one pairing"
-    exit 0
-fi
+# v1.8.2: not on the IW620 any more. Its address change is a vendor command to the Wi-Fi/Bluetooth
+# combo chip, and it left the chip hung after a warm restart (Wi-Fi and Bluetooth gone) and the
+# controller unable to reconnect after some cold boots. The IW620 keeps one address, like on any PC.
+echo "IW620: one Bluetooth address (the Linux-only address is only available on MediaTek consoles)"
+exit 0
 
 btmgmt --index 0 power on >/dev/null
 

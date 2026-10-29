@@ -9,6 +9,8 @@ k() { sudo dmesg 2>/dev/null; }
 VER=$(cat /etc/ps5-bazzite-deck-version 2>/dev/null || echo unknown)
 HDMI=$(k | grep -o -m1 'HDMI IC Type \[[A-Z0-9]*\]' | grep -o '\[.*\]' | tr -d '[]'); HDMI=${HDMI:-unknown}
 if lsusb 2>/dev/null | grep -q 1286:2059 || lspci -n 2>/dev/null | grep -qi '11ab:\|1b4b:'; then WL=IW620; elif lsusb 2>/dev/null | grep -qi 0e8d: || lspci -n 2>/dev/null | grep -qi 14c3:; then WL=MediaTek; else WL=unknown; fi
+MODEL=$(lspci -n 2>/dev/null | grep -qi '1002:13da' && echo "PS5 Pro" || echo "PS5/Slim")
+WLID=$(lspci -n 2>/dev/null | grep -o -i -m1 '14c3:79[0-9a-f][0-9a-f]\|1b4b:2b56'); [ -n "$WLID" ] && WL="$WL ($WLID)"
 ROOTDEV=$(lsblk -no tran "/dev/$(lsblk -no pkname "$(findmnt -no SOURCE /)" 2>/dev/null | head -1)" 2>/dev/null | head -1)
 CON=$(for c in /sys/class/drm/card0-*; do [ -f "$c/status" ] && [ "$(cat "$c/status")" = connected ] && echo "${c##*card0-}" && break; done)
 NAME=$([ -n "$CON" ] && python3 -c "
@@ -18,7 +20,7 @@ for i in range(54,126,18):
     if e[i:i+3]==b'\0\0\0' and e[i+3]==0xfc: print(e[i+5:i+18].decode('ascii','replace').strip()); break
 " 2>/dev/null)
 WARM=$(journalctl -b -u ps5-wifi-repair --no-pager -o cat 2>/dev/null | grep -c 'after the warm reboot')
-echo "SUMMARY: $VER | HDMI $HDMI | Wi-Fi/BT $WL | display ${NAME:-?} on ${CON:-none} | system on ${ROOTDEV:-?} | $( [ "$WARM" -gt 0 ] && echo warm || echo cold) boot"
+echo "SUMMARY: $VER | $MODEL | HDMI $HDMI | Wi-Fi/BT $WL | display ${NAME:-?} on ${CON:-none} | system on ${ROOTDEV:-?} | $( [ "$WARM" -gt 0 ] && echo warm || echo cold) boot"
 echo
 echo "=== system"; uname -rv; uptime -p; cat /sys/class/dmi/id/product_name /sys/class/dmi/id/board_name 2>/dev/null | paste -sd' '; grep -m1 'model name' /proc/cpuinfo
 echo "cmdline: $(cat /proc/cmdline)"

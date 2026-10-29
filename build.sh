@@ -83,9 +83,9 @@ git -C work/linux73 apply "$SRC/patches/ps5-vrr-stock-setup.patch"         # v1.
 git -C work/linux73 apply "$SRC/patches/ps5-hdmi-frl-4k120.patch"         # 4K120 over HDMI 2.1 FRL on FLAVA3 (Lawson), hdmi.frl_4k120=1
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-follow-guard.patch"         # VRR: a running follow block stops when a newer setup starts
 git -C work/linux73 apply "$SRC/patches/ps5-vrr-min-48.patch"              # VRR never below 48 Hz (PS5 system floor), SPD with the actual range
-git -C work/linux73 apply "$SRC/patches/ps5-hdmi-allm.patch"               # ALLM: the TV switches to its game mode (stock HF-VSIF)
 git -C work/linux73 apply "$SRC/patches/ps5-pro-gpu.patch"                 # PS5 Pro GPU (upstream #58, Borchev), only with the Viola firmware
 git -C work/linux73 apply "$SRC/patches/ps5-pro-bluetooth.patch"           # PS5 Pro internal Bluetooth 0e8d:3605 (QuartConz)
+git -C work/linux73 apply "$SRC/patches/ps5-vrr-live-switch.patch"         # VRR toggles like a PC: no setup, no black screen
 cp work/ps5-linux-patches/.config work/linux73/.config
 cp -r work/ps5-linux-patches work/linux73/ps5-linux-patches
 grep -E '^CONFIG_LSM=|^CONFIG_DEBUG_INFO_BTF=|^CONFIG_MT7921E=|^CONFIG_MODULE_ALLOW_BTF_MISMATCH=' work/linux73/.config

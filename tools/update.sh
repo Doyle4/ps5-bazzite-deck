@@ -48,6 +48,8 @@ if [ -e /etc/systemd/system/ps5-kexec-load.service ]; then sudo systemctl disabl
 # v1.6: the first-start message is gone (it didn't show, or only for a moment): remove it from existing installs
 sudo systemctl disable ps5-first-start.service 2>/dev/null || true
 sudo rm -f /etc/systemd/system/ps5-first-start.service /etc/systemd/system/multi-user.target.wants/ps5-first-start.service /usr/local/sbin/ps5-first-start
+# v1.8.2: no Linux-only Bluetooth address on IW620 consoles any more
+lsusb 2>/dev/null | grep -q 1286:2059 && sudo rm -f /etc/ps5-bazzite-deck/bt-address
 for u in ps5-bt-addr ps5-bt-connectable ps5-bt-revive ps5-wifi-repair ps5-perf ps5-stage-viola-fw; do
   [ -f "/etc/systemd/system/$u.service" ] && sudo systemctl enable "$u.service" 2>/dev/null || true
 done
