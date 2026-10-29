@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.6.1] – 2026-10-<DD>
+## [v1.6.1] – 2026-10-29
 > Kernel only, as a quick kernel package.
 - **USB-C DisplayPort off by default:** programming the front USB-C port's DisplayPort policy can reset a device on that port, such as a boot drive there (Slip makes it opt-in in his hdmi-usbc-test branch for the same reason). USB-C displays and PSVR2: add ` usbc_dp.enable=1` to `cmdline.txt`
 - **VRR test 28, from Lawson's work** (only with `hdmi.vrr_test=1`, follow mode with `hdmi.vrr_chip=2`): the GPU sends Sony's timing SDP (`39 04`, the source timing) every frame, the HDMI chip's MSA-ignore bit stays clear (it drops its input lock otherwise), and the chip is switched to follow mode only after the SDP flows, plus a FreeSync SPD for the TV. Lawson reports real VRR with this on his setup (TV FreeSync following the game at 40–60 Hz)
