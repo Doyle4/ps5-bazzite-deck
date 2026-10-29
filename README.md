@@ -89,7 +89,7 @@ All steps run on the PS5, booted from the USB, in a terminal (password `ps5`).
 
 3. **Boot from the M.2 from now on:** point `cmdline.txt` at the M.2:
    ```
-   sudo sed -i 's/root=LABEL=bazzite-deck /root=LABEL=bazzite-deck-m2 /' /efi/cmdline.txt && sudo cat /efi/cmdline.txt
+   E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo sed -i 's/root=LABEL=bazzite-deck /root=LABEL=bazzite-deck-m2 /' $E/cmdline.txt && sudo cat $E/cmdline.txt
    ```
 
 4. **Start it:** reboot (`sudo reboot`) and run the loader as usual; it now starts the system on the M.2.
@@ -107,8 +107,8 @@ Notes:
 - Updating: run the in-place update while booted from the M.2, with the USB drive plugged in. The update script
   finds the USB drive's boot partition by itself: on an M.2 install it is often mounted at `/boot/efi` instead of
   `/efi`, or not at all.
-- Commands in this README that edit `/efi/cmdline.txt`: on an M.2 install use `/boot/efi/cmdline.txt` if that's
-  where it is mounted, or edit `cmdline.txt` from your PC.
+- The commands in this README find `cmdline.txt` themselves (`/boot/efi` or `/efi`). If neither has it, the boot
+  partition isn't mounted: edit `cmdline.txt` from your PC instead.
 - Stuck in emergency mode when booting the M.2: its `/etc/fstab` may contain a boot-partition line with an empty
   `UUID=`. Replace that line with `LABEL=boot /efi vfat defaults,nofail 0 2` (mount the M.2 from the USB system
   with `sudo mount LABEL=bazzite-deck-m2 /mnt` to edit it).
@@ -121,13 +121,13 @@ tint, or crashes. Try it, and switch it back off if you see any of that.
 
 **Switch on** (in a terminal or over SSH), then reboot and run the loader:
 ```
-sudo sed -i -e 's/amdgpu\.ps5_cu_unlock=[0-9]*/amdgpu.ps5_cu_unlock=3/' -e '/ps5_cu_unlock/!s/[[:space:]]*$/ amdgpu.ps5_cu_unlock=3/' /efi/cmdline.txt && sudo cat /efi/cmdline.txt
+E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo sed -i -e 's/amdgpu\.ps5_cu_unlock=[0-9]*/amdgpu.ps5_cu_unlock=3/' -e '/ps5_cu_unlock/!s/[[:space:]]*$/ amdgpu.ps5_cu_unlock=3/' $E/cmdline.txt && sudo cat $E/cmdline.txt
 ```
 **Check:** `dmesg | grep active_cu_number` shows `40` (36 without it).
 
 **Switch off** again:
 ```
-sudo sed -i 's/ *amdgpu\.ps5_cu_unlock=[0-9]*//' /efi/cmdline.txt && sudo cat /efi/cmdline.txt
+E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo sed -i 's/ *amdgpu\.ps5_cu_unlock=[0-9]*//' $E/cmdline.txt && sudo cat $E/cmdline.txt
 ```
 
 The setting stays as it is across updates.
@@ -171,10 +171,8 @@ relevant logs; post that file in [Discord](https://discord.gg/qGcuTgBBYU) (#bazz
 bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/ps5-report.sh)
 ```
 From v1.5.1 it's also built in: just `ps5-report`. Without network, run `ps5-report`, then
-`sudo cp ~/ps5-report-*.txt /efi/`, shut down and take the file from the USB drive's small FAT32 partition on your PC.
-
-**Testing VRR:** after each test, in the same boot, `vrr-report` (or
-`bash <(curl -fsSL https://raw.githubusercontent.com/VivaLaVent/ps5-bazzite-deck/main/tools/vrr-report.sh)` before v1.5.1).
+`E=$(for d in /boot/efi /efi; do sudo test -f $d/cmdline.txt && echo $d && break; done); sudo cp ~/ps5-report-*.txt $E/`,
+shut down and take the file from the USB drive's small FAT32 partition on your PC.
 
 ### 1. PS5 settings
 Check the two settings from [Prerequisites](#prerequisites). A reset or a firmware update of the PS5 can change them back.
