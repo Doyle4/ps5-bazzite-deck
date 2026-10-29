@@ -16,7 +16,6 @@ PS5 kernel configs don't enable:
 Without them `cardwired` crash-loops (`CardwireEbpfError(LSMNotEnabled)` / `error parsing
 /sys/kernel/btf/vmlinux`), the session script kills gamescope one second after it starts, and after
 five attempts Bazzite drops you to the desktop. Both are one-line config changes, applied in `build.sh`.
-Full write-up: [docs/game-mode-fix.md](docs/game-mode-fix.md).
 
 ## What's in this repo
 
@@ -29,8 +28,6 @@ patches/ps5-hdmi-output-fixes.patch    HDMI: scrambling off below 340 MHz, no FL
 patches/ps5-hdmi-modes.patch           HDMI: 1440p120, 1440p60, 1440p sync shape/polarity, skip 4:2:0-only modes
 files/                                 files baked into the image: NetworkManager stable MAC, MediaTek BT udev/modprobe,
                                        boot ordering-cycle fix for ps5-stage-firmware.service
-docs/game-mode-fix.md                  how the Game Mode problem was found and fixed
-docs/release-template.md               release notes of the current release
 CHANGELOG.md
 ```
 
