@@ -30,7 +30,7 @@ One image runs on every supported PS5. What differs is decided by three parts of
 | **1440p120** | ✅ | ❌ | |
 | **4K120** | ✅ | ❌ | v1.7.2+, HDMI 2.1 TV and cable; from v1.8.5 only offered when the TV can take it, and back to 4K by itself if the link fails |
 | **HDR** (1080p60, 4K60) | ✅ | ❌ | Game Mode → Settings → Display |
-| **VRR** (displays with HDMI VRR) | ✅ | ❌ | v1.7.1+, every resolution: Game Mode → Settings → Display → Enable VRR. As on the PS5 system, not on monitors that only have FreeSync (from v1.8.5) |
+| **VRR** (displays with HDMI VRR) | ✅ | ❌ | v1.7.1+, every resolution: Game Mode → Settings → Display → Enable VRR. As on the PS5 system, not on monitors that only have FreeSync (from v1.8.6) |
 
 Both chips: 1080p60, 1080p120, 1440p60 and 4K60, when the TV/monitor can do them. Other resolutions (ultrawide,
 other refresh rates) aren't offered: the HDMI chip only has setups for these.
