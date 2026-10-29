@@ -2,7 +2,7 @@
 
 All notable changes to the images. Exact upstream versions are in each release's `VERSIONS.md`.
 
-## [v1.6.0] – 2026-10-<DD>
+## [v1.6.0] – 2026-10-29
 - **Fix: colours too dark on TVs set to "Auto"** (FLAVA3 consoles, since v1.5.0): the RGB range flag went out as "limited" instead of "full" (first fixed in the v1.5.3 pre-release)
 - **The first-start message is gone:** it didn't show, or only for a moment. The update removes it from existing installs
 - Everything from the v1.5.2–v1.5.6 pre-releases: the VRR experiment's tests 21–26 (inert unless `hdmi.vrr_test=1`), `hdmi.icc_trace`; see docs/vrr-status.md for where VRR stands
